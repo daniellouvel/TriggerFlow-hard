@@ -233,63 +233,63 @@ Le 3.3V du DevKitC-1 (LDO embarqué) alimente uniquement le module ESP32 lui-mê
 
 ## 14. Synoptique général du montage
 
-```mermaid
-flowchart TD
-    SECTEUR["Secteur 230V"] --> BLOC["Bloc externe 230V→12V DC"]
-    BLOC -->|"GX12/16 verrouillable"| PWRIN["Entrée alimentation boîtier"]
+Plutôt qu'un seul diagramme complet (illisible avec autant de blocs), voici la même architecture découpée en 4 schémas simples, chacun centré sur une seule idée.
 
-    PWRIN --> RAIL12["Rail 12V direct"]
-    PWRIN --> BUCK["Buck 12V→5V"]
-    BUCK --> LDO["LDO dédié 5V→3.3V<br/>(analogique, séparé de l'ESP32)"]
-    BUCK --> DEVKIT
+### 14.1 Vue d'ensemble
 
-    subgraph MCU["ESP32-S3-DevKitC-1 WROOM-1-N16R8"]
-        DEVKIT["Module ESP32-S3"]
-        CORE0["Core 0 (PRO_CPU)<br/>Wi-Fi/BLE, USB CDC,<br/>moteur de règles, NVS/logs"]
-        CORE1["Core 1 (APP_CPU)<br/>chemin critique dédié<br/>ISR + gptimer + esp_timer"]
-    end
-
-    USB1["USB natif (GPIO19/20)<br/>contrôle PC"] --- DEVKIT
-    USB2["USB-UART (GPIO43/44)<br/>programmation/debug"] --- DEVKIT
-
-    DEVKIT -->|"I2C (GPIO8/9)"| I2CBUS["Bus I2C"]
-    DEVKIT -->|"SPI (SCK/MOSI)"| SPIBUS["Bus SPI"]
-
-    I2CBUS --> DAC["MCP4728 ×2<br/>seuils comparateurs"]
-    I2CBUS --> EXP["MCP23017<br/>DIR/EN moteur, contacts secs,<br/>focus caméra, PWM, CS des PGA"]
-    I2CBUS --> ADCID["ADS78xx<br/>lecture ID auto-détection capteurs"]
-
-    SPIBUS --> PGA["6× MCP6S91<br/>gain programmable ×1 à ×32"]
-
-    LDO --> PGA
-    LDO --> COMP
-    LDO --> DAC
-    LDO --> EXP
-    LDO --> ADCID
-
-    RJIN["6× RJ45<br/>entrées capteur<br/>(son / laser / piézo / contact sec)"] --> PGA
-    PGA --> COMP["6× TLV3501<br/>comparateur + hystérésis"]
-    COMP -->|"6 GPIO natifs (ISR)"| CORE1
-    RJIN -. "ligne ID" .-> ADCID
-
-    CORE1 -->|"4 GPIO natifs"| FLASH["4× sortie flash<br/>(RJ45, optocoupleur)"]
-    CORE1 -->|"2 GPIO natifs"| CAM["2× sortie caméra<br/>focus + shutter (RJ45, opto)"]
-    CORE1 -->|"6 GPIO natifs"| VANNES["6× sortie électrovanne<br/>(GX12, MOSFET + flyback)"]
-    CORE1 -->|"1 GPIO natif (LEDC/RMT)"| STEP["STEP moteur pas à pas"]
-
-    EXP --> DIRMOT["DIR/EN moteur"]
-    STEP --> DRIVER["Driver stepper<br/>A4988/DRV8825/TMC2209"]
-    DIRMOT --> DRIVER
-    DRIVER -->|"GX12 4 broches"| MOTOR["Moteur pas à pas"]
-
-    RAIL12 --> VANNES
-    RAIL12 --> DRIVER
-
-    EXP --> RELAY["3× contact sec<br/>(RJ45, relais/opto-triac)"]
-    EXP --> PWMOUT["PWM lumière continue / servo<br/>(RJ45, MOSFET ou alim dédiée)"]
+```
+   Alimentation 12V DC (bloc secteur externe)
+                  │
+                  ▼
+   ┌─────────────────────────────────┐
+   │   ESP32-S3-DevKitC-1 (N16R8)     │
+   │                                  │
+   │   Core 0 : réseau / contrôle     │
+   │   Core 1 : temps réel (critique) │
+   └────────────┬─────────────┬───────┘
+                │             │
+                ▼             ▼
+      6 entrées capteurs   16 sorties
+      (connecteurs RJ45)   (RJ45 pour le signal,
+                            GX12 pour la puissance)
 ```
 
-**Lecture du synoptique** : le chemin critique (entrées capteur → Core 1 → sorties temporisées) est entièrement natif GPIO/ISR, isolé du reste du système. Tout ce qui est configuration ou signal lent (seuils, gains, direction moteur, contacts secs, PWM) transite par les bus I2C/SPI, sans consommer de GPIO natif. Les deux familles de connecteurs (RJ45 pour le signal, GX12 pour la puissance) sont physiquement incompatibles entre elles, ce qui élimine tout risque de branchement croisé.
+### 14.2 Chaîne d'une entrée capteur (répétée ×6, identique)
+
+```
+Capteur          Ampli à gain        Comparateur         ESP32-S3
+(RJ45)     →     programmable   →    + seuil réglable →  (interruption,
+                  MCP6S91 (SPI)       TLV3501              Core 1)
+                                      + DAC (I2C)
+```
+
+### 14.3 Qui parle à qui sur les bus de configuration
+
+```
+                         ┌── MCP4728 ×2  → seuils des 6 comparateurs
+ESP32-S3 ── I2C ──┼── MCP23017    → DIR/EN moteur, contacts secs,
+                         │              focus caméra, PWM lumière
+                         └── ADS78xx    → lecture ID des capteurs (auto-détection)
+
+ESP32-S3 ── SPI ──── 6× MCP6S91  → réglage du gain de chaque entrée
+```
+
+*(Ces bus ne portent que de la configuration — rien ne transite dessus pendant un déclenchement, donc aucun impact sur la précision temporelle.)*
+
+### 14.4 Les 16 sorties, groupées par nature
+
+```
+Core 1 (temps réel, GPIO natif)          Expandeur I2C (non critique)
+─────────────────────────────            ────────────────────────────
+4× Flash            (RJ45)                3× Contact sec      (RJ45)
+2× Caméra            (RJ45)                1× PWM lumière/servo (RJ45)
+6× Électrovanne      (GX12)
+1× Moteur pas à pas  (GX12, via driver dédié)
+```
+
+**Ce qu'il faut retenir de ces 4 schémas** :
+- Le chemin capteur → déclenchement (14.2 + 14.4 colonne de gauche) est le seul qui doit rester ultra-rapide — tout le reste (14.3) ne fait que régler des paramètres, jamais pendant une prise.
+- Deux familles de connecteurs bien séparées : RJ45 pour tout ce qui est signal, GX12 pour tout ce qui est puissance — impossible de les confondre en branchant.
 
 ## 15. Ouvert / non tranché
 
