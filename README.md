@@ -28,7 +28,7 @@ Statut : cahier des charges fonctionnel et architecture matérielle figés. Sch�
 | Précision de déclenchement | ±10 µs ou mieux |
 | Plage de délai programmable | De la µs à plusieurs secondes, résolution constante |
 | Alimentation | Secteur (pas de contrainte de consommation) |
-| Pilotage | Application mobile (Wi-Fi/BLE) **et** logiciel PC (USB) |
+| Pilotage | USB (PC), Wi-Fi (page web servie par le boîtier et/ou app mobile), Bluetooth LE (contrôle de proximité / mode secours) |
 | Affichage local | Aucun (tout passe par l'app / le logiciel PC) |
 
 ## 3. Sorties
@@ -57,9 +57,10 @@ Principe directeur de l'architecture GPIO : **seul ce qui a une exigence de timi
 | 6 sorties électrovannes | 6 |
 | STEP moteur pas à pas | 1 |
 | 2 sorties shutter caméra (déclenchement) | 2 |
+| PWM lumière continue / servo (LEDC — corrigé, hors MCP23017) | 1 |
 | Bus I2C (SDA/SCL — DAC + expandeur) | 2 |
 | Bus SPI (SCK/MOSI — vers les 6 PGA) | 2 |
-| **Total natif** | **23 / ~25 GPIO propres disponibles** |
+| **Total natif** | **24 / ~25 GPIO propres disponibles — 1 seul GPIO libre restant** |
 
 ### 4.2 Périphériques I2C (non critique en timing)
 
@@ -69,12 +70,11 @@ ESP32-S3 (I2C : GPIO 8 = SDA, GPIO 9 = SCL)
    ├── MCP4728 ×2 — DAC seuils comparateurs (8 canaux, 6 utilisés + 2 en réserve)
    └── MCP23017 — Expandeur 16 E/S
           ├── DIR + EN moteur pas à pas (2)
-          ├── Contact sec / relais ×3 (3)
+          ├── Contact sec / relais ×3 (3, via transistor BC847 + flyback)
           ├── Focus caméra ×2 (2)
-          ├── PWM lumière/servo (1)
           └── Chip Select des 6 MCP6S91 (6)
           ────────────────────────────────
-          14 / 16 lignes utilisées
+          13 / 16 lignes utilisées
 ```
 
 ### 4.3 Chaîne d'entrée universelle (×6, identiques)
@@ -145,7 +145,7 @@ CORE 0 (PRO_CPU)                          CORE 1 (APP_CPU) — dédié chemin cr
 | Étage | Latence typique |
 |---|---|
 | TLV3501 (comparateur) | ~5-7 ns |
-| MCP6S91 (PGA, bande passante 1-18 MHz selon gain) | ~350 ns à gain max |
+| MCP6S91 (PGA, bande passante 1-18 MHz selon gain) | ~350 ns à gain faible ; **non vérifié à gain ×32** (la bande passante chute avec le gain — pourrait approcher 1-2 µs, à confirmer au datasheet avant routage, surtout sur les canaux à fort gain type micro) |
 | Interruption GPIO ESP32-S3 | ~1-3 µs |
 | Callback `esp_timer` (dispatch ISR) | voir 9.2 |
 | Sortie GPIO physique | ~1-3 µs |
@@ -190,7 +190,7 @@ Choix retenu : connecteurs **RJ45 (8P8C nus, sans magnétiques/LED)** pour toute
 
 ### Auto-détection du type de capteur
 
-Résistance de codage sur la ligne ID (paire marron) de chaque module capteur, lue via un **ADC I2C dédié** (famille ADS78xx, 8 canaux) ajouté sur le bus I2C existant — **aucun impact sur le budget GPIO natif (23/25) ni sur le MCP23017 (14/16)**. Permet le pré-chargement automatique du gain PGA et du seuil DAC dans l'app au branchement.
+Résistance de codage sur la ligne ID (paire marron) de chaque module capteur, lue via un **ADC I2C dédié** (famille ADS78xx, 8 canaux) ajouté sur le bus I2C existant — **aucun impact sur le budget GPIO natif (24/25) ni sur le MCP23017 (13/16)**. Permet le pré-chargement automatique du gain PGA et du seuil DAC dans l'app au branchement.
 
 ## 13. Connecteurs vannes/moteur et alimentation
 
@@ -293,10 +293,12 @@ Core 1 (temps réel, GPIO natif)          Expandeur I2C (non critique)
 
 ## 15. Ouvert / non tranché
 
-- Schéma électronique détaillé (valeurs R1/R2 hystérésis, choix MOSFET/driver stepper, dimensionnement précis du buck 12V→5V et du LDO 5V→3.3V selon le courant total réel des périphériques)
+- **Vérification bande passante MCP6S91 à gain ×32** au datasheet précis (voir section 9.1) — pourrait réduire la marge de précision sur les canaux à fort gain, à confirmer avant routage
+- **Limite connue (non bloquante)** : maximum 4 sorties simultanées avec délai <20µs à précision native garantie (limite des 4 `gptimer` matériels de l'ESP32-S3) — au-delà, retombe sur le plancher `esp_timer` (~20µs). Rare en usage réel, mais à documenter
+
+- Schéma électronique : les 11 blocs sont détaillés dans BOM-netlist.md (composants + netlist), y compris le module récepteur laser déporté et les protections ESD/PTC ; reste le routage PCB proprement dit dans EasyEDA Pro
 - Référence exacte du connecteur RJ45 (tenue en courant à vérifier au BOM) et de l'ADC I2C d'auto-détection
-- Courant total requis (dépend du modèle exact de vannes/moteur retenu) → dimensionnement final du bloc secteur externe
+- Courant total requis (estimation préliminaire ~9-10A pire cas, ~6-8A recommandé en usage réaliste — voir BOM-netlist.md bloc 5) → à affiner selon le modèle exact de vannes/moteur retenu pour le dimensionnement final du bloc secteur externe
 - Détail du moteur de règles (état de l'art : simple ET/OU vs langage de règles avec fenêtres temporelles/compteurs)
 - Boîtier physique / mécanique (hors découpe façade USB-C déjà actée)
-- Protocole de communication app/PC ↔ boîtier (USB CDC + Wi-Fi/BLE)
-- Choix définitif du composant récepteur optique pour les entrées laser (photodiode PIN + transimpédance recommandé plutôt que phototransistor, pour les cas de projectiles rapides)
+- Protocole de communication : USB CDC (PC), serveur web embarqué sur Wi-Fi (page de contrôle sans app à installer) et/ou app mobile, profil BLE pour le contrôle de proximité/secours — architecture logicielle à définir, aucun impact matériel
