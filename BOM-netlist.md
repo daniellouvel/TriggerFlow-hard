@@ -69,10 +69,10 @@ Câblage : `+3.3V → R_pullup → SIG_IN_x ; SIG_IN_x → contact externe → G
 
 | Réf. | Composant | Valeur / partie | Répétition |
 |---|---|---|---|
-| U3 | 6N137 | Optocoupleur rapide (~50-100 ns) | ×4 (flash) + ×4 (focus/shutter caméra) = ×8 |
-| Q1 | 2N7002 | MOSFET N logic-level, Vds 60V | ×8 |
-| R4 | Résistance | 220-330 Ω (courant LED interne 6N137) | ×8 |
-| R5 | Résistance | 10 kΩ (pull-up sortie collecteur ouvert) | ×8 |
+| U3 | 6N137 | Optocoupleur rapide (~50-100 ns) | ×4 (flash) + ×2 (focus/shutter caméra) = ×6 |
+| Q1 | 2N7002 | MOSFET N logic-level, Vds 60V | ×6 |
+| R4 | Résistance | 220-330 Ω (courant LED interne 6N137) | ×6 |
+| R5 | Résistance | 10 kΩ (pull-up sortie collecteur ouvert) | ×6 |
 
 ### Netlist
 
