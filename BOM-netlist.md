@@ -78,7 +78,7 @@ Câblage : `+3.3V → R_pullup → SIG_IN_x ; SIG_IN_x → contact externe → G
 
 | Net | Connecté à |
 |---|---|
-| GPIO_OUT_flash_x / GPIO_OUT_shutter_x | GPIO natif ESP32-S3 (gptimer/esp_timer) → R4 → anode LED 6N137 (cathode → GND logique) — flash ×4 + shutter ×2 |
+| GPIO_OUT_flash_x / GPIO_OUT_shutter_x | GPIO natif ESP32-S3 (gptimer/esp_timer) → R4 → anode LED 6N137 (cathode → GND logique) — flash ×4 + shutter ×1 |
 | GPIO_OUT_focus_x | **Sortie MCP23017** (non critique en timing) → R4 → anode LED 6N137 — focus ×2 |
 | VISO_3V3 | LDO dédié 3.3V isolé → R5 (pull-up) → collecteur 6N137 |
 | OPTO_OUT_x | 6N137 sortie (collecteur ouvert) → grille Q1 |
