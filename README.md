@@ -38,7 +38,7 @@ Statut : cahier des charges fonctionnel et architecture matérielle figés. Sch�
 | Flash / obturateur (pulse simple) | 4 | Délai indépendant par canal | Optocoupleur |
 | Électrovanne | 6 | Durée de pulse indépendante par canal | MOSFET + diode de roue libre (charge inductive) |
 | Moteur pas à pas | 1 | STEP en natif, DIR/EN non critiques | Driver dédié (A4988 / DRV8825 / TMC2209) — pas de retour de position (rotation libre) |
-| Déclenchement appareil photo | 2 sorties, **focus + obturation séparés** (4 contacts au total) | Timing indépendant | Optocoupleur par contact |
+| Déclenchement appareil photo | 1 sorties, **focus + obturation séparés** (2 contacts au total) | Timing indépendant | Optocoupleur par contact |
 | Contact sec / relais générique | 3 | Non critique | Relais ou opto-triac |
 | PWM lumière continue / servo | 1 | Non critique | MOSFET puissance ou alim dédiée régulée |
 
