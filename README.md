@@ -4,7 +4,7 @@ Boîtier de déclenchement généraliste pour photographie haute vitesse : déte
 
 Contrôlable par **USB (PC)** et **Wi-Fi/BLE (application mobile)**.
 
-Statut : cahier des charges fonctionnel et architecture matérielle figés. Schéma électronique détaillé et firmware non encore développés.
+Statut : cahier des charges fonctionnel et architecture matérielle figés. Schéma électronique en cours : Blocs 1, 2 et 3 validés par netlist (voir BOM-netlist.md), Blocs 4 et 7 proposés. Firmware non commencé.
 
 ---
 
