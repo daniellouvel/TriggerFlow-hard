@@ -1,413 +1,361 @@
-# TriggerFlow — BOM & Netlist par bloc (pour saisie dans EasyEDA Pro)
+# TriggerFlow — BOM et netlists par bloc
 
-Chaque bloc ci-dessous est pensé pour être ressaisi rapidement dans l'éditeur de schéma EasyEDA Pro : rechercher chaque référence dans le catalogue LCSC intégré, placer les symboles, relier selon la table de nets. Un bloc = un sous-schéma répété ×N selon le tableau.
+État au **03/10/2026**. Référence : export netlist EasyEDA du 03/10/2026 (`Netlist_Schematic1_2026-10-03.tel`), vérifié net par net.
+Numérotation : chiffre(s) de page + index (page 1 = voie 1 → R11, U11… ; page 9 = vannes ; page 10 = ESP32 / Bloc 8 ; page 11 = Blocs 5 et 5b). Quand une page dépasse 9 pièces d'un même type, la numérotation déborde (R100…R104 = vannes) : se fier au schéma, pas au numéro.
 
----
+## État de validation
 
+| Bloc | Contenu | État |
+|---|---|---|
+| 1 | 6 entrées capteur v3 (+ protection des lignes ID) | ✅ validé (6 voies) |
+| 2 | 6 sorties isolées : 4 flash + appareil photo (focus, shutter) | ✅ validé (avec inverseurs et TVS) |
+| 3 | 6 électrovannes + connecteurs | ✅ validé |
+| 4 | Moteur pas à pas (module Pololu) | 📝 netlist prête, à saisir (page 12) |
+| 5 | Alimentation 12 V → +12V / +5V / +3V3 | ✅ validé |
+| 5b | Alimentation isolée VISO_3V3 / VISO_GND | ✅ validé |
+| 6 | Relais ×3 | ❌ **supprimé** → prises Wi-Fi (voir fin du document) |
+| 7 | PWM lumière / servo | 📝 netlist prête, à saisir (page 13) |
+| 8 | Bus I2C : MCP23017, 2 × MCP4728, ADS7828, LED de statut | ✅ validé |
+| 9 | Module capteur universel (carte déportée, 8 variantes) | 📝 schéma KiCad généré (`kicad/module_capteur/`) |
+| 10 | Protection ESD des connecteurs | ✅ validé |
+| 11 | PTC | intégrées dans chaque bloc (F11-61, F91-96, F121, F131) |
+| ESP32 | Feuille U105 (YD-ESP32-S3 N16R8) | ✅ validé |
 
-## État de validation (02/10/2026)
-
-| Bloc | État |
-|---|---|
-| 1 — Entrée capteur v3 | voie 1 validée (export .tel EasyEDA) ; voies 2 à 6 à copier et vérifier |
-| 2 — Flash / caméra | une voie validée ; voies 2 et 3 à vérifier |
-| 3 — Électrovannes | 6 canaux validés |
-| 4 — Moteur pas à pas | proposition générée sous KiCad, non saisie |
-| 7 — PWM lumière / servo | proposition générée sous KiCad, non saisie |
-| 5, 5b, 6, 8 à 11 | description d'origine, non reprise |
-
-Méthode : schéma de référence produit par le générateur KiCad, saisi dans EasyEDA Pro avec les références LCSC, puis netlist exportée (.tel) et comparée net par net à la référence.
-
----
-
-## Bloc 1 — Entrée capteur v3 (×6, une voie par entrée)
-
-**Statut** : voie 1 saisie dans EasyEDA et netlist (.tel) validée le 01/10/2026 par comparaison avec la référence. Voies 2 à 6 : à copier puis à vérifier par un export complet. La numérotation des voies suit le numéro de page EasyEDA.
-
-Chaîne (tout signal capteur arrive en DC unipolaire 0–3,3 V) :
-RJ45 4-5 → TVS + tirage 4,7 kΩ (JP101) + 1 MΩ → R101 2,2 kΩ → clamp BAT54S + 100 pF → MCP6S91 (VREF du PGA = GND) → TLV3501 avec hystérésis, seuil THR propre à la voie (filtré 1 kΩ / 100 nF) → TLV_OUT.
-RJ45 1-2 : 5 V capteur via PTC. RJ45 7-8 : ligne ID (10 kΩ vers +3V3). RJ45 3-6 : GND.
-
-Supprimés par rapport à la v2 : couplage AC (C105, JP104), polarisation Vcc/2 (R106, R107, R108, JP103), JP102 et le VREF partagé entre voies.
-
-### Netlist (une voie, référence voie 1)
-
-| Net | Broches |
-|---|---|
-| SENSOR_n | J101.4, J101.5, D102.2 (TVS), R104 (4,7 k vers JP101), R105 (1 M vers GND), R101.1 |
-| CLAMP_n | R101.2, D101.3 (commun), C106 (100 pF vers GND), U101.2 (CH0) |
-| MCP6S91_OUT | U101.1, R102.1 |
-| HYST_NODE | R102.2, R103.1, U102.3 (+) |
-| TLV_OUT_n | U102.6, R103.2 |
-| THR_n → THR_F | THR_n → R109 (1 k) → C107 (100 nF vers GND), U102.2 (−) |
-| V_SENS | J101.1, J101.2, F101 (PTC vers +5V), C108 (10 µF) |
-| ID_n | J101.7, J101.8, R110 (10 k vers +3V3) |
-| CS_n | U101.5 |
-| SPI_MOSI, SPI_SCK (communs) | U101.6, U101.7 |
-| +3V3 | U101.8, U102.7, D101.2, JP101, R110, découplage |
-| GND | U101.3 (VREF du PGA), U101.4, U102.4, U102.8 (SHDN), D101.1, D102.1, R105, J101.3, J101.6, blindage J101, condensateurs |
-| non connectées | U102.1, U102.5 |
-
-Propres à chaque voie : SENSOR_n, CLAMP_n, CS_n, THR_n, TLV_OUT_n, ID_n, V_SENS. Communs aux 6 voies : SPI_MOSI, SPI_SCK, +3V3, +5V, GND. Après chaque copie, vérifier qu'aucune étiquette n'a gardé le suffixe d'une autre voie (EasyEDA fusionne les nets de même nom entre pages).
-
-### BOM (une voie)
-
-| Réf | Valeur | Pièce | Boîtier | LCSC |
-|---|---|---|---|---|
-| U101 | PGA SPI | MCP6S91 | MSOP-8 | C627647 |
-| U102 | Comparateur rapide | TLV3501AID | SOIC-8 | C43484 |
-| D101 | Double Schottky | BAT54S | SOT-23 | C545549 |
-| D102 | TVS 5 V bidirectionnelle | Nexperia PESD5V0S1BB,115 | SOD-523 | C97640 |
-| R101 | 2,2 kΩ 1 % | 0603WAF2201T5E | 0603 | C4190 |
-| R102, R110 | 10 kΩ 1 % | 0603WAF1002T5E | 0603 | C25804 |
-| R103 | 680 kΩ 1 % | 0603WAF6803T5E | 0603 | C25822 |
-| R104 | 4,7 kΩ | | 0603 | C23162 |
-| R105 | 1 MΩ | | 0603 | C22935 |
-| R109 | 1 kΩ 1 % | 0603WAF1001T5E | 0603 | C21190 (alt. C25585) |
-| C101, C103, C107 | 100 nF | | 0603 | C14663 |
-| C102, C104 | 1 µF | | 0603 | C5673 |
-| C106 | 100 pF C0G 50 V | GRM1885C1H101JA01D | 0603 | C71664 |
-| C108 | 10 µF X5R 25 V | CL21A106KAYNNNE | 0805 | C15850 |
-| F101 | PTC 200 mA / 24 V | SMD1206P020TF | 1206 | C20984 |
-| JP101 | 0 Ω (monté = tirage actif) | | 0603 | C21189 |
-| J101 | RJ45 8P8C blindé, sans magnétiques (10 broches) | HanXia HX-RJ45 90 5631-1x1 | traversant | C25168869 |
-
-21 composants par voie. Hystérésis : ΔV ≈ 3,3 V × 10 k / (10 k + 680 k) ≈ 48 mV. Courant capteur limité à 200 mA par port (PTC).
-
-### Points ouverts
-
-- 6 voies demandent 6 CS de PGA : vérifier les lignes libres du MCP23017 (sinon second MCP23017 ou décodeur 74HC138).
-- 6 seuils THR (2 × MCP4728 = 8 canaux) et 6 lignes ID (ADC 8 canaux) : à câbler sur la feuille ESP32.
-- 6 × 200 mA = 1,2 A au pire sur le +5V : à prévoir dans le Bloc 5.
-- D102 recouvre en partie la protection RClamp0524P du Bloc 10 : n'en garder qu'une sur ces lignes.
+Méthode : schéma de référence → saisie EasyEDA Pro avec références LCSC → export netlist (.tel) → comparaison net par net.
 
 ---
 
-## Bloc 2 — Sortie flash / caméra (HCPL-2631 + 2N7002, isolée)
+## Feuille ESP32 — U105 (YD-ESP32-S3 N16R8, symbole ESP32-S3-DEVKITC-1)
 
-**Statut** : une voie (2 canaux) validée le 01/10/2026 par export .tel EasyEDA. Le HCPL-2631 (double opto) remplace le 6N137 : un bloc = 2 canaux, instancié ×3 pour les 6 sorties (4 flash + 2 shutter). Voies 2 et 3 à vérifier par un export complet.
+Brochage du symbole : côté gauche 1-22 = rangée J1 ; côté droit 44 → 23 = rangée J3 (J3.k = broche 45-k).
 
-### Brochage HCPL-2631 DIP-8
+| Broche U105 | GPIO | Net |
+|---|---|---|
+| 4, 5, 6, 7, 8, 9 | 4, 5, 6, 7, 15, 16 | TLV_OUT_1 … TLV_OUT_6 |
+| 10 | 17 | FLASH_1_CMD |
+| 11 | 18 | DAC2_LDAC (Bloc 8) |
+| 12 / 15 | 8 / 9 | I2C_SDA / I2C_SCL |
+| 16 | 10 | GPIO_VALVE_3 |
+| 17 / 18 | 11 / 12 | SPI_MOSI / SPI_SCK |
+| 19 | 13 | STEP |
+| 20 | 14 | GPIO_PWM |
+| 21 | 5V | via D101 (SS14) depuis +5V |
+| 22, 23, 24, 44 | G | GND |
+| 41, 40 | 1, 2 | GPIO_VALVE_1, GPIO_VALVE_2 |
+| 39 | 42 | SHUTTER_CMD |
+| 38 | 41 | FLASH_4_CMD |
+| 36 | 39 | FLASH_3_CMD |
+| 35 | 38 | GPIO_VALVE_4 |
+| 29 | 48 | GPIO_VALVE_5 (pastille « RGB » de la carte laissée ouverte) |
+| 28 | 47 | GPIO_VALVE_6 |
+| 27 | 21 | FLASH_2_CMD |
+| libres | 3V3 ×2, RST, 0, 3, 45, 46, 19, 20, 43, 44, 35-37, 40 | non connectées |
 
-1 A1 · 2 K1 · 3 K2 · 4 A2 · 5 GND sortie (VISO_GND) · 6 VO2 · 7 VO1 · 8 VCC (VISO_3V3)
+| Réf | Pièce | LCSC |
+|---|---|---|
+| U105 | Carte YD-ESP32-S3 N16R8 sur 2 barrettes femelles 1×22 (2,54 mm) | carte achetée à part (exclue de la BOM d'assemblage) |
+| D101 | SS14, anode +5V → cathode U105.21 (anti-retour USB) | C2480 |
+| R108, R109 | 4,7 kΩ, pull-ups I2C_SDA / I2C_SCL vers +3V3 | C23162 |
 
-### Netlist (une voie)
+---
 
-| Net | Broches |
+## Bloc 1 — Entrée capteur v3 (×6)
+
+Référence voie 1 (voies 2 à 6 identiques, chiffre des dizaines = n° de voie). Signal attendu : continu 0–3,3 V, ≈ 0 V au repos.
+
+| Net | Broches (voie 1) |
 |---|---|
-| GPIO_A | R401.1 |
-| GPIO_B | R402.1 |
-| INPUT_A | R401.2, U401.1 |
-| INPUT_B | R402.2, U401.4 |
-| GND | U401.2, U401.3 |
-| VISO_3V3 | U401.8, R403.1, R404.1 |
-| VISO_GND | U401.5, Q401.2, Q402.2 |
-| VO1_GATE | U401.7, R403.2, Q401.1 |
-| VO2_GATE | U401.6, R404.2, Q402.1 |
-| OUT_A | Q401.3 |
-| OUT_B | Q402.3 |
+| SENSOR_1 | J11.4, J11.5, D13 (TVS), R12 (4,7 k → JP11 → +3V3), R17 (1 M → GND), R16.1 (2,2 k) |
+| CLAMP | R16.2, D12.3 (BAT54S), C12 (100 pF → GND), U12.2 (CH0) |
+| MCP6S91_OUT | U12.1, R15.1 (10 k) |
+| HYST_NODE | R15.2, R18.1 (680 k), U11.3 (+) |
+| TLV_OUT_1 | U11.6, R18.2, U105.4 |
+| THR_1 → filtre | THR_1 (DAC) → R13 (1 k) → C11 (100 nF → GND) → U11.2 (−) |
+| V_SENS | J11.1, J11.2, F11 (PTC 200 mA, depuis +5V), C13 (10 µF) |
+| ID (connecteur) | J11.7, J11.8, R14 (10 k → +3V3), D11 (TVS → GND), R11.1 |
+| ID_ADC_1 | R11.2 (1 k), U104.1 (ADS7828) |
+| CS_1 | U12.5, U101.21 |
+| SPI_MOSI / SPI_SCK (communs) | U12.6 / U12.7 |
+| +3V3 | U11.7, U12.8, D12 (K), JP11, R14, découplages C14-C17 |
+| GND | U11.4, U11.8 (SHDN), U12.3 (VREF du PGA), U12.4, D12 (A), D11, D13, R17, J11.3/.6/.9/.10 |
+| non connectées | U11.1, U11.5 |
 
-### BOM (une voie)
-
-| Réf | Valeur | Boîtier | LCSC |
+| Réf (voie 1) | Valeur / pièce | Boîtier | LCSC |
 |---|---|---|---|
-| U401 | HCPL-2631 (onsemi) | DIP-8 | C16384 |
-| R401, R402 | 270 Ω | 0603 | C22966 |
-| R403, R404 | 10 kΩ | 0603 | C25804 |
-| Q401, Q402 | 2N7002 | SOT-23 | C8545 |
-
-### Points ouverts
-
-- Logique inversée (LED allumée = sortie basse = Q bloqué) : à gérer côté firmware.
-- Courant LED ≈ (3,3 V − 1,5 V) / 270 Ω ≈ 7 mA : à confirmer avec la datasheet.
-- Ne jamais relier GND et VISO_GND.
-- Le 2N7002 (60 V) ne supporte pas la tension de synchro de certains flashs anciens (plusieurs centaines de volts).
+| U11 | TLV3501AID | SOIC-8 | C43484 |
+| U12 | MCP6S91 | MSOP-8 | C627647 |
+| D12 | BAT54S | SOT-23 | C545549 |
+| D11, D13 | PESD5V0S1BB (TVS 5 V bidir.) | SOD-523 | C97640 |
+| R11, R13 | 1 kΩ | 0603 | C21190 |
+| R12 | 4,7 kΩ | 0603 | C23162 |
+| R14, R15 | 10 kΩ | 0603 | C25804 |
+| R16 | 2,2 kΩ | 0603 | C4190 |
+| R17 | 1 MΩ | 0603 | C22935 |
+| R18 | 680 kΩ | 0603 | C25822 |
+| C11, C14, C15 | 100 nF | 0603 | C14663 |
+| C12 | 100 pF C0G | 0603 | C71664 |
+| C13 | 10 µF 25 V | 0805 | C15850 |
+| C16, C17 | 1 µF | 0603 | C5673 |
+| F11 | PTC 200 mA | 1206 | C20984 |
+| JP11 | 0 Ω (monté = tirage actif) | 0603 | C21189 |
+| J11 | RJ45 HanXia HX-RJ45 90 5631-1x1 (10 br.) | THT | C25168869 |
 
 ---
 
-## Bloc 3 — Sortie électrovanne (×6)
+## Bloc 2 — Sorties isolées flash / appareil photo
 
-**Statut** : 6 canaux validés le 01/10/2026 par export .tel EasyEDA. Le fichier `sortie_electrovanne.kicad_sch` d'origine avait des connexions cassées (résistances et grilles non reliées, diode court-circuitée) et des descriptions « pull-up » erronées : il ne fait plus référence.
+Chaîne par sortie : `*_CMD` (ESP32) → 180 Ω → LED de l'opto HCPL-063L → sortie opto (pull-up 10 k VISO_3V3) → inverseur 74LVC2G04 → grille 2N7002 (pull-down 100 k) → drain sur le RJ45. Logique directe : CMD haut = sortie active ; CMD bas ou haute impédance (démarrage, plantage) = sortie bloquée.
 
-### Netlist (canal n)
+| Sortie | Commande | Opto | Pull-up | Inverseur | Pull-down | MOSFET | TVS | Connecteur |
+|---|---|---|---|---|---|---|---|---|
+| FOCUS | FOCUS_CMD (MCP23017 GPA6) → R73 | U71 (1→7) | R71 | U72 (1A→1Y) | R72 | Q71 | D71 | J71.3 |
+| SHUTTER | SHUTTER_CMD (GPIO42) → R74 | U71 (4→6) | R76 | U72 (2A→2Y) | R75 | Q72 | D72 | J71.4 |
+| FLASH_1 | FLASH_1_CMD → R83 | U81 (1→7) | R81 | U82 (1A→1Y) | R82 | Q81 | D81 | J81.4 |
+| FLASH_2 | FLASH_2_CMD → R84 | U81 (4→6) | R86 | U82 (2A→2Y) | R85 | Q82 | D82 | J82.4 |
+| FLASH_3 | FLASH_3_CMD → R89 | U83 (1→7) | R87 | U84 (1A→1Y) | R88 | Q83 | D83 | J83.4 |
+| FLASH_4 | FLASH_4_CMD → R90 | U83 (4→6) | R92 | U84 (2A→2Y) | R91 | Q84 | D84 | J84.4 |
+
+Brochages : HCPL-063L SO-8 : 1 A1, 2 K1, 3 K2, 4 A2, 5 GND sortie, 6 VO2, 7 VO1, 8 VCC. 74LVC2G04 SOT-23-6 : 1 1A, 2 GND, 3 2A, 4 2Y, 5 VCC, 6 1Y.
 
 | Net | Broches |
 |---|---|
-| GPIO_VALVE_n | R(2n−1).1 |
-| GATE_n | Q70n.1, R(2n−1).2, R(2n) (pull-down) |
-| GND | Q70n.2 (source), R(2n) |
-| VALVE_SW_n | Q70n.3 (drain), D70n.2 (anode), borne « − » de la vanne |
-| VALVE_PWR_n | D70n.1 (cathode), F70n.1, borne « + » de la vanne |
-| +12V | F70n.2 |
+| GND (côté ESP32) | U71.2, U71.3, U81.2, U81.3, U83.2, U83.3 |
+| VISO_3V3 | U71.8, U81.8, U83.8, U72.5, U82.5, U84.5, R71, R76, R81, R86, R87, R92, C71-C72, C81-C84 (.1), U114 (Bloc 5b) |
+| VISO_GND | U71.5, U81.5, U83.5, U72.2, U82.2, U84.2, sources Q71-Q84, R72/R75/R82/R85/R88/R91, anodes D71-D84, J71.5, J71.6, J81.5 … J84.5, U113.3, U114.1 |
 
-Canal n : résistance de grille R(2n−1) = 220 Ω (R701, R703 … R711), pull-down R(2n) = 10 kΩ (R702, R704 … R712). Seuls GND et +12V sont communs ; chaque canal a ses 4 nets propres. Erreur déjà rencontrée à la copie : les grilles des canaux 5 et 6 avaient gardé GATE_2 / GATE_3.
+**Règles** : aucun composant entre GND et VISO_GND ; TVS cathode côté sortie, anode VISO_GND ; RJ45 de sortie : broches 1-2, 7-10 (et 3, 6 sur les flashs) non connectées, blindage non connecté.
 
-### BOM (par canal)
-
-| Réf | Valeur | Boîtier | LCSC |
+| Réf | Pièce | Qté | LCSC |
 |---|---|---|---|
-| R 220 Ω (grille) | 220 Ω | 0603 | C22962 |
-| R 10 kΩ (pull-down) | 10 kΩ | 0603 | C25804 |
-| Q70n | AO3400A (G=1, S=2, D=3) | SOT-23 | C20917 |
-| D70n | SS14 (cathode côté VALVE_PWR) | SMA | C2480 |
-| F70n | Bourns MF-MSMF110/24X-2 (1,1 A / 2,2 A / 24 V) | 1812 | C210835 (alt. Littelfuse 1812L110/33MR : C142747) |
-
-Ne pas utiliser le MF-R110 (traversant, non confirmé sur LCSC) ni les références C160122, C25057, C25761 d'une ancienne version de ce document.
-
-**Dimensionnement** : prévoir dans le Bloc 5 le pire cas de 6 vannes ouvertes simultanément (≈ 3 A à 12 V).
-
-### Points ouverts
-
-- Connecteur vanne GX12 : 2 ou 4 broches ?
-- Affectation GPIO_VALVE_n ↔ broches ESP32-S3 (feuille principale).
+| U71, U81, U83 | Broadcom HCPL-063L-500E (2 voies, 3,3 V, SO-8) | 3 | C188704 |
+| U72, U82, U84 | TI SN74LVC2G04DBVR (SOT-23-6) | 3 | C10428 |
+| Q71, Q72, Q81-Q84 | 2N7002 (SOT-23) | 6 | C8545 |
+| R73, R74, R83, R84, R89, R90 | 180 Ω 0603 | 6 | C22828 |
+| R71, R76, R81, R86, R87, R92 | 10 kΩ 0603 | 6 | C25804 |
+| R72, R75, R82, R85, R88, R91 | 100 kΩ 0603 | 6 | C25803 |
+| C71, C72, C81-C84 | 100 nF 0603 (VISO_3V3 / VISO_GND) | 6 | C14663 |
+| D71, D72, D81-D84 | SMF24A (TVS 24 V, SOD-123FL) | 6 | C169430 |
+| J71, J81-J84 | RJ45 HanXia 10 broches | 5 | C25168869 |
 
 ---
 
-## Bloc 4 — Driver moteur pas à pas (×1)
+## Bloc 3 — Électrovannes (×6)
 
-**Statut** : proposition du 01/10/2026, feuille générée sous KiCad (netlist calculée sans broche isolée). Pas encore saisie ni validée dans EasyEDA.
+| Net (canal n) | Broches |
+|---|---|
+| GPIO_VALVE_n | résistance de grille 220 Ω (R93, R94, R95, R99, R100, R101) |
+| GATE_n | Q9n.1, résistance 220 Ω, pull-down 10 kΩ (R96, R97, R98, R102, R103, R104) → GND |
+| VALVE_SW_n | Q9n.3 (drain), D9n.2 (anode SS14), CN9n.2 (−) |
+| VALVE_PWR_n | D9n.1 (cathode), F9n.2, CN9n.1 (+) |
+| +12V | F91.1 … F96.1 |
+| GND | Q9n.2 (source), pull-downs |
 
-Corrections par rapport à la version précédente : un module Pololu s'enfiche dans **deux barrettes 1×8** écartées de 12,7 mm (pas une 2×8) ; le TMC2209 n'a pas exactement le brochage de l'A4988 (SPREAD/CLK), donc la pull-up RESET/SLEEP est remplacée par un cavalier JP804 ; ajout d'une pull-up sur EN (moteur coupé au boot) et d'une pull-down sur STEP.
+| Réf | Pièce | LCSC |
+|---|---|---|
+| Q91-Q96 | AO3400A (SOT-23) | C20917 |
+| D91-D96 | SS14 (SMA) | C2480 |
+| F91-F96 | Bourns MF-MSMF110/24X-2 (1,1 A / 24 V, 1812) | C210835 |
+| 220 Ω ×6 | 0603 | C22962 |
+| 10 kΩ ×6 | 0603 | C25804 |
+| CN91-CN96 | connecteur 2 points HX25003-2A (pas 2,5 mm) | — |
 
-### Netlist
+Une sortie vanne libre peut piloter une charge 12 V DC (ruban LED, ventilateur, pompe, module relais 12 V) : 12 V, 1,1 A max, PWM possible, non isolée.
+
+---
+
+## Bloc 4 — Moteur pas à pas (page 12, à saisir)
+
+Module Pololu (A4988 / DRV8825 / TMC2209) sur **deux barrettes 1×8 écartées de 12,7 mm**.
 
 | Net | Broches |
 |---|---|
-| STEP | GPIO natif (LEDC/RMT), J801.7, R802 (10 kΩ vers GND) |
-| DIR | MCP23017, J801.8 |
-| STEP_EN | MCP23017, J801.1, R801 (10 kΩ vers +3V3) |
-| MS1, MS2, MS3 | J801.2, J801.3, J801.4 → JP801, JP802, JP803 vers +3V3 |
-| RST_SLP | J801.5 ↔ JP804 ↔ J801.6 |
-| VMOT | +12V → F801 → J802.1, C801+ (100 µF), C802 (100 nF) |
-| GND | J802.2, J802.8, C801−, C802, C803, R802 |
-| MOT_2B, MOT_2A, MOT_1A, MOT_1B | J802.3 à J802.6 → J803 (vers le GX12 4 broches) |
-| +3V3 | J802.7 (VDD/VIO), C803 (100 nF), R801, cavaliers |
+| STEP_EN | J121.1 (EN), R121 (10 kΩ → +3V3), U101.2 (MCP23017 GPB1) |
+| MS1 / MS2 / MS3 | J121.2 / .3 / .4 → JP121 / JP122 / JP123 → +3V3 |
+| RST_SLP | J121.5 (RST) → JP124 → J121.6 (SLP) |
+| STEP | J121.7, R122 (10 kΩ → GND), U105.19 (GPIO13) |
+| DIR | J121.8, U101.1 (GPB0) |
+| VMOT | J122.1, C121+ (100 µF), C122 (100 nF), F121.2 |
+| +12V | F121.1 |
+| MOT_2B / 2A / 1A / 1B | J122.3 / .4 / .5 / .6 → J123.1 … J123.4 |
+| +3V3 | J122.7 (VDD), C123 (100 nF) |
+| GND | J122.2, J122.8, C121−, C122, C123, R122 |
 
-### Cavaliers selon le module
-
-| Module | JP801 (MS1) | JP802 (MS2) | JP803 (MS3) | JP804 | Résultat |
+| Module | JP121 | JP122 | JP123 | JP124 | Résultat |
 |---|---|---|---|---|---|
 | TMC2209 | fermé | fermé | ouvert | **ouvert** | 1/16, stealthChop |
 | A4988 | fermé | fermé | fermé | fermé | 1/16 |
 | DRV8825 | ouvert | ouvert | fermé | fermé | 1/16 |
 
-### BOM
-
 | Réf | Pièce | LCSC |
 |---|---|---|
-| J801, J802 | Barrette femelle 1×8, 2,54 mm, traversante | C27438 |
-| C801 | 100 µF 35 V électrolytique SMD 6,3×7,7 | C3339 |
-| C802, C803 | 100 nF 0603 | C14663 |
-| R801, R802 | 10 kΩ 0603 | C25804 |
-| F801 | PTC 2 A / 16 V, 1812 (SMD1812P200TF/16) | C545213 |
-| JP801 à JP804 | Pont de soudure 2 plots | — |
-| J803 | Connecteur 4 broches vers le GX12 (bornier ou XH) | à choisir |
+| J121, J122 | barrette femelle 1×8, 2,54 mm (BOOMELE) | C27438 |
+| F121 | PTC 2 A / 16 V 1812 (SMD1812P200TF/16) | C545213 (alt. C20812) |
+| C121 | 100 µF 35 V électrolytique CMS | C3339 (à vérifier) |
+| C122, C123 | 100 nF 0603 | C14663 |
+| R121, R122 | 10 kΩ 0603 | C25804 |
+| JP121-JP124 | ponts de soudure 2 plots | — |
+| J123 | bornier 4 points 5,08 mm (vers GX12 4 broches) | à choisir |
 
 ---
 
-## Bloc 5 — Alimentation (buck 12V→5V + LDO 3.3V dédié)
+## Bloc 5 — Alimentation (validé)
 
-### BOM
-
-| Réf. | Composant | Valeur / partie |
-|---|---|---|
-| F1 | Fusible rapide + porte-fusible | 5A |
-| C_bulk | Condensateur électrolytique | 470 µF, ≥25V |
-| Buck | Module LM2596 préfabriqué, ajustable | Réglé sortie 5V, 3A |
-| U (LDO) | AMS1117-3.3 | 1A |
-| C1, C2 | Céramique | 100 nF (découplage local) |
-| C3 | Tantale/électrolytique | 10 µF (stabilité sortie LDO) |
-
-### Netlist
-
-| Net | Connecté à |
-|---|---|
-| V12_IN | GX12/16 (entrée alim) → F1 → C_bulk → rail 12V |
-| V12_RAIL | C_bulk+ → électrovannes (×6, GX12), VMOT driver stepper, entrée buck |
-| V5_RAIL | Sortie buck LM2596 → DevKitC-1 (pin 5V), servo/relais 5V si utilisés, entrée LDO |
-| V3V3_ANALOG | Sortie AMS1117-3.3 → TLV3501 ×6, MCP6S91 ×6, MCP4728 ×2, MCP23017, ADS78xx |
-| GND_STAR | Point de masse unique — sépare masse puissance (vannes/moteur) et masse signal (analogique), reliées uniquement à ce nœud |
-
-**Budget de courant** (à affiner selon le matériel réel) : ~9-10A/12V en pire cas théorique (6 vannes + moteur simultanés) ; dimensionnement recommandé du bloc secteur externe : 6-8A/12V (72-96W) pour un usage réaliste.
-
----
-
-## Bloc 5b — Alimentation isolée pour le rail Viso des 6N137
-
-### BOM
-
-| Réf. | Composant | Valeur / partie |
-|---|---|---|
-| ISO1 | B0505S-1W | Convertisseur DC-DC isolé 5V→5V, 1W, ~1kV d'isolement |
-| LDO2 | AMS1117-3.3 | 1A, dérive le 3.3V isolé depuis la sortie de ISO1 |
-| C1, C2 | 100nF + 1µF | Découplage entrée/sortie (règle standard) |
-
-### Netlist
-
-| Net | Connecté à |
-|---|---|
-| V5_RAIL | Sortie buck LM2596 → entrée ISO1 |
-| VISO_5V | Sortie isolée ISO1 → entrée LDO2 |
-| VISO_3V3 | Sortie LDO2 → Vcc des 8× 6N137 (avec découplage 100nF+1µF par CI) |
-| GND_ISO | Masse isolée, distincte de GND_STAR (masse principale) — ne se rejoint nulle part sur le PCB, c'est le principe même de l'isolation |
-
----
-
-## Bloc 6 — Contact sec / relais (×3)
-
-### BOM
-
-| Réf. | Composant | Valeur / partie | Répétition |
-|---|---|---|---|
-| Q1 | BC847 (NPN) | — | ×3 |
-| R1 | Résistance | 1 kΩ (base) | ×3 |
-| D1 | 1N4148 (flyback) | — | ×3 |
-| Relais | Relais signal 5V, contact sec | — | ×3 |
-
-### Netlist
-
-| Net | Connecté à |
-|---|---|
-| MCP23017_OUT_x | MCP23017 → R1 → base Q1 |
-| RELAY_COIL | +5V → bobine relais → collecteur Q1 (D1 en antiparallèle sur la bobine, cathode +5V) |
-| GND_LOGIC | Émetteur Q1 → GND |
-| CONTACT_NO/NC/COM | Contact du relais → RJ45 (signal externe, isolé galvaniquement) |
-
----
-
-## Bloc 7 — PWM lumière continue / servo (×1)
-
-**Statut** : proposition du 01/10/2026, feuille générée sous KiCad (netlist calculée sans broche isolée). Pas encore saisie ni validée dans EasyEDA.
-
-Signal sur le dernier GPIO natif (LEDC, PWM matériel). Mode lumière : MOSFET côté masse. Mode servo : buffer 74AHCT1G125 alimenté en 5 V (entrée 3,3 V, sortie 5 V franche). Deux cavaliers 3 plots empêchent de sélectionner les deux modes à la fois.
-
-### Netlist
+Bloc secteur **12 V, 5 A minimum**.
 
 | Net | Broches |
 |---|---|
-| GPIO_PWM | GPIO natif (LEDC), R901.1, U901.2 (A) |
-| GATE_PWM | R901.2 (220 Ω), Q901.1, R902 (10 kΩ vers GND) |
-| LIGHT_SW | Q901.3 (drain), D901 anode, JP901 côté A |
-| SERVO_SIG | U901.4 (Y) → R903 (220 Ω) → JP901 côté B |
-| PWM_OUT | JP901 centre, RJ45 broches 4 et 5 |
-| V_ACC_SEL | JP902 centre → F901.1 |
-| V_ACC | F901.2, D901 cathode, RJ45 broches 1 et 2 |
-| +12V / +5V | JP902 côté A / côté B |
-| +5V | U901.5 (VCC), C901 (100 nF) |
-| GND | Q901.2, U901.1 (OE), U901.3, R902, C901, RJ45 broches 3 et 6 |
-| non connectées | RJ45 broches 7 et 8 (réservées) |
-
-Modes : lumière = JP901 sur A, JP902 sur +12V (ou +5V) ; servo = JP901 sur B, JP902 sur +5V. **Ne jamais laisser JP902 sur +12V en mode servo** (à sérigraphier).
-
-### BOM
+| VIN_RAW | J111.1, F111.1 |
+| VIN_F | F111.2, Q111.5-8 (drain) |
+| +12V | Q111.1-3 (source), R111, D111 (cathode), C112 (470 µF), 2 × 10 µF, 100 nF, U111.1 (VIN), F91-F96, (VMOT, V_ACC) |
+| Q111_G | Q111.4, R111 (→ +12V), R112 (→ GND) : VGS ≈ −6 V |
+| BUCK_SW | U111.2, L111.1, D112 (cathode) |
+| +5V | L111.2, U111.4 (FB), C117 (330 µF), 100 nF, U112.3, 10 µF, D101, F11-F61, U113.2 |
+| +3V3 | U112.2 + languette (4), C111 (10 µF) |
+| GND | J111.2, R112, D111, D112 (anode), U111.3, U111.5 (ON/OFF), U111.6 (languette), U112.1, condensateurs |
 
 | Réf | Pièce | LCSC |
 |---|---|---|
-| Q901 | AO3400A | C20917 |
-| U901 | SN74AHCT1G125DBVR, SOT-23-5 | C7484 |
-| D901 | SS34 | C8678 |
-| F901 | PTC 1,1 A / 16 V, 1812 (1812L110/16DR) | C142746 |
-| R901, R903 | 220 Ω 0603 | C22962 |
-| R902 | 10 kΩ 0603 | C25804 |
-| C901 | 100 nF 0603 | C14663 |
-| JP901, JP902 | Pont de soudure 3 plots | — |
+| J111 | bornier KF128-5.08-2P | C474952 |
+| F111 | fusible 6,3 A temporisé TLC TA3VT6.3 (2410) | C3014144 |
+| Q111 | AO4407A (P-MOS 30 V 12 A, SOIC-8) | C16072 |
+| R111, R112 | 10 kΩ 0603 | C25804 |
+| D111 | SMBJ15A (TVS 600 W) | C83846 |
+| C112 | 470 µF 25 V DMBJ RVT1E471M1010 | C970707 |
+| 2 × 10 µF entrée, 10 µF AMS1117 entrée/sortie | 10 µF 25 V 0805 | C15850 |
+| 100 nF ×2 | 0603 | C14663 |
+| U111 | LM2596S-5.0 (UMW, TO-263-5) | C347421 |
+| D112 | SS54 | C22452 |
+| L111 | 33 µH 4,25 A SMDRI129-330MT | C2924828 |
+| C117 | 330 µF 25 V low-ESR Panasonic EEE-FK1E331P (**pas de polymère** : instabilité du LM2596) | C178543 (alt. C970701) |
+| U112 | AMS1117-3.3 | C6186 |
+
+PCB : boucle C112-U111-D112 courte ; cuivre + vias sous la languette de U111 (~3 W) ; pistes 12 V ≥ 2 mm.
 
 ---
 
-## Bloc 8 — Adressage du bus I2C
+## Bloc 5b — Alimentation isolée (validé)
 
-| Puce | Adresse I2C | Configuration |
-|---|---|---|
-| MCP4728 #1 | 0x60 (défaut usine) | — |
-| MCP4728 #2 | 0x61 | Reprogrammation d'adresse en EEPROM (procédure MCP4728, une fois au premier flash) |
-| MCP23017 | 0x20 | Broches A0/A1/A2 → GND |
-| ADS78xx | 0x48 | Broche ADDR → GND |
+B0505S-1WR3 (5 V → 5 V isolé, non régulé, charge mini 20 mA) puis AMS1117-3.3 côté isolé (HCPL-063L : 2,7–3,6 V).
 
----
-
-## Bloc 9 — Module capteur laser (récepteur, déporté en bout de câble RJ45)
-
-### BOM
-
-| Réf. | Composant | Valeur / partie |
-|---|---|---|
-| PD1 | BPW34 (photodiode PIN) | Polarisée en inverse (cathode → +3.3V) |
-| U1 | OPA380 (ampli transimpédance) | Bande passante ~90 MHz |
-| Rf | Résistance | 100 kΩ - 1 MΩ (gain, à ajuster en test selon distance/puissance laser) |
-| Cf | Condensateur céramique | 2-10 pF (stabilité) |
-| Filtre optique (option) | Filtre IR passe-long >700nm | Recommandé en usage extérieur, accordé sur la longueur d'onde du laser émetteur |
-
-### Netlist
-
-| Net | Connecté à |
+| Net | Broches |
 |---|---|
-| V3V3_CAPTEUR | RJ45 paire orange (alim capteur) → cathode PD1 |
-| PD_SIGNAL | Anode PD1 → entrée (-) OPA380, Rf/Cf en contre-réaction |
-| SIG_OUT | Sortie OPA380 → RJ45 paire bleue (signal, vers MCP6S91 côté boîtier) |
-| GND_SIGNAL | RJ45 paire verte → masse module |
+| +5V / GND | U113.2 (VIN) / U113.1, condensateur d'entrée 10 µF |
+| VISO_5V | U113.4 (+VO), C120 (10 µF), R113, U114.3 (VIN) |
+| PRELOAD | R113 – R114 (2 × 220 Ω ≈ 11 mA) |
+| VISO_3V3 | U114.2 + U114.4 (languette), C121 (10 µF) |
+| VISO_GND | U113.3 (0V), C120, R114, U114.1, C121 |
 
-**Émetteur** : module laser IR (780-850nm) du commerce, Classe 1/2, alimentation autonome indépendante du boîtier (pas de connecteur dédié — hors périmètre RJ45/GX12).
-
----
-
-## Bloc 10 — Protection ESD sur les connecteurs RJ45 (×16)
-
-### BOM
-
-| Réf. | Composant | Répétition |
+| Réf | Pièce | LCSC |
 |---|---|---|
-| U_ESD | RClamp0524P (protection ESD multi-lignes, 4 canaux) | ×16 (un par connecteur RJ45) |
+| U113 | B0505S-1WR3 (SIP-4 : 1 GND, 2 VIN, 3 0V, 4 +VO) | C7465178 (EVISUN, alt. HI-LINK C5183119 ; Mornsun C131038 indisponible) |
+| U114 | AMS1117-3.3 | C6186 |
+| 3 × 10 µF | 0805 25 V | C15850 |
+| R113, R114 | 220 Ω 0603 | C22962 |
 
-### Netlist
-
-| Net | Connecté à |
-|---|---|
-| RJ45_PAIRS_x | Chaque connecteur RJ45 → RClamp0524P (4 lignes) → reste du circuit (R1 protection, MCP6S91, etc.) |
-| GND_ESD | RClamp0524P → masse locale (signal ou puissance selon le connecteur) |
-
-**Placement** : au plus près de chaque connecteur, avant tout autre composant — première ligne de défense contre les décharges électrostatiques, en complément des diodes BAT54S déjà prévues sur le Bloc 1 (qui protègent contre les surtensions plus lentes).
+PCB : bande sans cuivre (~2 mm) sous U113 entre les broches 1-2 et 3-4 ; plan VISO_GND séparé pour tout le côté isolé.
 
 ---
 
-## Bloc 11 — Fusibles réarmables (PTC) par canal de puissance
+## Bloc 6 — Relais : supprimé
 
-### BOM
+Remplacé par des **prises Wi-Fi** pour les appareils secteur (éclairage, petit compresseur…) et, si besoin, par les sorties vannes libres (charges 12 V DC ou module relais 12 V externe). Voir [docs/sorties-wifi.md](docs/sorties-wifi.md). Les lignes MCP23017 GPB2-GPB4 (ex-RELAY_1-3) restent en réserve.
 
-| Réf. | Composant | Valeur | Répétition |
+---
+
+## Bloc 7 — PWM lumière / servo (page 13, à saisir)
+
+| Net | Broches |
+|---|---|
+| GPIO_PWM | U105.20 (GPIO14), R131.1 (220 Ω), U131.2 (A) |
+| PWM_GATE | R131.2, Q131.1, R132 (10 kΩ → GND) |
+| LIGHT_SW | Q131.3, D131 (anode), JP131 côté A |
+| SERVO_Y | U131.4, R133.1 (220 Ω) |
+| SERVO_SIG | R133.2, JP131 côté B |
+| PWM_OUT | JP131 centre, J131.4, J131.5, D132 (cathode) |
+| V_ACC_SEL | JP132 centre, F131.1 |
+| V_ACC | F131.2, D131 (cathode), J131.1, J131.2 |
+| +12V / +5V | JP132 côté A / côté B |
+| +5V | U131.5, C131 (100 nF) |
+| GND | Q131.2, U131.1 (OE), U131.3, R132, C131, D132 (anode), J131.3, J131.6 |
+| libres | J131.7-10 |
+
+Modes : lumière = JP131 sur A, JP132 sur +12V (ou +5V) ; servo = JP131 sur B, JP132 sur +5V. **Jamais JP132 sur +12V en mode servo** (sérigraphie).
+
+| Réf | Pièce | LCSC |
+|---|---|---|
+| Q131 | AO3400A | C20917 |
+| U131 | SN74AHCT1G125DBVR (1 OE, 2 A, 3 GND, 4 Y, 5 VCC) | C7484 |
+| D131 | SS34 | C8678 (à vérifier) |
+| D132 | SMF15A (TVS 15 V) | C123802 |
+| F131 | PTC 1,1 A / 16 V Littelfuse 1812L110/16DR | C142746 |
+| R131, R133 | 220 Ω 0603 | C22962 |
+| R132 | 10 kΩ 0603 | C25804 |
+| C131 | 100 nF 0603 | C14663 |
+| J131 | RJ45 HanXia 10 broches | C25168869 |
+| JP131, JP132 | ponts de soudure 3 plots | — |
+
+---
+
+## Bloc 8 — Bus I2C (validé)
+
+| Composant | Adresse | Rôle |
+|---|---|---|
+| U101 MCP23017 (SSOP-28) | 0x20 (A0-A2 à GND) | GPA0-5 = CS_1-6, GPA6 = FOCUS_CMD, GPB0 = DIR, GPB1 = STEP_EN, GPB5 = LED de statut (R105 1 kΩ → CN101), RESET via R107 (10 k → +3V3) ; GPA7, GPB2-4, GPB6-7 libres |
+| U102 MCP4728 | 0x60 | LDAC à GND ; VOUTA-D (6-9) = THR_1-4 |
+| U103 MCP4728 | 0x61 (reprogrammée au 1er démarrage) | LDAC = DAC2_LDAC (GPIO18) + R106 10 k → GND ; VOUTA/B = THR_5/6 |
+| U104 ADS7828 (TSSOP-16) | 0x48 (A0, A1 à GND) | CH0-5 = ID_ADC_1-6, CH6-7 et COM à GND, REF : C105 1 µF (référence interne 2,5 V) |
+
+MCP4728 MSOP-10 : 1 VDD, 2 SCL, 3 SDA, 4 LDAC, 5 RDY, 6-9 VOUTA-D, 10 VSS (attention : symbole EasyEDA numéroté en miroir côté droit). Découplage C101-C104 (100 nF).
+
+| Réf | Pièce | LCSC |
+|---|---|---|
+| U101 | MCP23017-E/SS | C506653 |
+| U102, U103 | MCP4728-E/UN | C108207 |
+| U104 | ADS7828E/250 | C701648 |
+| R105 | 1 kΩ | C21190 |
+| R106, R107 | 10 kΩ | C25804 |
+| C101-C104 | 100 nF | C14663 |
+| C105 | 1 µF | C5673 |
+| CN101 | connecteur 2 points (LED de statut déportée, anode broche 1) | — |
+
+---
+
+## Bloc 9 — Module capteur universel (carte déportée)
+
+Un seul PCB, 8 variantes par options de montage ; code ID = résistance R1. Schéma KiCad : `kicad/module_capteur/`.
+
+| Code | R1 | Variante | Montage spécifique |
 |---|---|---|---|
-| PTC1-6 | Polyfuse réarmable (ex : MF-R110) | 1,1A hold | ×6 (une par électrovanne) |
-| PTC7 | Polyfuse réarmable | 2A hold | ×1 (moteur pas à pas) |
+| 1 | 0 Ω | Contact sec | CN1, R14 1 k, R15 2,2 k, C11, JP5 |
+| 2 | 220 Ω | Laser | D1 BPW34, U1, R5/R6/C4 (VBIAS), JP1, R7 = 10 k, C6 = 10 pF, JP3 |
+| 3 | 510 Ω | Barrière IR (récepteur) | idem laser, R7 = 100 k |
+| 4 | 910 Ω | Lumière ambiante | idem laser, R7 = 1 M |
+| 5 | 1,5 kΩ | Son (micro électret) | M1, R10, C8, R9, VMID, JP2, U1 (gain 101), enveloppe U1B/D3/C10/R13, JP4 |
+| 6 | 2,2 kΩ | Piézo | idem son avec CN2, R11, D2 (gain 11) |
+| 7 | 3 kΩ | Mouvement PIR | module AM312 sur H1, R16 = 0 Ω, R15, C11, JP5 |
+| 8 | 4,3 kΩ | Émetteur IR | D4 IR333C + R17 100 Ω (pas de sortie) |
+| 9-12 | 6,2 k … 18 kΩ | réserve | — |
 
-### Netlist
+Pièces principales : TLV9062IDR C398355, BPW34 C85128, micro GMI6027P C529943, IR333C-A C5130, BAT54S C545549, RJ45 C25168869.
 
-| Net | Connecté à |
+---
+
+## Bloc 10 — Protection ESD (validé)
+
+| Lignes | Protection |
 |---|---|
-| V12_VALVE_x | Rail 12V → PTC1-6 → alimentation de chaque électrovanne (Bloc 3) |
-| V12_MOTOR | Rail 12V → PTC7 → VMOT du driver moteur (Bloc 4) |
+| SENSOR (×6) | PESD5V0S1BB + 2,2 kΩ + BAT54S (Bloc 1) |
+| ID (×6) | PESD5V0S1BB (D11 … D61) + 1 kΩ série vers l'ADC (R11 … R61) |
+| V_SENS | PTC + 10 µF (absorbe une décharge 8 kV / 150 pF) |
+| FOCUS, SHUTTER, FLASH_1-4 | SMF24A vers VISO_GND (D71, D72, D81-D84) |
+| PWM_OUT | SMF15A vers GND (Bloc 7) |
+| Vannes, moteur | diodes de roue libre / protections internes des modules |
+| Entrée 12 V | SMBJ15A (Bloc 5) |
 
-**Rôle** : isole un défaut (court-circuit) sur un seul canal sans couper l'ensemble du boîtier — le fusible global F1 (Bloc 5) reste la protection de dernier recours sur l'ensemble du rail 12V.
-
----
-
-## Découplage — règle générale à appliquer sur tous les CI
-
-Chaque circuit intégré alimenté a **deux condensateurs en parallèle** au plus près de sa broche Vcc/GND (non listés individuellement dans les netlists ci-dessus pour ne pas les alourdir, mais obligatoires au routage) : un **100 nF céramique** (filtre le bruit haute fréquence — commutation SPI, fronts rapides des comparateurs) et un **1 µF** (céramique ou tantale, filtre les variations plus lentes/appels de courant plus soutenus) :
-
-| CI | Découplage local (×2) | Rail |
-|---|---|---|
-| TLV3501 ×6 | 100 nF + 1 µF | 3.3V analogique dédié |
-| MCP6S91 ×6 | 100 nF + 1 µF | 3.3V analogique dédié |
-| MCP4728 ×2 | 100 nF + 1 µF | 3.3V analogique dédié |
-| MCP23017 | 100 nF + 1 µF | 3.3V analogique dédié |
-| ADS78xx | 100 nF + 1 µF | 3.3V analogique dédié |
-| OPA380 (module laser) | 100 nF + 1 µF | 3.3V (RJ45 alim capteur) |
-| 6N137 ×8 | 100 nF + 1 µF (côté Viso) | 3.3V isolé dédié |
-| Driver stepper | 100 nF + 1 µF (VDD logique), en plus de C1=100µF déjà prévu sur VMOT | 3.3V + 12V |
-
-**Filtrage global additionnel** : +1× 10 µF tantale/électrolytique en sortie du LDO AMS1117-3.3 (rail analogique), +1× 10 µF en sortie du régulateur isolé dédié aux 6N137 (rail Viso), en complément des 100nF locaux déjà comptés dans le bloc alimentation.
+Pas de condensateur entre VISO_GND et GND (isolation conservée).
 
 ---
 
-## Tous les blocs sont maintenant documentés (11/11 + découplage)
+## Sorties Wi-Fi (remplacent le Bloc 6)
 
-Reste à router le PCB principal + le petit module récepteur laser (carte fille déportée) dans EasyEDA Pro.
+Prises connectées en réseau local, commandées par l'ESP32 (HTTP / MQTT, sans cloud) : éclairage, petit compresseur (prise ≥ 10 A), ventilateur… Non critiques (50–500 ms), envoyées avant ou après une séquence de déclenchement. Détails : [docs/sorties-wifi.md](docs/sorties-wifi.md).

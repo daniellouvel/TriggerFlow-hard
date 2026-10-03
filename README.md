@@ -1,10 +1,10 @@
 # TriggerFlow — Architecture matérielle
 
-Boîtier de déclenchement généraliste pour photographie haute vitesse : détection multi-capteurs, moteur de règles programmable, pilotage de sorties variées (flash, électrovannes, moteur pas à pas, contacts secs, appareil photo).
+Boîtier de déclenchement généraliste pour photographie haute vitesse : détection multi-capteurs, moteur de règles programmable, pilotage de sorties variées (flash, électrovannes, moteur pas à pas, appareil photo, lumière/servo) et d'appareils secteur via des prises Wi-Fi.
 
 Contrôlable par **USB (PC)** et **Wi-Fi/BLE (application mobile)**.
 
-Statut : cahier des charges fonctionnel et architecture matérielle figés. Schéma électronique en cours : Blocs 1, 2 et 3 validés par netlist (voir BOM-netlist.md), Blocs 4 et 7 proposés. Firmware non commencé.
+Statut (03/10/2026) : schéma saisi dans EasyEDA et validé netlist par netlist pour les Blocs 1, 2, 3, 5, 5b, 8, 10 et la feuille ESP32 (voir BOM-netlist.md). Blocs 4 (moteur) et 7 (PWM) : netlists prêtes, à saisir. Bloc 6 (relais) supprimé, remplacé par des prises Wi-Fi. Module capteur universel conçu (8 variantes). Firmware non commencé.
 
 ---
 
@@ -35,61 +35,78 @@ Statut : cahier des charges fonctionnel et architecture matérielle figés. Sch�
 
 | Sortie | Quantité | Indépendance | Étage de puissance |
 |---|---|---|---|
-| Flash / obturateur (pulse simple) | 4 | Délai indépendant par canal | Optocoupleur |
-| Électrovanne | 6 | Durée de pulse indépendante par canal | MOSFET + diode de roue libre (charge inductive) |
-| Moteur pas à pas | 1 | STEP en natif, DIR/EN non critiques | Driver dédié (A4988 / DRV8825 / TMC2209) — pas de retour de position (rotation libre) |
-| Déclenchement appareil photo | 1 sorties, **focus + obturation séparés** (2 contacts au total) | Timing indépendant | Optocoupleur par contact |
-| Contact sec / relais générique | 3 | Non critique | Relais ou opto-triac |
-| PWM lumière continue / servo | 1 | Non critique | MOSFET puissance ou alim dédiée régulée |
+| Flash (pulse simple) | 4 | Délai indépendant par canal | Opto HCPL-063L + inverseur 74LVC2G04 + 2N7002, côté isolé (VISO) |
+| Déclenchement appareil photo | 1 prise, **focus + shutter séparés** (2 contacts) | Timing indépendant | Idem flash (isolé) |
+| Électrovanne | 6 | Durée de pulse indépendante par canal | AO3400A + diode de roue libre SS14, PTC 1,1 A |
+| Moteur pas à pas | 1 | STEP en natif, DIR/EN non critiques | Module Pololu (A4988 / DRV8825 / TMC2209), pas de retour de position |
+| PWM lumière continue / servo | 1 | Non critique | AO3400A (lumière) ou buffer 74AHCT1G125 5 V (servo) |
+| **Prises Wi-Fi (secteur)** | illimité | Non critique (50–500 ms) | Prises connectées commandées en local (HTTP/MQTT) — voir section 3.1 |
 
-**Total : 16 sorties fonctionnelles.**
+**Total sur la carte : 13 sorties fonctionnelles** (4 flash + 2 caméra + 6 vannes + PWM) + le moteur. L'ancien bloc « contact sec / relais ×3 » (Bloc 6) est **supprimé**.
+
+### 3.1 Sorties Wi-Fi (remplacent les relais)
+
+Les appareils secteur sans contrainte de timing (éclairage, petit compresseur, ventilateur, pompe…) sont pilotés par des **prises connectées Wi-Fi** commandées par l'ESP32 en réseau local :
+- prises recommandées : Shelly Plug S / Shelly 1PM, ou prises Tuya reflashées Tasmota / ESPHome (API locale HTTP ou MQTT, sans cloud) ; **≥ 10 A pour le compresseur** (appel de courant au démarrage) ;
+- aucun 230 V dans le boîtier (sécurité, pas de certification secteur à porter) ; nombre de sorties non limité ;
+- latence 50–500 ms et variable : réservé au non critique. Les commandes sont envoyées **avant ou après** une séquence de déclenchement, jamais pendant (l'activité Wi-Fi ajoute de la gigue aux interruptions) ;
+- hors réseau (terrain), ces sorties ne sont pas disponibles.
+Pour un besoin de contact sec basse tension : un **module relais 12 V** du commerce branché sur une sortie vanne libre ; pour une charge 12 V DC (ruban LED, ventilateur, pompe) : directement sur une sortie vanne (12 V, 1,1 A, PWM possible, non isolée).
+Détails : [docs/sorties-wifi.md](docs/sorties-wifi.md).
 
 ## 4. Classification des signaux : natif vs I2C/SPI
 
 Principe directeur de l'architecture GPIO : **seul ce qui a une exigence de timing en µs reste en GPIO natif avec ISR/timer dédié** ; tout le reste (configuration, signaux lents) passe par un bus série (I2C/SPI) pour économiser les broches.
 
-### 4.1 GPIO natifs (chemin critique)
+### 4.1 GPIO natifs (chemin critique) — affectation validée
 
-| Fonction | GPIO natifs |
-|---|---|
-| 6 entrées capteurs (ISR) | 6 |
-| 4 sorties flash | 4 |
-| 6 sorties électrovannes | 6 |
-| STEP moteur pas à pas | 1 |
-| 2 sorties shutter caméra (déclenchement) | 2 |
-| PWM lumière continue / servo (LEDC — corrigé, hors MCP23017) | 1 |
-| Bus I2C (SDA/SCL — DAC + expandeur) | 2 |
-| Bus SPI (SCK/MOSI — vers les 6 PGA) | 2 |
-| **Total natif** | **24 / ~25 GPIO propres disponibles — 1 seul GPIO libre restant** |
+Carte : **YD-ESP32-S3 N16R8** (copie de la DevKitC-1, même brochage ; pastille « RGB » laissée **ouverte** : GPIO48 libre). Aucune broche réservée ni de strapping utilisée (0, 3, 45, 46, 19, 20, 43, 44, 35-37 libres).
+
+| Signal | GPIO | Broche symbole U105 |
+|---|---|---|
+| TLV_OUT_1 … TLV_OUT_6 (entrées, ISR) | 4, 5, 6, 7, 15, 16 | 4 à 9 |
+| FLASH_1_CMD, FLASH_2_CMD, FLASH_3_CMD, FLASH_4_CMD | 17, 21, 39, 41 | 10, 27, 36, 38 |
+| SHUTTER_CMD | 42 | 39 |
+| GPIO_VALVE_1 … GPIO_VALVE_6 | 1, 2, 10, 38, 48, 47 | 41, 40, 16, 35, 29, 28 |
+| STEP (moteur) | 13 | 19 |
+| GPIO_PWM (lumière/servo, LEDC) | 14 | 20 |
+| I2C_SDA / I2C_SCL | 8 / 9 | 12 / 15 |
+| SPI_MOSI / SPI_SCK (PGA) | 11 / 12 | 17 / 18 |
+| DAC2_LDAC (programmation adresse du 2e MCP4728) | 18 | 11 |
+| **Total** | **25 utilisés** | GPIO40 seul libre |
+
+Alimentation : 5V de la carte via D101 (SS14, anti-retour USB) ; broches 3V3 de la carte non connectées (le 3,3 V périphérique vient du Bloc 5).
 
 ### 4.2 Périphériques I2C (non critique en timing)
 
 ```
-ESP32-S3 (I2C : GPIO 8 = SDA, GPIO 9 = SCL)
+ESP32-S3 (I2C : GPIO 8 = SDA, GPIO 9 = SCL, pull-ups 4,7 kΩ R108/R109)
    │
-   ├── MCP4728 ×2 — DAC seuils comparateurs (8 canaux, 6 utilisés + 2 en réserve)
-   └── MCP23017 — Expandeur 16 E/S
-          ├── DIR + EN moteur pas à pas (2)
-          ├── Contact sec / relais ×3 (3, via transistor BC847 + flyback)
-          ├── Focus caméra ×2 (2)
-          └── Chip Select des 6 MCP6S91 (6)
-          ────────────────────────────────
-          13 / 16 lignes utilisées
+   ├── MCP23017 (0x20) — expandeur 16 E/S
+   │      ├── GPA0-5 : CS_1 … CS_6 des 6 MCP6S91
+   │      ├── GPA6   : FOCUS_CMD
+   │      ├── GPB0-1 : DIR, STEP_EN (moteur)
+   │      ├── GPB5   : LED de statut (déportée, CN101)
+   │      └── GPA7, GPB2-4, GPB6-7 : réserve (ex-relais)
+   ├── MCP4728 #1 (0x60) — seuils THR_1 … THR_4 (LDAC à GND)
+   ├── MCP4728 #2 (0x61, reprogrammée via LDAC = GPIO18) — THR_5, THR_6
+   └── ADS7828 (0x48) — lecture des 6 lignes ID (ID_ADC_1 … 6)
 ```
 
-### 4.3 Chaîne d'entrée universelle (×6, identiques)
+### 4.3 Chaîne d'entrée universelle (×6, identiques) — v3
 
 ```
-Connecteur capteur
-   → Protection d'entrée (clamp diodes + résistance série)
-   → Couplage AC/DC sélectionnable (micro/piézo = AC, photodiode/contact sec = DC)
-   → MCP6S91 — Ampli à gain programmable SPI (gains ×1 à ×32, 8 pas)
-   → TLV3501 — Comparateur avec hystérésis externe (résistances R1/R2), seuil piloté par DAC
+RJ45 (4-5 signal, 1-2 alim 5 V via PTC 200 mA, 7-8 ID, 3-6 GND)
+   → TVS PESD5V0S1BB + tirage 4,7 kΩ optionnel (JP) + 1 MΩ vers GND
+   → 2,2 kΩ série + écrêteur BAT54S + 100 pF
+   → MCP6S91 — PGA SPI (gain ×1 à ×32), VREF = GND
+   → TLV3501 — comparateur, hystérésis ≈ 48 mV (10 k / 680 k), seuil THR_n par DAC (filtré 1 k / 100 nF)
    → GPIO natif ESP32-S3 (interruption)
+Ligne ID : tirage 10 kΩ vers +3V3, TVS, 1 kΩ série → ADS7828
 ```
 
-- **TLV3501** choisi pour sa vitesse de propagation (~4.5 ns typ.) : totalement non limitant face à la latence ISR de l'ESP32 (~1-3 µs).
-- **MCP6S91** : PGA mono-canal, SPI, gains +1/+2/+4/+5/+8/+10/+16/+32 V/V — un ampli dédié par entrée (pas de mutualisation) pour garantir que n'importe quelle combinaison de capteurs puisse fonctionner ensemble dans le moteur de règles.
+- Signal attendu : **continu, unipolaire 0–3,3 V, ≈ 0 V au repos** (le couplage AC et la polarisation Vcc/2 de la v2 sont supprimés ; la mise en forme est faite dans le module capteur).
+- **TLV3501** : ~4,5 ns, non limitant face à la latence ISR (~1-3 µs). **MCP6S91** : un PGA par entrée.
 
 ## 5. Architecture logicielle (cœurs / tâches)
 
@@ -97,13 +114,13 @@ Connecteur capteur
 CORE 0 (PRO_CPU)                          CORE 1 (APP_CPU) — dédié chemin critique
 ─────────────────────                     ──────────────────────────────────────
 • Pile Wi-Fi/BLE                          • ISR GPIO ×6 (entrées capteurs), IRAM_ATTR
-• Serveur de contrôle USB (CDC)           • esp_timer (dispatch ISR) pour les 16 sorties,
+• Serveur de contrôle USB (CDC)           • esp_timer (dispatch ISR) pour toutes les sorties,
 • Tâche I2C → DAC / expandeur / PGA         délais indépendants par canal
 • Tâche NVS / logging                     • Priorité maximale, xTaskCreatePinnedToCore(...,1)
 • Moteur de règles (évaluation non-µs)    • Aucune tâche Wi-Fi/BLE épinglée ici
 ```
 
-**Point clé** : l'ESP32-S3 ne dispose que de 4 `gptimer` matériels, insuffisant pour 16 sorties potentiellement indépendantes et simultanées. Solution retenue : le service **`esp_timer`** (timers logiciels haute résolution µs, dispatch en mode ISR pour éviter la latence de changement de contexte FreeRTOS), qui gère un nombre illimité d'alarmes virtuelles sur un seul timer matériel sous-jacent.
+**Point clé** : l'ESP32-S3 ne dispose que de 4 `gptimer` matériels, insuffisant pour 13 sorties potentiellement indépendantes et simultanées. Solution retenue : le service **`esp_timer`** (timers logiciels haute résolution µs, dispatch en mode ISR pour éviter la latence de changement de contexte FreeRTOS), qui gère un nombre illimité d'alarmes virtuelles sur un seul timer matériel sous-jacent.
 
 ## 6. Mémoire
 
@@ -125,7 +142,7 @@ CORE 0 (PRO_CPU)                          CORE 1 (APP_CPU) — dédié chemin cr
 
 | Aspect | Marché (StopShot Studio = référence haut de gamme) | TriggerFlow |
 |---|---|---|
-| Sorties totales | 12 max | 16 |
+| Sorties totales | 12 max | 13 + moteur + prises Wi-Fi |
 | Sorties flash indépendantes natives | 1 (accessoire externe pour plus) | 4 |
 | Axe motorisé intégré | Aucun produit identifié n'en propose | Oui (moteur pas à pas) |
 | Entrées reconfigurables | Fixes ou peu nombreuses | 6, gain/seuil logiciels |
@@ -171,26 +188,39 @@ Cas : carabine à air comprimé, plomb à ~250 m/s.
 
 ## 11. Connectique — RJ45 généralisé
 
-Choix retenu : connecteurs **RJ45 (8P8C nus, sans magnétiques/LED)** pour toutes les liaisons faible courant, à l'exclusion des vannes et du moteur pas à pas (courant/gauge de câble incompatibles avec un connecteur RJ45 standard).
+Connecteurs **RJ45 blindés 10 broches HanXia HX-RJ45 90 5631-1x1 (LCSC C25168869)** pour toutes les liaisons faible courant ; vannes, moteur et alimentation sur connecteurs de puissance.
 
-**16 connecteurs RJ45 au total** : 6 entrées capteur + 4 sorties flash + 2 sorties caméra (focus+shutter) + 3 contact sec + 1 PWM lumière/servo. Implication mécanique : panneau arrière type "patch panel", probablement 2 rangées de 8.
+**12 connecteurs RJ45 au total** : 6 entrées capteur + 4 flash + 1 appareil photo (focus + shutter) + 1 PWM lumière/servo (les 3 RJ45 « contact sec » sont supprimés avec le Bloc 6).
 
-### Pinout unifié (convention commune à tous les ports)
+### Brochage
 
-| Paire | Entrées capteur (×6) | Sorties simples (flash, contact sec, PWM) | Sorties caméra (×2) |
-|---|---|---|---|
-| Orange (1-2) | Alimentation capteur | Alimentation (réservée) | Alimentation (réservée) |
-| Bleue (4-5) | Signal capteur | Signal de sortie | Shutter |
-| Verte (3-6) | Masse commune / blindage | Masse commune / blindage | Focus |
-| Marron (7-8) | ID auto-détection | Réservée | Réservée |
+| Broches | Entrées capteur (×6) | Flash (×4) | Appareil photo (×1) | PWM lumière/servo |
+|---|---|---|---|---|
+| 1-2 | V_SENS 5 V (PTC 200 mA) | non connectées | non connectées | V_ACC (+12V ou +5V, PTC 1,1 A) |
+| 3 | GND | non connectée | **FOCUS** | GND |
+| 4 | Signal capteur | **FLASH_n** (drain 2N7002) | **SHUTTER** | PWM_OUT |
+| 5 | Signal capteur | **VISO_GND** (retour) | VISO_GND (retour shutter) | PWM_OUT |
+| 6 | GND | non connectée | VISO_GND (retour focus) | GND |
+| 7-8 | ID (code du capteur) | non connectées | non connectées | non connectées |
+| 9-10 (blindage) | GND | **non connectées** | **non connectées** | non connectées |
 
-- Masse du signal séparée de la masse d'alimentation jusqu'au connecteur (évite les boucles de masse sur les canaux à fort gain PGA).
-- Câble blindé (FTP/SFTP) recommandé sur les canaux micro/piézo (gain élevé, plus sensibles au bruit capté en ligne), blindage raccordé côté carte uniquement.
-- Contact sec : le courant qui transite est externe (fourni par l'accessoire de l'utilisateur, pas par la carte) — documenter une limite de courant max claire, cohérente avec la tenue en courant du connecteur RJ45/câble (~1 A par broche, à vérifier selon le connecteur retenu au moment du BOM).
+- Sorties flash / appareil photo : chaque signal est dans la même paire que son retour ; **retour sur VISO_GND, jamais sur GND** ; blindage non connecté (sinon la façade métallique relierait VISO_GND à GND) ; câble UTP conseillé.
+- Polarité côté flash : broche 4 = + de la synchro, broche 5 = −. TVS SMF24A sur chaque sortie : flashs jusqu'à 24 V de synchro (au-delà : adaptateur type Safe-Sync).
 
 ### Auto-détection du type de capteur
 
-Résistance de codage sur la ligne ID (paire marron) de chaque module capteur, lue via un **ADC I2C dédié** (famille ADS78xx, 8 canaux) ajouté sur le bus I2C existant — **aucun impact sur le budget GPIO natif (24/25) ni sur le MCP23017 (13/16)**. Permet le pré-chargement automatique du gain PGA et du seuil DAC dans l'app au branchement.
+Résistance de codage entre ID (7-8) et la masse dans le module capteur, tirage 10 kΩ vers 3,3 V sur la carte, lecture par l'ADS7828 (référence interne 2,5 V). **12 codes fiables** dans le pire cas (tolérances 1 %, rail ±3 %, décalage de masse 40 mV) :
+
+| Code | R_ID | Code | R_ID |
+|---|---|---|---|
+| 1 | 0 Ω | 7 | 3 kΩ |
+| 2 | 220 Ω | 8 | 4,3 kΩ |
+| 3 | 510 Ω | 9 | 6,2 kΩ |
+| 4 | 910 Ω | 10 | 8,2 kΩ |
+| 5 | 1,5 kΩ | 11 | 12 kΩ |
+| 6 | 2,2 kΩ | 12 | 18 kΩ |
+
+Ligne ouverte (lecture pleine échelle) = aucun capteur. Affectation des codes aux variantes du module capteur universel : voir BOM-netlist.md, Bloc 9.
 
 ## 13. Connecteurs vannes/moteur et alimentation
 
@@ -204,32 +234,26 @@ Choix retenu : **connecteurs circulaires aviation GX12** pour tout ce qui est pu
 | Moteur pas à pas | GX12 4 broches | 2 bobines (bipolaire) |
 | Alimentation générale (entrée DC) | GX12 ou GX16 selon courant total | Voir section alimentation ci-dessous |
 
-**Périmètre délibérément limité** : le GX12 reste réservé aux connecteurs de puissance. Les 16 connecteurs signal (entrées capteur + sorties logiques) restent en **RJ45** (voir section 11) — meilleur compromis coût/disponibilité de câbles préfabriqués/qualité de signal (paires torsadées) pour du faible courant, l'étanchéité renforcée du GX12 n'étant pas jugée nécessaire pour ces liaisons dans l'usage prévu. Bénéfice supplémentaire : les deux familles de connecteurs sont physiquement incompatibles entre elles, ce qui empêche tout branchement erroné (vanne sur un port capteur, par exemple).
+**Périmètre délibérément limité** : le GX12 reste réservé aux connecteurs de puissance. Les 12 connecteurs signal (entrées capteur + sorties logiques) restent en **RJ45** (voir section 11) — meilleur compromis coût/disponibilité de câbles préfabriqués/qualité de signal (paires torsadées) pour du faible courant, l'étanchéité renforcée du GX12 n'étant pas jugée nécessaire pour ces liaisons dans l'usage prévu. Bénéfice supplémentaire : les deux familles de connecteurs sont physiquement incompatibles entre elles, ce qui empêche tout branchement erroné (vanne sur un port capteur, par exemple).
 
-### Architecture d'alimentation
+### Architecture d'alimentation (Bloc 5 et 5b, validés)
 
-Choix retenu : **alimentation externe déportée** (bloc secteur→DC, type chargeur), pas de 230V à l'intérieur du boîtier — évite les contraintes d'isolement/certification liées à la haute tension, cohérent avec un projet DIY non certifié.
-
-- **Tension d'entrée** : 12V DC
-- **Connecteur d'entrée** : aviation GX12/GX16 (verrouillable, robuste en usage terrain — préféré à un simple barrel jack qui peut se débrancher accidentellement)
+Alimentation externe : **bloc secteur 12 V, 5 A minimum (60 W)**, pas de 230 V dans le boîtier.
 
 ```
-Bloc secteur externe 230V→12V DC
-            │
-Connecteur GX12/GX16 en façade
-            │
-   ┌────────┼────────┐
-   ▼        ▼         ▼
-Rail 12V   Buck      LDO dédié
-direct     12V→5V    5V→3.3V
-(vannes +  (DevKitC-1, (TLV3501 ×6, MCP6S91 ×6,
- VMOT       servo,      MCP4728 ×2, MCP23017,
- stepper)   relais 5V)  ADS78xx — isolé du 3.3V
-                        ESP32 pour éviter le bruit
-                        Wi-Fi sur l'étage analogique)
+Bloc secteur 12 V → J111 → F111 (6,3 A T) → Q111 AO4407A (anti-inversion) → +12V
+                                                  D111 SMBJ15A (TVS)        │
+      ┌───────────────────────────────────────────────────────────────────┤
+      ▼                                                                    ▼
+  vannes (F91-96), moteur (VMOT), lumière (V_ACC)          U111 LM2596S-5.0 → +5V (3 A)
+                                                             ├→ DevKit (via D101), capteurs (F11-61), servo
+                                                             ├→ U112 AMS1117-3.3 → +3V3 (électronique)
+                                                             └→ U113 B0505S-1WR3 (isolé) → U114 AMS1117-3.3 → VISO_3V3 / VISO_GND
+                                                                                         (sorties flash / appareil photo)
 ```
 
-Le 3.3V du DevKitC-1 (LDO embarqué) alimente uniquement le module ESP32 lui-même — un régulateur 3.3V séparé alimente toute l'électronique analogique/périphérique, pour ne pas saturer le régulateur de la carte ni coupler le bruit numérique du Wi-Fi sur les étages sensibles (PGA à fort gain notamment).
+- Le 3,3 V de la carte ESP32 n'alimente que le module ; tout le reste est sur +3V3 (U112).
+- Le côté isolé (VISO) n'a **aucun conducteur commun** avec GND : il protège l'ESP32 et les entrées analogiques des perturbations des flashs, évite les boucles de masse entre boîtier, appareil photo et flashs secteur.
 
 ## 14. Synoptique général du montage
 
@@ -249,7 +273,7 @@ Plutôt qu'un seul diagramme complet (illisible avec autant de blocs), voici la 
    └────────────┬─────────────┬───────┘
                 │             │
                 ▼             ▼
-      6 entrées capteurs   16 sorties
+      6 entrées capteurs   13 sorties + moteur
       (connecteurs RJ45)   (RJ45 pour le signal,
                             GX12 pour la puissance)
 ```
@@ -267,8 +291,8 @@ Capteur          Ampli à gain        Comparateur         ESP32-S3
 
 ```
                          ┌── MCP4728 ×2  → seuils des 6 comparateurs
-ESP32-S3 ── I2C ──┼── MCP23017    → DIR/EN moteur, contacts secs,
-                         │              focus caméra, PWM lumière
+ESP32-S3 ── I2C ──┼── MCP23017    → DIR/EN moteur, focus caméra,
+                         │              CS des PGA, LED de statut
                          └── ADS78xx    → lecture ID des capteurs (auto-détection)
 
 ESP32-S3 ── SPI ──── 6× MCP6S91  → réglage du gain de chaque entrée
@@ -276,13 +300,13 @@ ESP32-S3 ── SPI ──── 6× MCP6S91  → réglage du gain de chaque ent
 
 *(Ces bus ne portent que de la configuration — rien ne transite dessus pendant un déclenchement, donc aucun impact sur la précision temporelle.)*
 
-### 14.4 Les 16 sorties, groupées par nature
+### 14.4 Les sorties, groupées par nature
 
 ```
 Core 1 (temps réel, GPIO natif)          Expandeur I2C (non critique)
 ─────────────────────────────            ────────────────────────────
-4× Flash            (RJ45)                3× Contact sec      (RJ45)
-2× Caméra            (RJ45)                1× PWM lumière/servo (RJ45)
+4× Flash            (RJ45, isolé)         1× PWM lumière/servo (RJ45)
+1× Caméra focus+shutter (RJ45, isolé)    Prises Wi-Fi secteur (réseau local)
 6× Électrovanne      (GX12)
 1× Moteur pas à pas  (GX12, via driver dédié)
 ```
@@ -293,12 +317,11 @@ Core 1 (temps réel, GPIO natif)          Expandeur I2C (non critique)
 
 ## 15. Ouvert / non tranché
 
-- **Vérification bande passante MCP6S91 à gain ×32** au datasheet précis (voir section 9.1) — pourrait réduire la marge de précision sur les canaux à fort gain, à confirmer avant routage
-- **Limite connue (non bloquante)** : maximum 4 sorties simultanées avec délai <20µs à précision native garantie (limite des 4 `gptimer` matériels de l'ESP32-S3) — au-delà, retombe sur le plancher `esp_timer` (~20µs). Rare en usage réel, mais à documenter
-
-- Schéma électronique : les 11 blocs sont détaillés dans BOM-netlist.md (composants + netlist), y compris le module récepteur laser déporté et les protections ESD/PTC ; reste le routage PCB proprement dit dans EasyEDA Pro
-- Référence exacte du connecteur RJ45 (tenue en courant à vérifier au BOM) et de l'ADC I2C d'auto-détection
-- Courant total requis (estimation préliminaire ~9-10A pire cas, ~6-8A recommandé en usage réaliste — voir BOM-netlist.md bloc 5) → à affiner selon le modèle exact de vannes/moteur retenu pour le dimensionnement final du bloc secteur externe
-- Détail du moteur de règles (état de l'art : simple ET/OU vs langage de règles avec fenêtres temporelles/compteurs)
-- Boîtier physique / mécanique (hors découpe façade USB-C déjà actée)
-- Protocole de communication : USB CDC (PC), serveur web embarqué sur Wi-Fi (page de contrôle sans app à installer) et/ou app mobile, profil BLE pour le contrôle de proximité/secours — architecture logicielle à définir, aucun impact matériel
+- **Saisie restante** : Bloc 4 (moteur, page 12) et Bloc 7 (PWM lumière/servo, page 13) — netlists prêtes dans BOM-netlist.md.
+- **Vérifications** : ERC complet dans EasyEDA ; références LCSC encore à confirmer (C3339 100 µF 35 V, C8678 SS34, D101 = SS14 C2480) ; barrettes femelles 1×22 de la carte ESP32 et écartement réel des rangées de la YD-ESP32-S3.
+- **Connecteur vanne** : connecteur PCB 2 points (HX25003-2A) en place ; choix du GX12 de façade (2 ou 4 broches).
+- **Bande passante MCP6S91 à gain ×32** à confirmer à la datasheet (précision des canaux à fort gain).
+- **Limite connue** : au-delà de 4 sorties simultanées à délai < 20 µs, plancher `esp_timer` (~20 µs).
+- **Module capteur universel** : saisie EasyEDA et PCB (schéma KiCad dans `kicad/module_capteur/`).
+- **Firmware** : moteur de règles, protocole USB CDC / web / BLE, pilotage des prises Wi-Fi, lecture ID et presets par variante, reprogrammation d'adresse du 2e MCP4728.
+- **Mécanique** : boîtier, façade (12 RJ45, GX12, entrée 12 V).

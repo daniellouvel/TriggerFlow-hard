@@ -1,0 +1,877 @@
+(kicad_sch
+	(version 20260306)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "a637bcbd-59c6-534f-9ff4-13a1cf606602")
+	(paper "A4")
+	(title_block
+		(title "Bloc 5b — Alimentation isolée")
+		(date "2026-09-30")
+		(rev "A")
+		(company "TriggerFlow")
+		(comment 1 "+5V -> B0505S-1WR3 (isolé) -> AMS1117-3.3 -> VISO_3V3 / VISO_GND")
+	)
+	(lib_symbols
+		(symbol "TriggerFlow:B0505S-1WR3" (pin_names (offset 1.016)) (exclude_from_sim no) (in_bom yes) (on_board yes)
+ (property "Reference" "U" (at 0 6.35 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "B0505S-1WR3" (at 0 -6.35 0) (effects (font (size 1.27 1.27))))
+ (symbol "B0505S-1WR3_0_1" (rectangle (start -7.62 5.08) (end 7.62 -5.08) (stroke (width 0.254) (type default)) (fill (type background))) (polyline (pts (xy 0 4.445) (xy 0 -4.445)) (stroke (width 0.254) (type dash)) (fill (type none))))
+ (symbol "B0505S-1WR3_1_1" (pin power_in line (at -10.16 2.54 0) (length 2.54) (name "VIN" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27))))) (pin power_in line (at -10.16 -2.54 0) (length 2.54) (name "GND" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27))))) (pin power_out line (at 10.16 2.54 180) (length 2.54) (name "+VO" (effects (font (size 1.27 1.27)))) (number "4" (effects (font (size 1.27 1.27))))) (pin power_out line (at 10.16 -2.54 180) (length 2.54) (name "0V" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27)))))))
+		(symbol "power:+5V" (power) (pin_names (offset 0)) (in_bom yes) (on_board yes)
+    (property "Reference" "#PWR" (at 0 -3.81 0)
+      (effects (font (size 1.27 1.27)) (hide yes))
+    )
+    (property "Value" "+5V" (at 0 3.556 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (symbol "+5V_0_1"
+      (polyline
+        (pts
+          (xy -0.762 1.27)
+          (xy 0 2.54)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 0 0)
+          (xy 0 2.54)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 0 2.54)
+          (xy 0.762 1.27)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+    )
+    (symbol "+5V_1_1"
+      (pin power_in line (at 0 0 90) (length 0) (hide yes)
+        (name "+5V" (effects (font (size 1.27 1.27))))
+        (number "1" (effects (font (size 1.27 1.27))))
+      )
+    )
+  )
+		(symbol "Device:C" (pin_numbers (hide yes)) (pin_names (offset 0.254)) (in_bom yes) (on_board yes)
+    (property "Reference" "C" (at 0.635 2.54 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "C" (at 0.635 -2.54 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (symbol "C_0_1"
+      (polyline
+        (pts
+          (xy -2.032 -0.762)
+          (xy 2.032 -0.762)
+        )
+        (stroke (width 0.508) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy -2.032 0.762)
+          (xy 2.032 0.762)
+        )
+        (stroke (width 0.508) (type default))
+        (fill (type none))
+      )
+    )
+    (symbol "C_1_1"
+      (pin passive line (at 0 3.81 270) (length 2.794)
+        (name "~" (effects (font (size 1.27 1.27))))
+        (number "1" (effects (font (size 1.27 1.27))))
+      )
+      (pin passive line (at 0 -3.81 90) (length 2.794)
+        (name "~" (effects (font (size 1.27 1.27))))
+        (number "2" (effects (font (size 1.27 1.27))))
+      )
+    )
+  )
+		(symbol "power:GND" (power) (pin_names (offset 0)) (in_bom yes) (on_board yes)
+    (property "Reference" "#PWR" (at 0 -6.35 0)
+      (effects (font (size 1.27 1.27)) (hide yes))
+    )
+    (property "Value" "GND" (at 0 -3.81 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (symbol "GND_0_1"
+      (polyline
+        (pts
+          (xy 0 0)
+          (xy 0 -1.27)
+          (xy 1.27 -1.27)
+          (xy 0 -2.54)
+          (xy -1.27 -1.27)
+          (xy 0 -1.27)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+    )
+    (symbol "GND_1_1"
+      (pin power_in line (at 0 0 270) (length 0) (hide yes)
+        (name "GND" (effects (font (size 1.27 1.27))))
+        (number "1" (effects (font (size 1.27 1.27))))
+      )
+    )
+  )
+		(symbol "Device:R" (pin_numbers (hide yes)) (pin_names (offset 0)) (in_bom yes) (on_board yes)
+    (property "Reference" "R" (at 2.032 0 90)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Value" "R" (at 0 0 90)
+      (effects (font (size 1.27 1.27)))
+    )
+    (symbol "R_0_1"
+      (rectangle (start -1.016 -2.54) (end 1.016 2.54)
+        (stroke (width 0.254) (type default))
+        (fill (type none))
+      )
+    )
+    (symbol "R_1_1"
+      (pin passive line (at 0 3.81 270) (length 1.27)
+        (name "~" (effects (font (size 1.27 1.27))))
+        (number "1" (effects (font (size 1.27 1.27))))
+      )
+      (pin passive line (at 0 -3.81 90) (length 1.27)
+        (name "~" (effects (font (size 1.27 1.27))))
+        (number "2" (effects (font (size 1.27 1.27))))
+      )
+    )
+  )
+		(symbol "Regulator_Linear:AMS1117-3.3" (in_bom yes) (on_board yes)
+    (property "Reference" "U" (at -3.81 3.175 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Value" "AMS1117-3.3" (at 0 3.175 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (symbol "AMS1117-3.3_0_1"
+      (rectangle (start -5.08 -5.08) (end 5.08 1.905)
+        (stroke (width 0.254) (type default))
+        (fill (type background))
+      )
+    )
+    (symbol "AMS1117-3.3_1_1"
+      (pin power_in line (at 0 -7.62 90) (length 2.54)
+        (name "GND" (effects (font (size 1.27 1.27))))
+        (number "1" (effects (font (size 1.27 1.27))))
+      )
+      (pin power_out line (at 7.62 0 180) (length 2.54)
+        (name "VO" (effects (font (size 1.27 1.27))))
+        (number "2" (effects (font (size 1.27 1.27))))
+      )
+      (pin power_in line (at -7.62 0 0) (length 2.54)
+        (name "VI" (effects (font (size 1.27 1.27))))
+        (number "3" (effects (font (size 1.27 1.27))))
+      )
+    )
+  )
+	)
+	(symbol
+		(lib_id "TriggerFlow:B0505S-1WR3")
+		(at 111.76 76.2 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "d6ad0d3b-1821-51fe-a92a-ebf3363c34a4")
+		(property "Reference" "U121"
+			(at 111.76 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "B0505S-1WR3"
+			(at 111.76 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "f0a8d02e-41e5-5c5a-adc7-89f7b1c0feca")
+		)
+		(pin "1"
+			(uuid "aa579f08-7eeb-5bd6-92ad-22dbaf168e4e")
+		)
+		(pin "4"
+			(uuid "09a39c59-2322-5378-bc12-17856c488863")
+		)
+		(pin "3"
+			(uuid "a9cc6c86-3fce-575a-9356-4c26bda8b5ea")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/a637bcbd-59c6-534f-9ff4-13a1cf606602"
+					(reference "U121")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 76.2 73.66 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "e73f6a68-9099-5d5f-aded-44350a2497a6")
+		(property "Reference" "#PWR521"
+			(at 76.2 73.66 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+5V"
+			(at 76.2 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "2dc6ee18-c7f6-55d9-906b-796ca1ef1afe")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/a637bcbd-59c6-534f-9ff4-13a1cf606602"
+					(reference "#PWR521")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 86.36 77.47 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "60fe71d1-bdcf-540a-9252-713f14029bbc")
+		(property "Reference" "C121"
+			(at 88.9 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10uF"
+			(at 88.9 78.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "1"
+			(uuid "fc51412f-ed44-5345-99f8-3673d6380002")
+		)
+		(pin "2"
+			(uuid "7acb4f75-26e6-579d-97e2-fc99254af959")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/a637bcbd-59c6-534f-9ff4-13a1cf606602"
+					(reference "C121")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 86.36 83.82 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "5aa3c22e-768b-5178-a9c1-d66e22fbdef7")
+		(property "Reference" "#PWR522"
+			(at 86.36 83.82 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 86.36 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "48767701-c75b-5209-b704-8deee10f7adc")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/a637bcbd-59c6-534f-9ff4-13a1cf606602"
+					(reference "#PWR522")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 96.52 83.82 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "72e233d5-fbef-5255-a8cf-508cd08ff4d0")
+		(property "Reference" "#PWR523"
+			(at 96.52 83.82 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 96.52 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "d1cbcdde-0eda-53d2-9dbe-69c3a69b261b")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/a637bcbd-59c6-534f-9ff4-13a1cf606602"
+					(reference "#PWR523")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 132.08 77.47 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c0cd5db6-d583-5b7a-b93e-3d55148ac27b")
+		(property "Reference" "C122"
+			(at 134.62 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10uF"
+			(at 134.62 78.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "1"
+			(uuid "2410dc03-c747-551b-90de-ee253cde3449")
+		)
+		(pin "2"
+			(uuid "1e903e66-f408-53bd-950d-c9dc15f6845a")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/a637bcbd-59c6-534f-9ff4-13a1cf606602"
+					(reference "C122")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 144.78 77.47 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b2cbc9e9-fb54-599a-b85a-a0ab2a98c9d4")
+		(property "Reference" "R121"
+			(at 147.32 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "220"
+			(at 147.32 78.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "1"
+			(uuid "20e08d6a-0a9e-53d6-b721-14d343fb2704")
+		)
+		(pin "2"
+			(uuid "7ee659ca-03a1-5d3d-80ae-05d17294431e")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/a637bcbd-59c6-534f-9ff4-13a1cf606602"
+					(reference "R121")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 144.78 88.9 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "043e7930-ff8b-5a50-8837-e210e5e96f6c")
+		(property "Reference" "R122"
+			(at 147.32 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "220"
+			(at 147.32 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "1"
+			(uuid "5be784ff-6830-5d8b-bdea-0e517ed55415")
+		)
+		(pin "2"
+			(uuid "cf7fdc4a-bfb2-593d-812f-98d22d7bd992")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/a637bcbd-59c6-534f-9ff4-13a1cf606602"
+					(reference "R122")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Regulator_Linear:AMS1117-3.3")
+		(at 170.18 73.66 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "94530398-3ef8-5b39-a62a-2e54755ca2bc")
+		(property "Reference" "U122"
+			(at 170.18 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "AMS1117-3.3"
+			(at 170.18 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "65d4f130-f475-5464-9272-2258b5b1f3b5")
+		)
+		(pin "2"
+			(uuid "a7fd8125-7c11-5057-ba92-ddc7697e6992")
+		)
+		(pin "3"
+			(uuid "0ce82086-f611-50e8-873f-f01c1584566e")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/a637bcbd-59c6-534f-9ff4-13a1cf606602"
+					(reference "U122")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 185.42 77.47 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "2e09949f-3c0c-5601-8c6f-b64bc4cd08f4")
+		(property "Reference" "C123"
+			(at 187.96 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10uF"
+			(at 187.96 78.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "1"
+			(uuid "3690029a-05f1-5248-8c16-37da3a54670d")
+		)
+		(pin "2"
+			(uuid "4fca0a39-8040-5fd4-a710-8e557fdb3aac")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/a637bcbd-59c6-534f-9ff4-13a1cf606602"
+					(reference "C123")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 101.6 73.66) (xy 76.2 73.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "91e7434f-c3d8-5f35-8226-3b459a2cccec")
+	)
+	(wire
+		(pts
+			(xy 86.36 81.28) (xy 86.36 83.82)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8d4883be-70a9-574b-a7fe-67d3de09c712")
+	)
+	(wire
+		(pts
+			(xy 101.6 78.74) (xy 96.52 78.74)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d32046c3-7fa9-59fa-87cd-d7dee3f6f037")
+	)
+	(wire
+		(pts
+			(xy 96.52 78.74) (xy 96.52 83.82)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "15c69153-b100-5e31-8a48-d9ffd50ae276")
+	)
+	(wire
+		(pts
+			(xy 121.92 73.66) (xy 162.56 73.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2246f5f9-9f87-5012-a18b-e9c08fd48391")
+	)
+	(wire
+		(pts
+			(xy 144.78 81.28) (xy 144.78 85.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "135bee22-a1e0-5476-8bef-aa1e8f9fad77")
+	)
+	(wire
+		(pts
+			(xy 177.8 73.66) (xy 195.58 73.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "df511bf2-1a03-55a3-b855-446029e85a24")
+	)
+	(wire
+		(pts
+			(xy 121.92 78.74) (xy 127 78.74)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0d9f4d3b-d356-5132-804c-3cf8737fcf25")
+	)
+	(wire
+		(pts
+			(xy 127 78.74) (xy 127 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "608c8b5e-2e66-5162-a23a-ad781611435f")
+	)
+	(wire
+		(pts
+			(xy 127 96.52) (xy 185.42 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e50c4ddf-cb20-53a7-bb6e-fb2843d891f2")
+	)
+	(wire
+		(pts
+			(xy 132.08 81.28) (xy 132.08 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "286d0c0c-64a2-5c7a-8e12-925c7ae17da7")
+	)
+	(wire
+		(pts
+			(xy 144.78 92.71) (xy 144.78 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c964fbab-cd57-5ad5-80c6-2efcb88c9f23")
+	)
+	(wire
+		(pts
+			(xy 170.18 81.28) (xy 170.18 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c2391baf-bcfe-5bfe-9b77-00bdb29b5fed")
+	)
+	(wire
+		(pts
+			(xy 185.42 81.28) (xy 185.42 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a79b84eb-dd1d-539c-8e14-a26e26b3f623")
+	)
+	(junction
+		(at 86.36 73.66)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "06550c5a-6319-5bfa-9f3c-55e6cfbe4613")
+	)
+	(junction
+		(at 132.08 73.66)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "5fcc56c7-4a35-5757-ad59-84729fcd1b63")
+	)
+	(junction
+		(at 132.08 96.52)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "071865f3-6b0c-5c51-88ca-0cfc36556b02")
+	)
+	(junction
+		(at 144.78 73.66)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "3b98b3db-2a19-5e3d-8daa-2922a0bb5d3b")
+	)
+	(junction
+		(at 144.78 96.52)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "7f6f5b8f-8944-5bfd-9cea-e11d4624253e")
+	)
+	(junction
+		(at 170.18 96.52)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "0f3cdddf-e0b2-571f-bc74-0f158289c77d")
+	)
+	(junction
+		(at 185.42 73.66)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "99b9ca2d-ac0c-512c-ac7f-1f4d4af4feaf")
+	)
+	(label "VISO_5V"
+		(at 149.86 73.66 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "2435d285-09cc-5f21-9b2c-d3f9123be7c7")
+	)
+	(label "PRELOAD"
+		(at 144.78 83.82 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "86f6a44b-6ef8-50b5-9d84-4ddaea5b8a06")
+	)
+	(label "VISO_3V3"
+		(at 187.96 73.66 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "7e429f9a-e6d4-59aa-860c-6aeac9a3cb2d")
+	)
+	(label "VISO_GND"
+		(at 152.4 96.52 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "03b5fa89-bb1f-5393-8d88-87212dea7703")
+	)
+	(rectangle
+		(start 66.04 55.88)
+		(end 110.49 104.14)
+		(stroke
+			(width 0.254)
+			(type dash)
+		)
+		(fill
+			(type none)
+		)
+		(uuid "e722cbe7-d37c-5759-83ed-abd942a610a8")
+	)
+	(rectangle
+		(start 113.03 55.88)
+		(end 203.2 104.14)
+		(stroke
+			(width 0.254)
+			(type dash)
+		)
+		(fill
+			(type none)
+		)
+		(uuid "cf027cae-6902-5ca5-878e-856720cc9942")
+	)
+	(text "Côté primaire (+5V / GND)"
+		(exclude_from_sim no)
+		(at 68.58 58.42 0)
+		(effects
+			(font
+				(size 2.0 2.0)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "cd95e4fb-9ab3-542e-b08d-45228a7267c0")
+	)
+	(text "Côté isolé (VISO_5V / VISO_3V3 / VISO_GND)"
+		(exclude_from_sim no)
+		(at 115.57 58.42 0)
+		(effects
+			(font
+				(size 2.0 2.0)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "9525e58a-c572-58e4-a853-1d11efd74b40")
+	)
+	(text "Notes :\n• U121 B0505S-1WR3 : non régulé, charge minimale 20 mA (10 %). R121 + R122 (440 Ω) ≈ 11 mA + U122 + optos ≥ 20 mA.\n• U122 AMS1117-3.3 côté isolé : VISO_3V3 stable (HCPL-063L : 2,7 à 3,6 V). Languette SOT-223 = VOUT (VISO_3V3).\n• Charge côté isolé < 40 mA (3 HCPL-063L, 3 74LVC2G04, pull-ups) ; module 200 mA max.\n• Aucun composant entre GND et VISO_GND. PCB : bande sans cuivre (≈ 2 mm) sous U121 entre broches 1-2 et 3-4 ;\n  plan VISO_GND séparé pour tout le côté isolé (Bloc 2). C121 côté entrée, C122 / C123 au plus près.\n• VISO_3V3 et VISO_GND : mêmes noms que sur les feuilles du Bloc 2 (raccordement par étiquette)."
+		(exclude_from_sim no)
+		(at 66.04 114.3 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "002b5ae9-3b8c-5eb8-8cc5-3a8f6aa3c9e4")
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

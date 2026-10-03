@@ -1,0 +1,4 @@
+(sym_lib_table
+	(version 7)
+	(lib (name "TriggerFlow")(type "KiCad")(uri "${KIPRJMOD}/TriggerFlow.kicad_sym")(options "")(descr "Symboles TriggerFlow"))
+)
