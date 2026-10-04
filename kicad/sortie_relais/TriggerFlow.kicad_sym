@@ -1,0 +1,13 @@
+(kicad_symbol_lib
+	(version 20260306)
+	(generator "kicad_symbol_editor")
+	(generator_version "10.0")
+	(symbol "HF32F-012-ZS3" (pin_names (offset 1.016)) (exclude_from_sim no) (in_bom yes) (on_board yes)
+ (property "Reference" "K" (at 0 6.35 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "HF32F/012-ZS3" (at 0 -6.35 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Description" "Relais 12 V 1RT 3 A (numéros de broches à aligner sur le symbole EasyEDA C3633)" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (symbol "HF32F-012-ZS3_0_1" (rectangle (start -6.35 5.08) (end 6.35 -5.08) (stroke (width 0.254) (type default)) (fill (type background))))
+ (symbol "HF32F-012-ZS3_1_1" (pin passive line (at -8.89 2.54 0) (length 2.54) (name "COIL+" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27))))) (pin passive line (at -8.89 -2.54 0) (length 2.54) (name "COIL-" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27))))) (pin passive line (at 8.89 2.54 180) (length 2.54) (name "COM" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27))))) (pin passive line (at 8.89 0 180) (length 2.54) (name "NO" (effects (font (size 1.27 1.27)))) (number "4" (effects (font (size 1.27 1.27))))) (pin passive line (at 8.89 -2.54 180) (length 2.54) (name "NC" (effects (font (size 1.27 1.27)))) (number "5" (effects (font (size 1.27 1.27)))))))
+)

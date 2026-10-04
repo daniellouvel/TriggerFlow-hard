@@ -12,6 +12,8 @@ Scripts Python qui produisent des feuilles KiCad propres, avec fils tirés sur l
 | `bloc5.py` / `build_bloc5.py` | Bloc 5 — alimentation |
 | `bloc5b.py` / `build_bloc5b.py` | Bloc 5b — alimentation isolée |
 | `capteur.py` / `build_capteur.py` | module capteur universel |
+| `mkbuild.py` | construction générique d'une feuille autonome + symboles personnalisés |
+| `servo.py`, `relais.py` / `build_sorties.py` | sortie servo (rail 6 V) et sortie relais |
 
 Usage : `python3 build_bloc5.py sortie/` ; variante EasyEDA (sans champs cachés) : `EASYEDA=1 python3 build_bloc5.py sortie/`.
 Dépendances : `pip install sexpdata matplotlib`.

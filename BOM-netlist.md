@@ -1,7 +1,7 @@
 # TriggerFlow — BOM et netlists par bloc
 
-État au **03/10/2026**. Référence : export netlist EasyEDA du 03/10/2026 (`Netlist_Schematic1_2026-10-03.tel`), vérifié net par net.
-Numérotation : chiffre(s) de page + index (page 1 = voie 1 → R11, U11… ; page 9 = vannes ; page 10 = ESP32 / Bloc 8 ; page 11 = Blocs 5 et 5b). Quand une page dépasse 9 pièces d'un même type, la numérotation déborde (R100…R104 = vannes) : se fier au schéma, pas au numéro.
+État au **04/10/2026**. Référence : export netlist EasyEDA du 03/10/2026 (`Netlist_Schematic1_2026-10-03.tel`), vérifié net par net.
+Numérotation : chiffre(s) de page + index (page 1 = voie 1 → R11, U11… ; page 9 = vannes ; page 10 = ESP32 / Bloc 8 ; page 11 = Blocs 5 et 5b ; page 12 = sortie servo ; page 13 = sortie relais). Quand une page dépasse 9 pièces d'un même type, la numérotation déborde (R100…R104 = vannes) : se fier au schéma, pas au numéro.
 
 ## État de validation
 
@@ -10,15 +10,18 @@ Numérotation : chiffre(s) de page + index (page 1 = voie 1 → R11, U11… ; pa
 | 1 | 6 entrées capteur v3 (+ protection des lignes ID) | ✅ validé (6 voies) |
 | 2 | 6 sorties isolées : 4 flash + appareil photo (focus, shutter) | ✅ validé (avec inverseurs et TVS) |
 | 3 | 6 électrovannes + connecteurs | ✅ validé |
-| 4 | Moteur pas à pas (module Pololu) | 📝 netlist prête, à saisir (page 12) |
+| 4 | Moteur pas à pas | ❌ **supprimé** (04/10) |
 | 5 | Alimentation 12 V → +12V / +5V / +3V3 | ✅ validé |
 | 5b | Alimentation isolée VISO_3V3 / VISO_GND | ✅ validé |
-| 6 | Relais ×3 | ❌ **supprimé** → prises Wi-Fi (voir fin du document) |
-| 7 | PWM lumière / servo | 📝 netlist prête, à saisir (page 13) |
+| 6 | Relais ×3 sur RJ45 | ❌ **supprimé** → prises Wi-Fi + 1 relais (Bloc 13) |
+| 7 | PWM lumière / servo | ❌ **supprimé** (04/10) : lumière 12 V par une sortie vanne, servo dédié (Bloc 12) |
 | 8 | Bus I2C : MCP23017, 2 × MCP4728, ADS7828, LED de statut | ✅ validé |
 | 9 | Module capteur universel (carte déportée, 8 variantes) | 📝 schéma KiCad généré (`kicad/module_capteur/`) |
 | 10 | Protection ESD des connecteurs | ✅ validé |
-| 11 | PTC | intégrées dans chaque bloc (F11-61, F91-96, F121, F131) |
+| 11 | PTC | intégrées dans chaque bloc (F11-61, F91-96) |
+| 12 | Sortie servo, rail 6 V dédié | 📝 schéma KiCad (`kicad/sortie_servo/`), à saisir (page 12) |
+| 13 | Sortie relais (contact sec) | 📝 schéma KiCad (`kicad/sortie_relais/`), à saisir (page 13) |
+| PCB | Implantation 175 × 125 mm, 4 couches | 📝 placement v4 (`pcb/`), checklist (`docs/pcb-checklist.md`) |
 | ESP32 | Feuille U105 (YD-ESP32-S3 N16R8) | ✅ validé |
 
 Méthode : schéma de référence → saisie EasyEDA Pro avec références LCSC → export netlist (.tel) → comparaison net par net.
@@ -37,8 +40,8 @@ Brochage du symbole : côté gauche 1-22 = rangée J1 ; côté droit 44 → 23 =
 | 12 / 15 | 8 / 9 | I2C_SDA / I2C_SCL |
 | 16 | 10 | GPIO_VALVE_3 |
 | 17 / 18 | 11 / 12 | SPI_MOSI / SPI_SCK |
-| 19 | 13 | STEP |
-| 20 | 14 | GPIO_PWM |
+| 19 | 13 | SERVO_PWM (Bloc 12) |
+| 20 | 14 | libre (réserve) |
 | 21 | 5V | via D101 (SS14) depuis +5V |
 | 22, 23, 24, 44 | G | GND |
 | 41, 40 | 1, 2 | GPIO_VALVE_1, GPIO_VALVE_2 |
@@ -49,7 +52,7 @@ Brochage du symbole : côté gauche 1-22 = rangée J1 ; côté droit 44 → 23 =
 | 29 | 48 | GPIO_VALVE_5 (pastille « RGB » de la carte laissée ouverte) |
 | 28 | 47 | GPIO_VALVE_6 |
 | 27 | 21 | FLASH_2_CMD |
-| libres | 3V3 ×2, RST, 0, 3, 45, 46, 19, 20, 43, 44, 35-37, 40 | non connectées |
+| libres | 3V3 ×2, RST, 0, 3, 45, 46, 19, 20, 43, 44, 35-37, 40, **14** | non connectées |
 
 | Réf | Pièce | LCSC |
 |---|---|---|
@@ -159,42 +162,13 @@ Brochages : HCPL-063L SO-8 : 1 A1, 2 K1, 3 K2, 4 A2, 5 GND sortie, 6 VO2, 7 VO1,
 | 10 kΩ ×6 | 0603 | C25804 |
 | CN91-CN96 | connecteur 2 points HX25003-2A (pas 2,5 mm) | — |
 
-Une sortie vanne libre peut piloter une charge 12 V DC (ruban LED, ventilateur, pompe, module relais 12 V) : 12 V, 1,1 A max, PWM possible, non isolée.
+Une sortie vanne libre peut piloter une charge 12 V DC (ruban LED, ventilateur, pompe, module relais 12 V) : 12 V, 1,1 A max, PWM possible, non isolée. **Lumière dimmable** : déclarer la sortie en mode « lumière » dans le firmware (LEDC ≈ 20 kHz ; 8 voies LEDC : 6 vannes 5 kHz + servo 50 Hz + lumière). Aucun matériel supplémentaire (câble adaptateur HX25003 : broche 1 = +12V, broche 2 = −).
 
 ---
 
-## Bloc 4 — Moteur pas à pas (page 12, à saisir)
+## Bloc 4 — Moteur pas à pas : supprimé (04/10)
 
-Module Pololu (A4988 / DRV8825 / TMC2209) sur **deux barrettes 1×8 écartées de 12,7 mm**.
-
-| Net | Broches |
-|---|---|
-| STEP_EN | J121.1 (EN), R121 (10 kΩ → +3V3), U101.2 (MCP23017 GPB1) |
-| MS1 / MS2 / MS3 | J121.2 / .3 / .4 → JP121 / JP122 / JP123 → +3V3 |
-| RST_SLP | J121.5 (RST) → JP124 → J121.6 (SLP) |
-| STEP | J121.7, R122 (10 kΩ → GND), U105.19 (GPIO13) |
-| DIR | J121.8, U101.1 (GPB0) |
-| VMOT | J122.1, C121+ (100 µF), C122 (100 nF), F121.2 |
-| +12V | F121.1 |
-| MOT_2B / 2A / 1A / 1B | J122.3 / .4 / .5 / .6 → J123.1 … J123.4 |
-| +3V3 | J122.7 (VDD), C123 (100 nF) |
-| GND | J122.2, J122.8, C121−, C122, C123, R122 |
-
-| Module | JP121 | JP122 | JP123 | JP124 | Résultat |
-|---|---|---|---|---|---|
-| TMC2209 | fermé | fermé | ouvert | **ouvert** | 1/16, stealthChop |
-| A4988 | fermé | fermé | fermé | fermé | 1/16 |
-| DRV8825 | ouvert | ouvert | fermé | fermé | 1/16 |
-
-| Réf | Pièce | LCSC |
-|---|---|---|
-| J121, J122 | barrette femelle 1×8, 2,54 mm (BOOMELE) | C27438 |
-| F121 | PTC 2 A / 16 V 1812 (SMD1812P200TF/16) | C545213 (alt. C20812) |
-| C121 | 100 µF 35 V électrolytique CMS | C3339 (à vérifier) |
-| C122, C123 | 100 nF 0603 | C14663 |
-| R121, R122 | 10 kΩ 0603 | C25804 |
-| JP121-JP124 | ponts de soudure 2 plots | — |
-| J123 | bornier 4 points 5,08 mm (vers GX12 4 broches) | à choisir |
+Usage jugé trop rare pour le coût (module Pololu, GX12 4 broches, 1,5 A sur le 12 V, firmware de rampes). GPIO13 réaffecté au servo (Bloc 12), DIR / STEP_EN du MCP23017 libérés. Une rotation continue se fera avec un contrôleur externe piloté par une sortie.
 
 ---
 
@@ -206,7 +180,7 @@ Bloc secteur **12 V, 5 A minimum**.
 |---|---|
 | VIN_RAW | J111.1, F111.1 |
 | VIN_F | F111.2, Q111.5-8 (drain) |
-| +12V | Q111.1-3 (source), R111, D111 (cathode), C112 (470 µF), 2 × 10 µF, 100 nF, U111.1 (VIN), F91-F96, (VMOT, V_ACC) |
+| +12V | Q111.1-3 (source), R111, D111 (cathode), C112 (470 µF), 2 × 10 µF, 100 nF, U111.1 (VIN), F91-F96, U121.1 (servo), bobine K131 (relais) |
 | Q111_G | Q111.4, R111 (→ +12V), R112 (→ GND) : VGS ≈ −6 V |
 | BUCK_SW | U111.2, L111.1, D112 (cathode) |
 | +5V | L111.2, U111.4 (FB), C117 (330 µF), 100 nF, U112.3, 10 µF, D101, F11-F61, U113.2 |
@@ -256,43 +230,15 @@ PCB : bande sans cuivre (~2 mm) sous U113 entre les broches 1-2 et 3-4 ; plan VI
 
 ---
 
-## Bloc 6 — Relais : supprimé
+## Bloc 6 — Relais ×3 : supprimé
 
-Remplacé par des **prises Wi-Fi** pour les appareils secteur (éclairage, petit compresseur…) et, si besoin, par les sorties vannes libres (charges 12 V DC ou module relais 12 V externe). Voir [docs/sorties-wifi.md](docs/sorties-wifi.md). Les lignes MCP23017 GPB2-GPB4 (ex-RELAY_1-3) restent en réserve.
+Remplacé par des **prises Wi-Fi** sur le réseau créé par l'ESP32 (éclairage, petit compresseur…), par les sorties vannes libres (charges 12 V DC, lumière dimmable, module relais 12 V externe) et par **une sortie relais embarquée** (Bloc 13). Voir [docs/sorties-wifi.md](docs/sorties-wifi.md).
 
 ---
 
-## Bloc 7 — PWM lumière / servo (page 13, à saisir)
+## Bloc 7 — PWM lumière / servo : supprimé (04/10)
 
-| Net | Broches |
-|---|---|
-| GPIO_PWM | U105.20 (GPIO14), R131.1 (220 Ω), U131.2 (A) |
-| PWM_GATE | R131.2, Q131.1, R132 (10 kΩ → GND) |
-| LIGHT_SW | Q131.3, D131 (anode), JP131 côté A |
-| SERVO_Y | U131.4, R133.1 (220 Ω) |
-| SERVO_SIG | R133.2, JP131 côté B |
-| PWM_OUT | JP131 centre, J131.4, J131.5, D132 (cathode) |
-| V_ACC_SEL | JP132 centre, F131.1 |
-| V_ACC | F131.2, D131 (cathode), J131.1, J131.2 |
-| +12V / +5V | JP132 côté A / côté B |
-| +5V | U131.5, C131 (100 nF) |
-| GND | Q131.2, U131.1 (OE), U131.3, R132, C131, D132 (anode), J131.3, J131.6 |
-| libres | J131.7-10 |
-
-Modes : lumière = JP131 sur A, JP132 sur +12V (ou +5V) ; servo = JP131 sur B, JP132 sur +5V. **Jamais JP132 sur +12V en mode servo** (sérigraphie).
-
-| Réf | Pièce | LCSC |
-|---|---|---|
-| Q131 | AO3400A | C20917 |
-| U131 | SN74AHCT1G125DBVR (1 OE, 2 A, 3 GND, 4 Y, 5 VCC) | C7484 |
-| D131 | SS34 | C8678 (à vérifier) |
-| D132 | SMF15A (TVS 15 V) | C123802 |
-| F131 | PTC 1,1 A / 16 V Littelfuse 1812L110/16DR | C142746 |
-| R131, R133 | 220 Ω 0603 | C22962 |
-| R132 | 10 kΩ 0603 | C25804 |
-| C131 | 100 nF 0603 | C14663 |
-| J131 | RJ45 HanXia 10 broches | C25168869 |
-| JP131, JP132 | ponts de soudure 3 plots | — |
+La lumière 12 V dimmable passe par une sortie vanne (même étage AO3400A + diode + PTC 1,1 A) ; le servo a sa sortie dédiée (Bloc 12). Plus de cavaliers de mode ni de risque de 12 V sur le servo. GPIO14 libre, un RJ45 de moins.
 
 ---
 
@@ -300,7 +246,7 @@ Modes : lumière = JP131 sur A, JP132 sur +12V (ou +5V) ; servo = JP131 sur B, J
 
 | Composant | Adresse | Rôle |
 |---|---|---|
-| U101 MCP23017 (SSOP-28) | 0x20 (A0-A2 à GND) | GPA0-5 = CS_1-6, GPA6 = FOCUS_CMD, GPB0 = DIR, GPB1 = STEP_EN, GPB5 = LED de statut (R105 1 kΩ → CN101), RESET via R107 (10 k → +3V3) ; GPA7, GPB2-4, GPB6-7 libres |
+| U101 MCP23017 (SSOP-28) | 0x20 (A0-A2 à GND) | GPA0-5 = CS_1-6, GPA6 = FOCUS_CMD, **GPB2 = RELAY_CMD** (Bloc 13), **GPB3 = SERVO_OFF** (Bloc 12), GPB5 = LED de statut (R105 1 kΩ → CN101), RESET via R107 (10 k → +3V3) ; GPA7, GPB0-1, GPB4, GPB6-7 libres |
 | U102 MCP4728 | 0x60 | LDAC à GND ; VOUTA-D (6-9) = THR_1-4 |
 | U103 MCP4728 | 0x61 (reprogrammée au 1er démarrage) | LDAC = DAC2_LDAC (GPIO18) + R106 10 k → GND ; VOUTA/B = THR_5/6 |
 | U104 ADS7828 (TSSOP-16) | 0x48 (A0, A1 à GND) | CH0-5 = ID_ADC_1-6, CH6-7 et COM à GND, REF : C105 1 µF (référence interne 2,5 V) |
@@ -348,14 +294,89 @@ Pièces principales : TLV9062IDR C398355, BPW34 C85128, micro GMI6027P C529943, 
 | ID (×6) | PESD5V0S1BB (D11 … D61) + 1 kΩ série vers l'ADC (R11 … R61) |
 | V_SENS | PTC + 10 µF (absorbe une décharge 8 kV / 150 pF) |
 | FOCUS, SHUTTER, FLASH_1-4 | SMF24A vers VISO_GND (D71, D72, D81-D84) |
-| PWM_OUT | SMF15A vers GND (Bloc 7) |
-| Vannes, moteur | diodes de roue libre / protections internes des modules |
+| SERVO_SIG | PESD5V0S1BB D122 (Bloc 12) + 220 Ω série |
+| Vannes | diodes de roue libre SS14 / diode interne de l'AO3400A |
+| Relais | contacts isolés de la bobine (aucune protection nécessaire) |
 | Entrée 12 V | SMBJ15A (Bloc 5) |
 
 Pas de condensateur entre VISO_GND et GND (isolation conservée).
 
 ---
 
+## Bloc 12 — Sortie servo, rail 6 V dédié (page 12, à saisir)
+
+LM2596S-ADJ alimenté par le +12V : V_SERVO = 1,23 V × (1 + R122 / R121) = 1,23 × (1 + 3,9 k / 1 k) ≈ **6,0 V, 3 A** (limitation interne, pas de PTC). Rail coupable par le MCP23017 : servo **hors tension au démarrage** tant que le firmware n'a pas fixé sa position. Le +5V (ESP32, capteurs) n'est pas perturbé par les appels de courant du servo.
+
+| Net | Broches |
+|---|---|
+| +12V | U121.1 (VIN), C129, C122 (10 µF), C123 (100 nF) |
+| SERVO_SW | U121.2, L121.1, D121 cathode (SS54) |
+| V_SERVO | L121.2, R122, C124+ (330 µF), C125 (100 nF), C126+ (470 µF près de J121), J121.2 |
+| SERVO_FB | U121.4, R122 (3,9 kΩ), R121 (1 kΩ → GND) |
+| SERVO_OFF | U121.5 (ON/OFF), R123 (10 kΩ → +3V3), U101.4 (GPB3) — haut / haute impédance = coupé |
+| SERVO_PWM | U105.19 (GPIO13, LEDC 50 Hz), R124 (10 kΩ → GND), U122.2 (A) |
+| SERVO_Y | U122.4 (Y), R125.1 (220 Ω) |
+| SERVO_SIG | R125.2, J121.3, D122 (TVS) |
+| +5V | U122.5 (VCC), C127 (100 nF) |
+| GND | U121.3, languette U121, R121, D121 anode, condensateurs, U122.1 (OE), U122.3, R124, D122, J121.1 |
+
+J121 (format servo) : 1 = GND, 2 = V_SERVO, 3 = signal.
+
+| Réf | Pièce | LCSC |
+|---|---|---|
+| U121 | LM2596S-ADJ (UMW, TO-263-5) | C347423 |
+| L121 | 33 µH 4,25 A SMDRI129-330MT | C2924828 |
+| D121 | SS54 | C22452 |
+| C124 | 330 µF 25 V low-ESR Panasonic EEE-FK1E331P (pas de polymère) | C178543 |
+| C126 | 470 µF 25 V DMBJ RVT1E471M1010 | C970707 |
+| C129, C122 | 10 µF 25 V 0805 | C15850 |
+| C123, C125, C127 | 100 nF 0603 | C14663 |
+| R121 | 1 kΩ 1 % | C21190 |
+| R122 | 3,9 kΩ 1 % (UNI-ROYAL 0603WAF3901T5E) | à chercher |
+| R123, R124 | 10 kΩ | C25804 |
+| R125 | 220 Ω | C22962 |
+| U122 | SN74AHCT1G125DBVR (1 OE, 2 A, 3 GND, 4 Y, 5 VCC) | C7484 |
+| D122 | PESD5V0S1BB | C97640 |
+| J121 | barrette mâle 1×3, 2,54 mm | à choisir |
+
+---
+
+## Bloc 13 — Sortie relais, contact sec (page 13, à saisir)
+
+| Net | Broches |
+|---|---|
+| RELAY_CMD | U101.3 (GPB2), R131 (220 Ω) |
+| RELAY_G | R131, Q131.1 (grille), R132 (100 kΩ → GND, relais ouvert au démarrage) |
+| RELAY_DRV | Q131.3 (drain), bobine − de K131, D131 anode |
+| +12V | bobine + de K131, D131 cathode (SS14, roue libre) |
+| GND | Q131.2 (source), R132 |
+| RELAY_COM / NO / NC | K131 → J131.1 / J131.2 / J131.3 |
+
+| Réf | Pièce | LCSC |
+|---|---|---|
+| K131 | HONGFA HF32F/012-ZS3 (bobine 12 V, 1RT, 3 A) — câbler d'après les **noms** des broches du symbole C3633 | C3633 |
+| Q131 | AO3400A | C20917 |
+| D131 | SS14 | C2480 |
+| R131 | 220 Ω | C22962 |
+| R132 | 100 kΩ | C25803 |
+| J131 | bornier 3 points 5,08 mm | à choisir |
+
+Contact 3 A / 30 V DC — **basse tension uniquement, jamais de 230 V** (écartements de pistes non prévus pour le secteur).
+
+---
+
+## Bilan 12 V (sans moteur)
+
+Vannes 3 A + servo ≈ 1,8 A (à pleine charge, sous 6 V) + +5V ≈ 1,5 A + relais 30 mA : bloc secteur **12 V 5 A** suffisant, 6 A pour la marge si vannes et servo forcent ensemble.
+
+---
+
+## Implantation PCB
+
+Carte 175 × 125 mm, 4 couches (GND plein en couche 2, alimentations en couche 3). Placement v4 des 287 composants, règles et zones : [pcb/README.md](pcb/README.md) ; checklist : [docs/pcb-checklist.md](docs/pcb-checklist.md).
+
+---
+
 ## Sorties Wi-Fi (remplacent le Bloc 6)
 
-Prises connectées en réseau local, commandées par l'ESP32 (HTTP / MQTT, sans cloud) : éclairage, petit compresseur (prise ≥ 10 A), ventilateur… Non critiques (50–500 ms), envoyées avant ou après une séquence de déclenchement. Détails : [docs/sorties-wifi.md](docs/sorties-wifi.md).
+Prises connectées commandées par l'ESP32 sur **son propre réseau Wi-Fi** (point d'accès SoftAP, DHCP intégré : fonctionne sans box, partout), en HTTP / MQTT local : éclairage, petit compresseur (prise ≥ 10 A), ventilateur… Non critiques (50–500 ms), envoyées avant ou après une séquence de déclenchement. Détails : [docs/sorties-wifi.md](docs/sorties-wifi.md).

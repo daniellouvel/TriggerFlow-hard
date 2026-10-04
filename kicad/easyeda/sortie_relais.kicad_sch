@@ -1,0 +1,948 @@
+(kicad_sch
+	(version 20260306)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "8b2c8f87-ee53-550a-81a5-ccca53999f74")
+	(paper "A4")
+	(title_block
+		(title "Sortie relais — contact sec")
+		(date "2026-09-30")
+		(rev "A")
+		(company "TriggerFlow")
+		(comment 1 "HF32F/012-ZS3 commandé par MCP23017 GPB2")
+	)
+	(lib_symbols
+		(symbol "TriggerFlow:HF32F-012-ZS3" (pin_names (offset 1.016)) (exclude_from_sim no) (in_bom yes) (on_board yes)
+ (property "Reference" "K" (at 0 6.35 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "HF32F/012-ZS3" (at 0 -6.35 0) (effects (font (size 1.27 1.27))))
+ (symbol "HF32F-012-ZS3_0_1" (rectangle (start -6.35 5.08) (end 6.35 -5.08) (stroke (width 0.254) (type default)) (fill (type background))))
+ (symbol "HF32F-012-ZS3_1_1" (pin passive line (at -8.89 2.54 0) (length 2.54) (name "COIL+" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27))))) (pin passive line (at -8.89 -2.54 0) (length 2.54) (name "COIL-" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27))))) (pin passive line (at 8.89 2.54 180) (length 2.54) (name "COM" (effects (font (size 1.27 1.27)))) (number "3" (effects (font (size 1.27 1.27))))) (pin passive line (at 8.89 0 180) (length 2.54) (name "NO" (effects (font (size 1.27 1.27)))) (number "4" (effects (font (size 1.27 1.27))))) (pin passive line (at 8.89 -2.54 180) (length 2.54) (name "NC" (effects (font (size 1.27 1.27)))) (number "5" (effects (font (size 1.27 1.27)))))))
+		(symbol "power:+12V" (power) (pin_names (offset 0)) (in_bom yes) (on_board yes)
+    (property "Reference" "#PWR" (at 0 -3.81 0)
+      (effects (font (size 1.27 1.27)) (hide yes))
+    )
+    (property "Value" "+12V" (at 0 3.556 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (symbol "+12V_0_1"
+      (polyline
+        (pts
+          (xy -0.762 1.27)
+          (xy 0 2.54)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 0 0)
+          (xy 0 2.54)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 0 2.54)
+          (xy 0.762 1.27)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+    )
+    (symbol "+12V_1_1"
+      (pin power_in line (at 0 0 90) (length 0) (hide yes)
+        (name "+12V" (effects (font (size 1.27 1.27))))
+        (number "1" (effects (font (size 1.27 1.27))))
+      )
+    )
+  )
+		(symbol "Device:D_Schottky" (pin_numbers (hide yes)) (pin_names (offset 1.016) (hide yes)) (in_bom yes) (on_board yes)
+    (property "Reference" "D" (at 0 2.54 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Value" "D_Schottky" (at 0 -2.54 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (symbol "D_Schottky_0_1"
+      (polyline
+        (pts
+          (xy 1.27 0)
+          (xy -1.27 0)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 1.27 1.27)
+          (xy 1.27 -1.27)
+          (xy -1.27 0)
+          (xy 1.27 1.27)
+        )
+        (stroke (width 0.254) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy -1.905 0.635)
+          (xy -1.905 1.27)
+          (xy -1.27 1.27)
+          (xy -1.27 -1.27)
+          (xy -0.635 -1.27)
+          (xy -0.635 -0.635)
+        )
+        (stroke (width 0.254) (type default))
+        (fill (type none))
+      )
+    )
+    (symbol "D_Schottky_1_1"
+      (pin passive line (at -3.81 0 0) (length 2.54)
+        (name "K" (effects (font (size 1.27 1.27))))
+        (number "1" (effects (font (size 1.27 1.27))))
+      )
+      (pin passive line (at 3.81 0 180) (length 2.54)
+        (name "A" (effects (font (size 1.27 1.27))))
+        (number "2" (effects (font (size 1.27 1.27))))
+      )
+    )
+  )
+		(symbol "Transistor_FET:AO3400A" (pin_names (hide yes)) (in_bom yes) (on_board yes)
+    (property "Reference" "Q" (at 5.08 1.905 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "AO3400A" (at 5.08 0 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (symbol "AO3400A_0_1"
+      (polyline
+        (pts
+          (xy 0.254 0)
+          (xy -2.54 0)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 0.254 1.905)
+          (xy 0.254 -1.905)
+        )
+        (stroke (width 0.254) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 0.762 -1.27)
+          (xy 0.762 -2.286)
+        )
+        (stroke (width 0.254) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 0.762 0.508)
+          (xy 0.762 -0.508)
+        )
+        (stroke (width 0.254) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 0.762 2.286)
+          (xy 0.762 1.27)
+        )
+        (stroke (width 0.254) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 2.54 2.54)
+          (xy 2.54 1.778)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 2.54 -2.54)
+          (xy 2.54 0)
+          (xy 0.762 0)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 0.762 -1.778)
+          (xy 3.302 -1.778)
+          (xy 3.302 1.778)
+          (xy 0.762 1.778)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 1.016 0)
+          (xy 2.032 0.381)
+          (xy 2.032 -0.381)
+          (xy 1.016 0)
+        )
+        (stroke (width 0) (type default))
+        (fill (type outline))
+      )
+      (polyline
+        (pts
+          (xy 2.794 0.508)
+          (xy 2.921 0.381)
+          (xy 3.683 0.381)
+          (xy 3.81 0.254)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 3.302 0.381)
+          (xy 2.921 -0.254)
+          (xy 3.683 -0.254)
+          (xy 3.302 0.381)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (circle (center 1.651 0) (radius 2.794)
+        (stroke (width 0.254) (type default))
+        (fill (type none))
+      )
+      (circle (center 2.54 -1.778) (radius 0.254)
+        (stroke (width 0) (type default))
+        (fill (type outline))
+      )
+      (circle (center 2.54 1.778) (radius 0.254)
+        (stroke (width 0) (type default))
+        (fill (type outline))
+      )
+    )
+    (symbol "AO3400A_1_1"
+      (pin input line (at -5.08 0 0) (length 2.54)
+        (name "G" (effects (font (size 1.27 1.27))))
+        (number "1" (effects (font (size 1.27 1.27))))
+      )
+      (pin passive line (at 2.54 -5.08 90) (length 2.54)
+        (name "S" (effects (font (size 1.27 1.27))))
+        (number "2" (effects (font (size 1.27 1.27))))
+      )
+      (pin passive line (at 2.54 5.08 270) (length 2.54)
+        (name "D" (effects (font (size 1.27 1.27))))
+        (number "3" (effects (font (size 1.27 1.27))))
+      )
+    )
+  )
+		(symbol "power:GND" (power) (pin_names (offset 0)) (in_bom yes) (on_board yes)
+    (property "Reference" "#PWR" (at 0 -6.35 0)
+      (effects (font (size 1.27 1.27)) (hide yes))
+    )
+    (property "Value" "GND" (at 0 -3.81 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (symbol "GND_0_1"
+      (polyline
+        (pts
+          (xy 0 0)
+          (xy 0 -1.27)
+          (xy 1.27 -1.27)
+          (xy 0 -2.54)
+          (xy -1.27 -1.27)
+          (xy 0 -1.27)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+    )
+    (symbol "GND_1_1"
+      (pin power_in line (at 0 0 270) (length 0) (hide yes)
+        (name "GND" (effects (font (size 1.27 1.27))))
+        (number "1" (effects (font (size 1.27 1.27))))
+      )
+    )
+  )
+		(symbol "Device:R" (pin_numbers (hide yes)) (pin_names (offset 0)) (in_bom yes) (on_board yes)
+    (property "Reference" "R" (at 2.032 0 90)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Value" "R" (at 0 0 90)
+      (effects (font (size 1.27 1.27)))
+    )
+    (symbol "R_0_1"
+      (rectangle (start -1.016 -2.54) (end 1.016 2.54)
+        (stroke (width 0.254) (type default))
+        (fill (type none))
+      )
+    )
+    (symbol "R_1_1"
+      (pin passive line (at 0 3.81 270) (length 1.27)
+        (name "~" (effects (font (size 1.27 1.27))))
+        (number "1" (effects (font (size 1.27 1.27))))
+      )
+      (pin passive line (at 0 -3.81 90) (length 1.27)
+        (name "~" (effects (font (size 1.27 1.27))))
+        (number "2" (effects (font (size 1.27 1.27))))
+      )
+    )
+  )
+		(symbol "Connector_Generic:Conn_01x03" (pin_names (offset 1.016) (hide yes)) (in_bom yes) (on_board yes)
+    (property "Reference" "J" (at 0 5.08 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Value" "Conn_01x03" (at 0 -5.08 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (symbol "Conn_01x03_1_1"
+      (rectangle (start -1.27 -2.413) (end 0 -2.667)
+        (stroke (width 0.1524) (type default))
+        (fill (type none))
+      )
+      (rectangle (start -1.27 0.127) (end 0 -0.127)
+        (stroke (width 0.1524) (type default))
+        (fill (type none))
+      )
+      (rectangle (start -1.27 2.667) (end 0 2.413)
+        (stroke (width 0.1524) (type default))
+        (fill (type none))
+      )
+      (rectangle (start -1.27 3.81) (end 1.27 -3.81)
+        (stroke (width 0.254) (type default))
+        (fill (type background))
+      )
+      (pin passive line (at -5.08 2.54 0) (length 3.81)
+        (name "Pin_1" (effects (font (size 1.27 1.27))))
+        (number "1" (effects (font (size 1.27 1.27))))
+      )
+      (pin passive line (at -5.08 0 0) (length 3.81)
+        (name "Pin_2" (effects (font (size 1.27 1.27))))
+        (number "2" (effects (font (size 1.27 1.27))))
+      )
+      (pin passive line (at -5.08 -2.54 0) (length 3.81)
+        (name "Pin_3" (effects (font (size 1.27 1.27))))
+        (number "3" (effects (font (size 1.27 1.27))))
+      )
+    )
+  )
+	)
+	(symbol
+		(lib_id "TriggerFlow:HF32F-012-ZS3")
+		(at 149.86 76.2 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "342a783e-66f2-51e1-88ba-8c66fd6c1c4f")
+		(property "Reference" "K131"
+			(at 149.86 66.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "HF32F/012-ZS3"
+			(at 149.86 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "1a8a81a7-483d-50d1-864a-929f6cd0d001")
+		)
+		(pin "2"
+			(uuid "fab76116-cab6-5c7d-aa78-c9bb453a34a0")
+		)
+		(pin "3"
+			(uuid "e162ee97-c205-580b-a9cf-16ec663ad19b")
+		)
+		(pin "4"
+			(uuid "8615b013-9902-506b-9f6a-679e55ce1f5c")
+		)
+		(pin "5"
+			(uuid "1103438b-d6a9-5f5b-a173-910d0da80bf1")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/8b2c8f87-ee53-550a-81a5-ccca53999f74"
+					(reference "K131")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+12V")
+		(at 132.08 73.66 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "6546fc3d-0f56-5c17-8da1-21ee16167307")
+		(property "Reference" "#PWR1301"
+			(at 132.08 73.66 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+12V"
+			(at 132.08 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "819b2000-e263-55b4-ae17-a6ceacd6b259")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/8b2c8f87-ee53-550a-81a5-ccca53999f74"
+					(reference "#PWR1301")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:D_Schottky")
+		(at 124.46 76.2 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "9c4ae055-751c-5f42-8141-365c6b4da9e9")
+		(property "Reference" "D131"
+			(at 121.92 74.93 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "SS14"
+			(at 121.92 77.47 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "1"
+			(uuid "2caefd51-c2b9-5ca6-baa0-77d44aac3991")
+		)
+		(pin "2"
+			(uuid "30282996-9535-5c63-b7bf-749ba68da245")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/8b2c8f87-ee53-550a-81a5-ccca53999f74"
+					(reference "D131")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Transistor_FET:AO3400A")
+		(at 132.08 93.98 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a36cc2c2-b92c-5199-a5b5-3aeee6930e4a")
+		(property "Reference" "Q131"
+			(at 137.16 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "AO3400A"
+			(at 137.16 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "1"
+			(uuid "d232ac7d-4454-519a-a671-da1e979b1a5d")
+		)
+		(pin "2"
+			(uuid "acaf5465-a0b0-5475-858a-a1bc5f89aa2b")
+		)
+		(pin "3"
+			(uuid "b8747567-64c8-5e5a-ba7b-8e0b09c35f3d")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/8b2c8f87-ee53-550a-81a5-ccca53999f74"
+					(reference "Q131")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 134.62 101.6 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b8fad1c7-0b8a-5bf9-ba05-ffda6b8538eb")
+		(property "Reference" "#PWR1302"
+			(at 134.62 101.6 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 134.62 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "dff91a96-40c1-56b4-8a86-26fc32b43972")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/8b2c8f87-ee53-550a-81a5-ccca53999f74"
+					(reference "#PWR1302")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 119.38 93.98 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "0f878842-1a8b-5fd1-be4e-ec5e85d57302")
+		(property "Reference" "R131"
+			(at 119.38 91.44 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "220"
+			(at 119.38 96.52 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "371a058d-a022-554d-bb3d-d83786768bbc")
+		)
+		(pin "2"
+			(uuid "715e96f4-e5ad-5153-9c35-5a58425dc827")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/8b2c8f87-ee53-550a-81a5-ccca53999f74"
+					(reference "R131")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 124.46 97.79 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a8148e80-c602-5cc4-895e-c8e2c7a564a8")
+		(property "Reference" "R132"
+			(at 127 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100k"
+			(at 127 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "1"
+			(uuid "b3d7808d-fe46-5314-b1d2-5f6066b47eda")
+		)
+		(pin "2"
+			(uuid "76b67f6a-cbd1-5dc5-9fd5-9365f595a47a")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/8b2c8f87-ee53-550a-81a5-ccca53999f74"
+					(reference "R132")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 124.46 104.14 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "18e6b186-30bb-500c-bc16-987c364e2378")
+		(property "Reference" "#PWR1303"
+			(at 124.46 104.14 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 124.46 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "230efb09-9abd-5787-8958-312151f04f7d")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/8b2c8f87-ee53-550a-81a5-ccca53999f74"
+					(reference "#PWR1303")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x03")
+		(at 185.42 76.2 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ff010049-55b4-5498-9d42-0f91e56e2739")
+		(property "Reference" "J131"
+			(at 185.42 71.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "RELAIS"
+			(at 185.42 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "acb3acc8-fd43-5930-9da2-fed5a68c9f8f")
+		)
+		(pin "2"
+			(uuid "da4a2f23-7928-58c3-bb4d-7aef7d51ebfd")
+		)
+		(pin "3"
+			(uuid "d6553e90-6e3d-54f1-aaaa-2915426d04d7")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/8b2c8f87-ee53-550a-81a5-ccca53999f74"
+					(reference "J131")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 124.46 73.66) (xy 140.97 73.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dd9d7fa9-18fc-58ea-9e31-47c35e45c0b3")
+	)
+	(wire
+		(pts
+			(xy 124.46 72.39) (xy 124.46 73.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "795d0350-7f30-542f-a56c-51f7bfac487a")
+	)
+	(wire
+		(pts
+			(xy 124.46 80.01) (xy 124.46 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5983405a-cbe2-5d9d-8b81-20595dea669f")
+	)
+	(wire
+		(pts
+			(xy 124.46 81.28) (xy 134.62 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d220cda3-b9c4-52c5-8827-d76a91676a7d")
+	)
+	(wire
+		(pts
+			(xy 140.97 78.74) (xy 134.62 78.74)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "061a5eba-0c5b-5040-8e50-18fdfcecb470")
+	)
+	(wire
+		(pts
+			(xy 134.62 78.74) (xy 134.62 88.9)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e67f49df-b661-54c3-a499-08b485db51b3")
+	)
+	(wire
+		(pts
+			(xy 134.62 99.06) (xy 134.62 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "68ca19d3-01ab-54bd-8f36-0643b307d6fc")
+	)
+	(wire
+		(pts
+			(xy 123.19 93.98) (xy 127 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "64e959d5-18eb-5601-be87-fffaf853d8bf")
+	)
+	(wire
+		(pts
+			(xy 115.57 93.98) (xy 110.49 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e28a91cb-96bf-50ea-9e3f-5c5db082a0ed")
+	)
+	(wire
+		(pts
+			(xy 124.46 101.6) (xy 124.46 104.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "61b6226c-53d7-5f7b-8dd8-1697597259ad")
+	)
+	(wire
+		(pts
+			(xy 158.75 73.66) (xy 180.34 73.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8350f335-568e-5ad0-9fcd-a102f0126f79")
+	)
+	(wire
+		(pts
+			(xy 158.75 76.2) (xy 180.34 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "28975322-29e2-543a-ab85-8a3c482ded27")
+	)
+	(wire
+		(pts
+			(xy 158.75 78.74) (xy 180.34 78.74)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b89f2c9e-ce37-529f-886a-2675917e2f75")
+	)
+	(junction
+		(at 124.46 93.98)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "6ffe76fe-592c-53d6-82a4-e2cce4316808")
+	)
+	(junction
+		(at 132.08 73.66)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "bf2000a4-ce58-599e-af81-09a07af33dfd")
+	)
+	(junction
+		(at 134.62 81.28)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "917487cd-33a3-5dbc-b6d6-e9e9ebbf7baa")
+	)
+	(label "RELAY_DRV"
+		(at 134.62 85.09 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "51db7357-3fd3-54d3-91c4-a36aad346a9f")
+	)
+	(label "RELAY_CMD"
+		(at 110.49 93.98 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "17c0011d-ed59-5bd6-8875-1497f5f26207")
+	)
+	(label "RELAY_COM"
+		(at 160.66 73.66 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "23daebe3-7914-5977-9852-b85ab8ce503c")
+	)
+	(label "RELAY_NO"
+		(at 160.66 76.2 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "116d47f8-cc4a-536f-8304-1523dc0e4929")
+	)
+	(label "RELAY_NC"
+		(at 160.66 78.74 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "077a5af5-d376-5a6d-971c-f5bf4e6934a3")
+	)
+	(rectangle
+		(start 99.06 58.42)
+		(end 200.66 109.22)
+		(stroke
+			(width 0.254)
+			(type dash)
+		)
+		(fill
+			(type none)
+		)
+		(uuid "ae725cdf-b6b8-532c-803f-2b17f72c1ea2")
+	)
+	(text "Sortie relais (contact sec)"
+		(exclude_from_sim no)
+		(at 101.6 60.96 0)
+		(effects
+			(font
+				(size 2.0 2.0)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "9a50cc79-6c05-5436-929f-e00146b633e8")
+	)
+	(text "Notes :\n• RELAY_CMD = MCP23017 GPB2 ; R132 maintient le relais ouvert au démarrage. D131 : roue libre de la bobine.\n• J131 : 1 = COM, 2 = NO (travail), 3 = NC (repos). Contact 3 A / 30 V DC — basse tension uniquement, jamais de 230 V.\n• Numéros de broches de K131 : à câbler d'après les NOMS du symbole EasyEDA de la C3633 (bobine, COM, NO, NC)."
+		(exclude_from_sim no)
+		(at 99.06 116.84 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "9276c2fc-435c-5e3b-b177-0bd2183402d3")
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)
