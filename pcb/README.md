@@ -24,7 +24,7 @@ Usage : `python3 check.py && python3 render.py && python3 export_csv.py` (dépen
 | 3 | plages d'alimentation : **+12V** limité au quart droit (alim, servo, relais, vannes) ; **+3V3** grande plage continue au centre et à l'avant ; **+5V** en bandes étroites le long des bords (avant sous les RJ45 pour F11-F61, gauche pour la DevKit, bande verticale vers U112, tronçon sous la barrière vers U113) ; **VISO_3V3** dans l'îlot |
 | 4 (dessous) | signaux longs : SPI, CS, I2C, SERVO_PWM, commandes des vannes, TLV_OUT |
 
-Une piste qui doit entrer dans la zone 12 V change de couche avant la frontière (ex. SERVO_PWM : couche 4 puis via et couche 1 jusqu'à U122). Une piste qui traverse une bande analogique passe en couche 4, à angle droit.
+Une piste de couche 4 prend son retour dans la couche 3 (noyau épais entre L2 et L3) : elle ne traverse jamais une frontière entre plages de la couche 3 (sinon condensateur de couture 100 nF ou passage en couche 1). Une piste qui doit entrer dans la zone 12 V change donc de couche avant la frontière (ex. SERVO_PWM : couche 4 puis via et couche 1 jusqu'à U122). Une piste qui traverse une bande analogique passe en couche 4, à angle droit.
 
 ## Zones (bord arrière en haut)
 
@@ -34,11 +34,11 @@ Une piste qui doit entrer dans la zone 12 V change de couche avant la frontière
 | Barrière d'isolation | 0–99 | y = 40 | seuls U71, U81, U83, U113 à cheval ; ≥ 3 mm sans cuivre sur les 4 couches |
 | Relais | 104–124 | 0–40 | J131 au bord arrière, K131, Q131, D131 |
 | Alimentation 12 V → 5 V | 127–175 | 0–41 | J111 dans le coin ; flux J111 → F111 → Q111 → D111 → C112 → U111 → D112 / L111 → C117 |
-| ESP32-S3 DevKit | 0–71 | 47–70 (U105 en y = 58,5) | USB-C au bord gauche ; antenne vers l'intérieur |
+| ESP32-S3 DevKit | 1–70 | 44,5–72,5 (U105 en y = 58,5) | USB-C au bord gauche ; antenne vers l'intérieur |
 | Zone antenne | 58–86 | 43,5–73 | sans cuivre sur les 4 couches, fente fraisée sous l'antenne (≈ 12 × 24 mm) |
 | Bus I2C | 88–124 | 46–72 | U101 MCP23017, U102/U103 MCP4728, U104 ADS7828 |
 | Couloir de bus | 0–124 | 73,5–81,5 | THR / CS / ID / TLV_OUT en couche 4 ; rangée de vias de couture côté analogique |
-| Servo 6 V | 127–175 | 44–67 | U121, L121, D121, C124, U122 ; C126 et J121 au bord droit |
+| Servo 6 V | 127–175 | 44–69 | U121, L121, D121, C124, U122 ; C126 et J121 au bord droit |
 | Vannes 2 × 3 | 127–175 | 71–115 | CN91-CN96 en 2 rangées miroir, rail +12V central ; D9n entre CN9n et Q9n |
 | Entrées capteur ×6 | 0–124 | 82–125 | J11-J61 au bord avant (x = 17, 35, 53, 79, 97, 115), bande de 18 mm par voie |
 | +3V3 et LED | 128–175 | 115–125 | U112, CN101 |
@@ -49,7 +49,7 @@ Une piste qui doit entrer dans la zone 12 V change de couche avant la frontière
 
 - Chaque voie d'entrée suit le trajet du signal : RJ45 → TVS/PTC → R16 / BAT54S / C12 → MCP6S91 → TLV3501 → TLV_OUT vers la rangée J1 de l'ESP32. TLV_OUT (fronts de 4,5 ns) ne longe jamais l'entrée CLAMP du PGA ; filtre THR (R13/C11) collé à la broche 2 du TLV3501.
 - Découplages à ≤ 2 mm de leur broche, via GND juste à côté.
-- Boucles de découpage courtes (C112 → U111 → D112 ; C129/C122 → U121 → D121), ≥ 9 vias thermiques sous les languettes de U111 et U121, électrolytiques à ≥ 5 mm des languettes, L111 et L121 à 90° et ≥ 10 mm.
+- Boucles de découpage courtes (C112 → U111 → D112 ; C129/C122 → U121 → D121), ≈ 15 vias thermiques sous les languettes de U111 et U121 (deux plans internes à traverser), électrolytiques à ≥ 5 mm des languettes, L111 et L121 à 90° et ≥ 10 mm.
 - Pistes +12V, VALVE_PWR, VALVE_SW ≥ 2 mm ou plages ; ≥ 2 vias par source de MOSFET (Q91-Q96, Q131) vers la couche 2.
 - Isolation : aucune piste, via ou plan ne traverse la barrière hors U71/U81/U83/U113 ; bande sans cuivre sous U113 ; blindages J71/J81-J84 non connectés ; ≥ 3 mm entre la zone relais (GND) et l'îlot VISO.
 - Tout sur la face du dessus (assemblage JLC simple face) ; 3 fiducials ; ≥ 0,5 mm entre cuivre et bord.
