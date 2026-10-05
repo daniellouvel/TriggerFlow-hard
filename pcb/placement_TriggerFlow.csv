@@ -63,13 +63,13 @@ C118;100nF;C0603;153,30;38,50;90;Dessus;Puissance
 C119;10uF;C0805;95,50;44,50;0;Dessus;Sorties isolées
 C120;10uF;C0805;94,60;34,50;90;Dessus;Sorties isolées
 C121;10uF;C0805;67,50;33,00;90;Dessus;Sorties isolées
-C122;10uF;C0805;131,50;50,00;90;Dessus;Puissance
-C123;100nF;C0603;131,50;57,60;90;Dessus;Puissance
-C124;330uF;CAP-SMD_BD8;155,00;63,00;0;Dessus;Puissance
-C125;100nF;C0603;162,10;56,20;0;Dessus;Puissance
-C126;470uF;CAP-SMD_BD10;167,00;63,00;0;Dessus;Puissance
-C127;100nF;C0603;164,00;51,00;0;Dessus;Puissance
-C129;10uF;C0805;131,50;54,00;90;Dessus;Puissance
+C122;10uF;C0805;131,50;54,00;90;Dessus;Puissance
+C123;10uF;C0805;131,50;50,00;90;Dessus;Puissance
+C124;100nF;C0603;131,50;57,60;90;Dessus;Puissance
+C125;330uF;CAP-SMD_BD8.0-L8.3-W8.3-FD;155,00;63,00;0;Dessus;Puissance
+C126;100nF;C0603;162,00;58,50;0;Dessus;Puissance
+C127;470uF;CAP-SMD_BD10.0-L10.3-W10.3-LS11.3-FD;166,50;65,30;0;Dessus;Puissance
+C128;100nF;C0603;162,00;56,50;0;Dessus;Puissance
 CN91;'';CONN-TH_2P-P2.50_HX25003-2A;135,00;75,50;0;Dessus;Puissance
 CN92;'';CONN-TH_2P-P2.50_HX25003-2A;151,00;75,50;0;Dessus;Puissance
 CN93;'';CONN-TH_2P-P2.50_HX25003-2A;167,00;75,50;0;Dessus;Puissance
@@ -110,9 +110,9 @@ D96;'';SMA_L4.3-W2.6-LS5.2-RD;170,50;104,00;0;Dessus;Puissance
 D101;'';SMA_L4.2-W2.6-LS5.0-RD_1;12,00;65,00;0;Dessus;ESP32 / 3V3
 D111;'';SMB_L4.6-W3.6-LS5.3-RD;139,00;7,00;90;Dessus;Puissance
 D112;'';SMA_L4.4-W2.8-LS5.4-R-RD;149,50;33,00;90;Dessus;Puissance
-D121;SS54;SMA;143,00;62,50;0;Dessus;Puissance
-D122;PESD5V0S1BB;SOD-523;168,30;53,00;90;Dessus;Puissance
-D131;SS14;SMA;120,50;22,00;90;Dessus;Puissance
+D121;SS54;SMA_L4.4-W2.8-LS5.4-R-RD;143,00;62,50;0;Dessus;Puissance
+D122;SS14;SMA_L4.2-W2.6-LS5.0-RD_1;120,50;22,00;90;Dessus;Puissance
+D123;PESD5V0S1BB;SOD-523_L1.2-W0.8-LS1.6-BI;162,00;54,50;0;Dessus;Puissance
 F11;'';F1206;10,60;101,20;0;Dessus;Entrées capteur
 F21;'';F1206;28,60;101,20;0;Dessus;Entrées capteur
 F31;'';F1206;46,60;101,20;0;Dessus;Entrées capteur
@@ -138,17 +138,16 @@ J82;'';RJ456-TH_HX-RJ45-90-5631-1X1-8P8C;53,00;10,75;180;Dessus;Sorties isolées
 J83;'';RJ456-TH_HX-RJ45-90-5631-1X1-8P8C;71,00;10,75;180;Dessus;Sorties isolées
 J84;'';RJ456-TH_HX-RJ45-90-5631-1X1-8P8C;89,00;10,75;180;Dessus;Sorties isolées
 J111;'';CONN-TH_P5.08_KF128-5.08-2P;161,00;4,50;0;Dessus;Puissance
-J121;servo 1x3;HDR1x3;172,60;51,50;90;Dessus;Puissance
-J131;bornier 3P 5,08;KF128-3P;114,00;4,50;0;Dessus;Puissance
+J121;KF128-5.08-3P (servo);CONN-TH_3P-P5.08_KF128-5.08-3P;169,15;51,40;90;Dessus;Puissance
+J122;KF128-5.08-3P (relais);CONN-TH_3P-P5.08_KF128-5.08-3P;114,00;5,70;0;Dessus;Puissance
 JP11;'0Ω';R0603;21,50;96,60;0;Dessus;Entrées capteur
 JP21;'0Ω';R0603;39,50;96,60;0;Dessus;Entrées capteur
 JP31;'0Ω';R0603;57,50;96,60;0;Dessus;Entrées capteur
 JP41;'0Ω';R0603;83,50;96,60;0;Dessus;Entrées capteur
 JP51;'0Ω';R0603;101,50;96,60;0;Dessus;Entrées capteur
 JP61;'0Ω';R0603;119,50;96,60;0;Dessus;Entrées capteur
-K131;HF32F/012-ZS3;HF32F;114,00;21,50;90;Dessus;Puissance
 L111;33uH;IND-SMD_L12.5-W12.5;162,00;33,50;0;Dessus;Puissance
-L121;33uH 4,25A;IND-SMD_L12.5-W12.5;154,00;51,50;0;Dessus;Puissance
+L121;33uH;IND-SMD_L12.5-W12.5;153,00;51,50;0;Dessus;Puissance
 Q71;'';SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR;13,00;25,00;0;Dessus;Sorties isolées
 Q72;'';SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR;21,00;25,00;0;Dessus;Sorties isolées
 Q81;'';SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR;35,00;25,00;0;Dessus;Sorties isolées
@@ -162,7 +161,7 @@ Q94;'';SOT-23_L2.9-W1.3-P1.90-LS2.4-BR;131,00;104,00;0;Dessus;Puissance
 Q95;'';SOT-23_L2.9-W1.3-P1.90-LS2.4-BR;147,00;104,00;0;Dessus;Puissance
 Q96;'';SOT-23_L2.9-W1.3-P1.90-LS2.4-BR;163,00;104,00;0;Dessus;Puissance
 Q111;'';SOIC-8_L4.9-W3.9-P1.27-LS6.0-BL;146,00;6,00;0;Dessus;Puissance
-Q131;AO3400A;SOT-23;108,00;35,00;0;Dessus;Puissance
+Q121;AO3400A;SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR;108,00;35,00;0;Dessus;Puissance
 R11;'1kΩ';R0603;24,20;101,20;0;Dessus;Entrées capteur
 R12;'4.7kΩ';R0603;18,50;96,60;0;Dessus;Entrées capteur
 R13;'1kΩ';R0603;18,60;88,20;0;Dessus;Entrées capteur
@@ -250,13 +249,14 @@ R111;'10kΩ';R0603;146,00;10,40;0;Dessus;Puissance
 R112;'10kΩ';R0603;146,00;12,20;0;Dessus;Puissance
 R113;'220Ω';R0603;96,50;36,80;90;Dessus;Sorties isolées
 R114;'220Ω';R0603;98,00;31,00;90;Dessus;Sorties isolées
-R121;1kΩ 1%;R0603;148,50;64,40;90;Dessus;Puissance
-R122;3.9kΩ 1%;R0603;148,50;61,00;90;Dessus;Puissance
-R123;10kΩ;R0603;136,50;62,50;90;Dessus;Puissance
-R124;10kΩ;R0603;164,00;54,00;0;Dessus;Puissance
-R125;220Ω;R0603;168,30;48,00;90;Dessus;Puissance
-R131;220Ω;R0603;108,00;38,60;0;Dessus;Puissance
-R132;100kΩ;R0603;104,80;35,00;90;Dessus;Puissance
+R121;'10kΩ';R0603;136,50;62,50;90;Dessus;Puissance
+R122;'1kΩ';R0603;148,50;64,40;90;Dessus;Puissance
+R123;'3.9kΩ';R0603;148,50;61,00;90;Dessus;Puissance
+R124;'10kΩ';R0603;162,00;47,00;0;Dessus;Puissance
+R125;'220Ω';R0603;162,00;49,00;0;Dessus;Puissance
+R126;'220Ω';R0603;108,00;38,60;0;Dessus;Puissance
+R127;'100kΩ';R0603;104,80;35,00;90;Dessus;Puissance
+RELAY121;HF32F/012-ZS3;RELAY-TH_HF32F-012-ZS3;114,00;23,20;90;Dessus;Puissance
 U11;'';SOP-8_L4.9-W3.9-P1.27-LS6.0-BL;13,50;86,00;0;Dessus;Entrées capteur
 U12;'';MSOP-8_L3.0-W3.0-P0.65-LS4.9-BL;13,50;92,40;0;Dessus;Entrées capteur
 U21;'';SOP-8_L4.9-W3.9-P1.27-LS6.0-BL;31,50;86,00;0;Dessus;Entrées capteur
@@ -284,8 +284,8 @@ U111;'';TO-263-5_L10.2-W8.9-P1.70-BR;150,00;22,00;0;Dessus;Puissance
 U112;'';SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR;134,00;119,50;0;Dessus;ESP32 / 3V3
 U113;'200kHz~340kHz';PWRM-TH_B0505S-1WR3;90,00;40,00;90;Dessus;Sorties isolées
 U114;'';SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR;62,00;28,00;0;Dessus;Sorties isolées
-U121;LM2596S-ADJ;TO-263-5;141,00;52,00;0;Dessus;Puissance
-U122;SN74AHCT1G125;SOT-23-5;164,00;47,50;0;Dessus;Puissance
+U121;LM2596S-ADJ;TO-263-5_L10.2-W8.9-P1.70-BR;141,00;52,00;0;Dessus;Puissance
+U122;SN74AHCT1G125;SOT-23-5_L3.0-W1.7-P0.95-LS2.8-BR;161,50;52,00;0;Dessus;Puissance
 H1;M3 NPTH;MountingHole_3.2mm;4;4;0;—;Mécanique
 H5;M3 NPTH;MountingHole_3.2mm;101;6;0;—;Mécanique
 H2;M3 GND;MountingHole_3.2mm;171;4;0;—;Mécanique

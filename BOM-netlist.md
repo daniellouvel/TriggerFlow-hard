@@ -1,7 +1,7 @@
 # TriggerFlow — BOM et netlists par bloc
 
-État au **04/10/2026**. Référence : export netlist EasyEDA du 03/10/2026 (`Netlist_Schematic1_2026-10-03.tel`), vérifié net par net.
-Numérotation : chiffre(s) de page + index (page 1 = voie 1 → R11, U11… ; page 9 = vannes ; page 10 = ESP32 / Bloc 8 ; page 11 = Blocs 5 et 5b ; page 12 = sortie servo ; page 13 = sortie relais). Quand une page dépasse 9 pièces d'un même type, la numérotation déborde (R100…R104 = vannes) : se fier au schéma, pas au numéro.
+État au **05/10/2026**. Référence : export netlist EasyEDA du 05/10/2026 (`netlist/Netlist_Schematic1_2026-10-05.tel`), vérifié net par net, ERC EasyEDA : 0 erreur, 0 avertissement ; contrôle automatique : aucun net de voie (SENSOR, CLAMP, CS, THR, TLV_OUT, ID, GATE, VALVE…) mélangé entre deux voies.
+Numérotation : chiffre(s) de page + index (page 1 = voie 1 → R11, U11… ; page 9 = vannes ; page 10 = ESP32 / Bloc 8 ; page 11 = Blocs 5 et 5b ; page 12 = sorties servo et relais). Quand une page dépasse 9 pièces d'un même type, la numérotation déborde (R100…R104 = vannes) : se fier au schéma, pas au numéro.
 
 ## État de validation
 
@@ -19,9 +19,9 @@ Numérotation : chiffre(s) de page + index (page 1 = voie 1 → R11, U11… ; pa
 | 9 | Module capteur universel (carte déportée, 8 variantes) | 📝 schéma KiCad généré (`kicad/module_capteur/`) |
 | 10 | Protection ESD des connecteurs | ✅ validé |
 | 11 | PTC | intégrées dans chaque bloc (F11-61, F91-96) |
-| 12 | Sortie servo, rail 6 V dédié | 📝 schéma KiCad (`kicad/sortie_servo/`), à saisir (page 12) |
-| 13 | Sortie relais (contact sec) | 📝 schéma KiCad (`kicad/sortie_relais/`), à saisir (page 13) |
-| PCB | Implantation 175 × 125 mm, 4 couches | 📝 placement v4 (`pcb/`), checklist (`docs/pcb-checklist.md`) |
+| 12 | Sortie servo, rail 6 V dédié | ✅ validé (page 12) |
+| 13 | Sortie relais (contact sec) | ✅ validé (page 12) |
+| PCB | Implantation 175 × 125 mm, 4 couches | 📝 placement v4 recalé sur la netlist du 05/10 (`pcb/`), checklist (`docs/pcb-checklist.md`) |
 | ESP32 | Feuille U105 (YD-ESP32-S3 N16R8) | ✅ validé |
 
 Méthode : schéma de référence → saisie EasyEDA Pro avec références LCSC → export netlist (.tel) → comparaison net par net.
@@ -303,65 +303,69 @@ Pas de condensateur entre VISO_GND et GND (isolation conservée).
 
 ---
 
-## Bloc 12 — Sortie servo, rail 6 V dédié (page 12, à saisir)
+## Bloc 12 — Sortie servo, rail 6 V dédié (validé, page 12)
 
-LM2596S-ADJ alimenté par le +12V : V_SERVO = 1,23 V × (1 + R122 / R121) = 1,23 × (1 + 3,9 k / 1 k) ≈ **6,0 V, 3 A** (limitation interne, pas de PTC). Rail coupable par le MCP23017 : servo **hors tension au démarrage** tant que le firmware n'a pas fixé sa position. Le +5V (ESP32, capteurs) n'est pas perturbé par les appels de courant du servo.
+LM2596S-ADJ alimenté par le +12V : V_SERVO = 1,23 V × (1 + R123 / R122) = 1,23 × (1 + 3,9 k / 1 k) ≈ **6,0 V, 3 A** (limitation interne, pas de PTC). Rail coupable par le MCP23017 : servo **hors tension au démarrage** tant que le firmware n'a pas fixé sa position. Repères = export EasyEDA du 05/10 (les feuilles KiCad de `kicad/sortie_servo/` utilisent une numérotation antérieure).
 
 | Net | Broches |
 |---|---|
-| +12V | U121.1 (VIN), C129, C122 (10 µF), C123 (100 nF) |
-| SERVO_SW | U121.2, L121.1, D121 cathode (SS54) |
-| V_SERVO | L121.2, R122, C124+ (330 µF), C125 (100 nF), C126+ (470 µF près de J121), J121.2 |
-| SERVO_FB | U121.4, R122 (3,9 kΩ), R121 (1 kΩ → GND) |
-| SERVO_OFF | U121.5 (ON/OFF), R123 (10 kΩ → +3V3), U101.4 (GPB3) — haut / haute impédance = coupé |
+| +12V | U121.1 (VIN), C122, C123 (10 µF), C124 (100 nF) |
+| SERVO_SW | U121.2, L121.1, D121 (cathode, SS54) |
+| V_SERVO | L121.2, R123 (3,9 kΩ), C125+ (330 µF), C126 (100 nF), C127+ (470 µF), J121.2 |
+| SERVO_FB | U121.4, R123, R122 (1 kΩ → GND) |
+| SERVO_OFF | U121.5 (ON/OFF), R121 (10 kΩ → +3V3), U101.4 (GPB3) — haut / haute impédance = coupé |
 | SERVO_PWM | U105.19 (GPIO13, LEDC 50 Hz), R124 (10 kΩ → GND), U122.2 (A) |
-| SERVO_Y | U122.4 (Y), R125.1 (220 Ω) |
-| SERVO_SIG | R125.2, J121.3, D122 (TVS) |
-| +5V | U122.5 (VCC), C127 (100 nF) |
-| GND | U121.3, languette U121, R121, D121 anode, condensateurs, U122.1 (OE), U122.3, R124, D122, J121.1 |
+| (sans nom) | U122.4 (Y), R125 (220 Ω) |
+| (sans nom) | R125, D123 (TVS), J121.3 (signal) |
+| +5V | U122.5 (VCC), C128 (100 nF) |
+| GND | U121.3, U121 languette, R122, D121 anode, C122-C128, U122.1 (OE), U122.3, R124, D123, J121.1 |
 
-J121 (format servo) : 1 = GND, 2 = V_SERVO, 3 = signal.
+J121 : bornier 3 points — 1 = GND, 2 = V_SERVO (6 V), 3 = signal (rallonge servo à câbler).
 
 | Réf | Pièce | LCSC |
 |---|---|---|
 | U121 | LM2596S-ADJ (UMW, TO-263-5) | C347423 |
 | L121 | 33 µH 4,25 A SMDRI129-330MT | C2924828 |
 | D121 | SS54 | C22452 |
-| C124 | 330 µF 25 V low-ESR Panasonic EEE-FK1E331P (pas de polymère) | C178543 |
-| C126 | 470 µF 25 V DMBJ RVT1E471M1010 | C970707 |
-| C129, C122 | 10 µF 25 V 0805 | C15850 |
-| C123, C125, C127 | 100 nF 0603 | C14663 |
-| R121 | 1 kΩ 1 % | C21190 |
-| R122 | 3,9 kΩ 1 % (UNI-ROYAL 0603WAF3901T5E) | à chercher |
-| R123, R124 | 10 kΩ | C25804 |
+| C125 | 330 µF 25 V low-ESR Panasonic EEE-FK1E331P (pas de polymère) | C178543 (alt. C970701) |
+| C127 | 470 µF 25 V DMBJ RVT1E471M1010 | C970707 |
+| C122, C123 | 10 µF 25 V 0805 | C15850 |
+| C124, C126, C128 | 100 nF 0603 | C14663 |
+| R122 | 1 kΩ 1 % | C21190 |
+| R123 | 3,9 kΩ 1 % UNI-ROYAL 0603WAF3901T5E | C23018 (rupture constatée le 05/10 ; secours : R123 = 39 kΩ C23153 + R122 = 10 kΩ C25804, même rapport, R122/R123 collées à U121.4) |
+| R121, R124 | 10 kΩ | C25804 |
 | R125 | 220 Ω | C22962 |
 | U122 | SN74AHCT1G125DBVR (1 OE, 2 A, 3 GND, 4 Y, 5 VCC) | C7484 |
-| D122 | PESD5V0S1BB | C97640 |
-| J121 | barrette mâle 1×3, 2,54 mm | à choisir |
+| D123 | PESD5V0S1BB | C97640 |
+| J121 | bornier KEFA KF128-5.08-3P-AA | C474953 |
 
 ---
 
-## Bloc 13 — Sortie relais, contact sec (page 13, à saisir)
+## Bloc 13 — Sortie relais, contact sec (validé, page 12)
 
 | Net | Broches |
 |---|---|
-| RELAY_CMD | U101.3 (GPB2), R131 (220 Ω) |
-| RELAY_G | R131, Q131.1 (grille), R132 (100 kΩ → GND, relais ouvert au démarrage) |
-| RELAY_DRV | Q131.3 (drain), bobine − de K131, D131 anode |
-| +12V | bobine + de K131, D131 cathode (SS14, roue libre) |
-| GND | Q131.2 (source), R132 |
-| RELAY_COM / NO / NC | K131 → J131.1 / J131.2 / J131.3 |
+| RELAY_CMD | U101.3 (GPB2), R126 (220 Ω) |
+| (grille) | R126, Q121.1, R127 (100 kΩ → GND, relais ouvert au démarrage) |
+| (bobine −) | Q121.3 (drain), RELAY121.2, D122 anode |
+| +12V | RELAY121.1 (bobine +), D122 cathode (SS14, roue libre) |
+| GND | Q121.2 (source), R127 |
+| RELAY_COM | RELAY121.5 (contact mobile), J122.1 |
+| RELAY_NO | RELAY121.4, J122.2 |
+| RELAY_NC | RELAY121.3, J122.3 |
+
+Brochage COM / NO / NC vérifié sur le symbole LCSC de la C3633 (lame au repos sur le contact NC).
 
 | Réf | Pièce | LCSC |
 |---|---|---|
-| K131 | HONGFA HF32F/012-ZS3 (bobine 12 V, 1RT, 3 A) — câbler d'après les **noms** des broches du symbole C3633 | C3633 |
-| Q131 | AO3400A | C20917 |
-| D131 | SS14 | C2480 |
-| R131 | 220 Ω | C22962 |
-| R132 | 100 kΩ | C25803 |
-| J131 | bornier 3 points 5,08 mm | à choisir |
+| RELAY121 | HONGFA HF32F/012-ZS3 (bobine 12 V, 1RT, 3 A) | C3633 |
+| Q121 | AO3400A | C20917 |
+| D122 | SS14 | C2480 |
+| R126 | 220 Ω | C22962 |
+| R127 | 100 kΩ | C25803 |
+| J122 | bornier KEFA KF128-5.08-3P-AA | C474953 |
 
-Contact 3 A / 30 V DC — **basse tension uniquement, jamais de 230 V** (écartements de pistes non prévus pour le secteur).
+Contact 3 A / 30 V DC — **basse tension uniquement, jamais de 230 V** (sérigraphie près de J122).
 
 ---
 

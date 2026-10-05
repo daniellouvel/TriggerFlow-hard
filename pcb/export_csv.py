@@ -1,8 +1,7 @@
 from place import *
 import render as Rd, re
-newv={"U121":"LM2596S-ADJ","L121":"33uH 4,25A","D121":"SS54","C129":"10uF","C122":"10uF","C123":"100nF","C124":"330uF","C125":"100nF","C126":"470uF","C127":"100nF",
- "R121":"1kΩ 1%","R122":"3.9kΩ 1%","R123":"10kΩ","R124":"10kΩ","R125":"220Ω","U122":"SN74AHCT1G125","D122":"PESD5V0S1BB","J121":"servo 1x3",
- "K131":"HF32F/012-ZS3","Q131":"AO3400A","D131":"SS14","R131":"220Ω","R132":"100kΩ","J131":"bornier 3P 5,08"}
+newv={"U121":"LM2596S-ADJ","U122":"SN74AHCT1G125","RELAY121":"HF32F/012-ZS3","J121":"KF128-5.08-3P (servo)","J122":"KF128-5.08-3P (relais)",
+ "Q121":"AO3400A","D121":"SS54","D122":"SS14","D123":"PESD5V0S1BB"}
 names={"ana":"Entrées capteur","iso":"Sorties isolées","pwr":"Puissance","esp":"ESP32 / 3V3","i2c":"Bus I2C"}
 def k(r):
     m=re.match(r"([A-Z]+)(\d+)",r); return (m.group(1),int(m.group(2)))

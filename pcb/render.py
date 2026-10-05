@@ -11,7 +11,7 @@ def block(ref):
     if ref in ("U105", "D101"): return "esp"
     if ref in ("U101","U102","U103","U104","C101","C102","C103","C104","C105","R105","R106","R107","R108","R109"): return "i2c"
     if ref in ("CN101","U112","C111","C116"): return "esp"
-    if p in ("K",) or ref in ("Q131","D131","R131","R132","J131"): return "pwr"
+    if ref in ("RELAY121","Q121","D122","R126","R127","J122"): return "pwr"
     if 10 <= d <= 69 or p == "JP": return "ana"
     if 70 <= d <= 92 or ref in ("U113","U114","C119","C120","C121","R113","R114"): return "iso"
     return "pwr"
@@ -74,6 +74,7 @@ if __name__ == "__main__":
     render("zoom_entree_voie1.png", view=(6,46,80,126), scale=2.6, rats=True)
     render("zoom_isole_alim.png", view=(0,100,0,48), scale=1.6)
     render("zoom_puissance.png", view=(100,175,0,125), scale=1.4)
+    render("zoom_servo.png", view=(125,175,40,72), scale=2.4)
     tot = 0
     for n,pins in nets.items():
         if n in PLANES: continue

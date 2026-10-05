@@ -10,13 +10,13 @@ Carte 175 × 125 mm, 4 couches, vue de dessus. Origine au coin arrière gauche, 
 | --- | --- | --- | --- |
 | Sorties isolées (VISO) | 0–99 | 0–40 | J71, J81-J84 (centres x = 17, 35, 53, 71, 89) ; TVS, 2N7002, 74LVC2G04 ; U114 au centre de l'îlot |
 | Barrière d'isolation | 0–99 | y = 40 | U71, U81, U83 (HCPL-063L) et U113 (B0505S, sous J84, x = 90) à cheval ; ≥ 3 mm sans cuivre, toutes couches |
-| Relais | 104–124 | 0–40 | J131 au bord arrière, K131, Q131, D131 |
+| Relais | 104–124 | 0–40 | J122 au bord arrière, RELAY121, Q121, D122 |
 | Alimentation 12 V → 5 V | 127–175 | 0–41 | J111 dans le coin, F111, Q111, D111, C112, U111 (languette en haut), D112, L111, C117 |
 | ESP32-S3 DevKit (U105) | 1–70 | 44,5–72,5 | USB-C au bord gauche, rangée J1 vers l'avant ; D101 sous la carte |
 | Zone antenne | 58–86 | 43,5–73 | sans cuivre sur les 4 couches ; fente fraisée ≈ 12 × 24 mm sous l'antenne (x 58–70, y 46–70) |
 | Bus I2C (bloc 8) | 88–124 | 46–72 | U101 MCP23017, U102/U103 MCP4728, U104 ADS7828 |
 | Couloir de bus | 0–124 | 73,5–81,5 | THR, CS, ID, TLV_OUT en couche 4 ; rangée de vias de couture côté analogique (y ≈ 81,6) |
-| Servo 6 V | 127–175 | 44–69 | U121, L121, D121, C124, U122 ; C126 et J121 au bord droit |
+| Servo 6 V | 127–175 | 44–69 | U121, L121, D121, C125, U122 ; C127 et J121 (bornier) au bord droit |
 | Vannes 2 × 3 | 127–175 | 71–115 | CN91-CN96 en 2 rangées miroir, rail +12V central |
 | Entrées capteur ×6 | 0–124 | 82–125 | J11-J61 (centres x = 17, 35, 53, 79, 97, 115) ; une bande de 18 mm par voie |
 | +3V3 et LED | 127–175 | 115–125 | U112 (AMS1117), C116, C111, CN101 au bord avant |
@@ -35,7 +35,7 @@ Analogique, numérique, puissance et isolé restent dans leurs zones ; aucun cou
 - [ ] TLV\_OUT (fronts de 4,5 ns) ne longe jamais l'entrée CLAMP du PGA
 - [ ] SPI, CS et SERVO\_PWM routés en couche 4, hors des bandes analogiques
 - [ ] Pistes +12V, VALVE\_PWR, VALVE\_SW : ≥ 2 mm ou plages de cuivre
-- [ ] Au moins 2 vias par source de MOSFET (Q91-Q96, Q131) vers la couche 2
+- [ ] Au moins 2 vias par source de MOSFET (Q91-Q96, Q121) vers la couche 2
 
 ## Antenne de l'ESP32
 
@@ -77,11 +77,11 @@ Les deux LM2596 dissipent chacun 2 à 3 W dans le même coin : boucles courtes, 
 
 - [ ] Chaque 100 nF à ≤ 2 mm de sa broche d'alimentation, via GND juste à côté du condensateur
 - [ ] Filtre THR (R13/C11 et équivalents) collé à la broche 2 de chaque TLV3501
-- [ ] Boucle C112 → U111 → D112 la plus courte possible ; idem C129/C122 → U121 → D121
+- [ ] Boucle C112 → U111 → D112 la plus courte possible ; idem C122/C123 → U121 → D121
 - [ ] L111 et L121 orientées à 90° l'une de l'autre, à ≥ 10 mm
 - [ ] Plage de cuivre et ≈ 15 vias thermiques sous la languette de U111 et de U121 (deux plans internes à traverser) ; couche 3 reliée au GND sous les régulateurs pour dissiper
-- [ ] Électrolytiques C112, C117, C124, C126 à ≥ 5 mm des languettes des LM2596
-- [ ] C126 (470 µF) collé à J121
+- [ ] Électrolytiques C112, C117, C125, C127 à ≥ 5 mm des languettes des LM2596
+- [ ] C127 (470 µF) au plus près de J121
 - [ ] Dans chaque canal vanne, D9n entre CN9n et Q9n : boucle de roue libre ≤ 10 mm
 - [ ] D101 (anti-retour USB) près de la broche 5V de la DevKit
 
@@ -93,8 +93,8 @@ Onze RJ45 subissent un effort à chaque branchement : un trou de fixation près 
 - [ ] Zone d'exclusion de 7 mm de diamètre autour de chaque trou (tête de vis, entretoise)
 - [ ] Décider si les trous GND (H2, H3, H4, H6) sont reliés à la masse du boîtier ; H1 et H5 jamais
 - [ ] RJ45 alignés sur le bord, nez au ras ou en léger débord selon la façade
-- [ ] Dégagement de 5 mm autour de CN91-CN96, J121 et J131 pour les doigts
-- [ ] Rien de haut contre les connecteurs de vannes (C126, K131)
+- [ ] Dégagement de 5 mm autour de CN91-CN96, J121 et J122 pour les doigts
+- [ ] Rien de haut contre les connecteurs de vannes (C127, RELAY121)
 - [ ] Relever les hauteurs maximales : DevKit sur barrettes, relais, électrolytiques, LM2596 ; vérifier sous le couvercle
 - [ ] Découpe de façade pour les deux USB-C de la DevKit (hauteur des barrettes femelles comprise)
 
@@ -109,7 +109,7 @@ Tout sur la face du dessus pour un assemblage JLC en simple face, le moins cher.
 - [ ] Écarts entre zones d'encombrement selon IPC-7351 ; pas de CMS sous les zones de soudure des traversants
 - [ ] Points de test : +12V, +5V, +3V3, VISO\_3V3, V\_SERVO, GND, VISO\_GND, I2C\_SDA/SCL, SPI\_MOSI/SCK, TLV\_OUT\_1 à 6
 - [ ] Sérigraphie : V1 à V6 et + / − près de CN91-CN96, dans l'ordre des GX12 de façade
-- [ ] Sérigraphie : « BASSE TENSION, 30 V max, jamais de 230 V » près de J131
+- [ ] Sérigraphie : « BASSE TENSION, 30 V max, jamais de 230 V » près de J122
 - [ ] Sérigraphie : numéro de voie près de chaque RJ45, marquage de la zone isolée
 - [ ] Empilement JLC standard 4 couches 1,6 mm, cuivre 1 oz
 
@@ -121,5 +121,5 @@ Les cotes du plan sont estimées ; ces données les figent.
 - [ ] Dimensions de la YD-ESP32-S3 N16R8, entraxe des rangées J1/J3, position de la broche 1, emplacement de l'antenne
 - [ ] HX25003-2A : version droite ou coudée
 - [ ] Boîtier : plastique ou métallique (décide de la WROOM-1U et du raccordement des trous à la masse)
-- [ ] Choix du bornier J131 et de la barrette J121
+- [x] Borniers J121 (servo) et J122 (relais) : KF128-5.08-3P-AA, C474953
 - [x] Mise à jour de README.md et BOM-netlist.md sur GitHub (servo, relais, suppression des Blocs 4 et 7)

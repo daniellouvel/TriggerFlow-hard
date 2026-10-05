@@ -4,7 +4,7 @@ Boîtier de déclenchement généraliste pour photographie haute vitesse : déte
 
 Contrôlable par **USB (PC)** et **Wi-Fi/BLE (application mobile)**.
 
-Statut (04/10/2026) : schéma saisi dans EasyEDA et validé netlist par netlist pour les Blocs 1, 2, 3, 5, 5b, 8, 10 et la feuille ESP32 (voir BOM-netlist.md). Moteur pas à pas (Bloc 4) et PWM lumière/servo (Bloc 7) supprimés ; nouvelles sorties servo (Bloc 12, rail 6 V dédié) et relais (Bloc 13) dessinées sous KiCad, à saisir. Bloc 6 (3 relais) remplacé par des prises Wi-Fi. Module capteur universel conçu (8 variantes). Implantation PCB v4 (175 × 125 mm, 4 couches) et checklist de placement établies. Firmware non commencé.
+Statut (05/10/2026) : **schéma complet et validé** dans EasyEDA (Blocs 1, 2, 3, 5, 5b, 8, 10, 12 servo, 13 relais et feuille ESP32) : netlist vérifiée net par net, ERC 0 erreur / 0 avertissement ; référence : `netlist/Netlist_Schematic1_2026-10-05.tel`. Moteur pas à pas, PWM lumière/servo et relais ×3 supprimés (prises Wi-Fi). Module capteur universel conçu (8 variantes). Implantation PCB v4 (175 × 125 mm, 4 couches) recalée sur la netlist de référence. Firmware non commencé.
 
 ---
 
@@ -231,8 +231,8 @@ Choix retenu : **connecteurs circulaires aviation GX12** pour les vannes et l'al
 | Élément | Connecteur | Notes |
 |---|---|---|
 | Électrovanne (×6) | GX12 2 broches | +/- alimentation vanne |
-| Servo | barrette 3 points 2,54 mm (format servo) | 1 = GND, 2 = V_SERVO 6 V, 3 = signal |
-| Relais | bornier 3 points 5,08 mm | COM / NO / NC, basse tension uniquement |
+| Servo | bornier 3 points 5,08 mm KF128 (C474953) | 1 = GND, 2 = V_SERVO 6 V, 3 = signal (rallonge servo à câbler) |
+| Relais | bornier 3 points 5,08 mm KF128 (C474953) | COM / NO / NC, basse tension uniquement |
 | Alimentation générale (entrée DC) | GX12 ou GX16 selon courant total | Voir section alimentation ci-dessous |
 
 **Périmètre délibérément limité** : le GX12 reste réservé aux connecteurs de puissance. Les 11 connecteurs signal (entrées capteur + sorties flash / appareil photo) restent en **RJ45** (voir section 11) — meilleur compromis coût/disponibilité de câbles préfabriqués/qualité de signal (paires torsadées) pour du faible courant, l'étanchéité renforcée du GX12 n'étant pas jugée nécessaire pour ces liaisons dans l'usage prévu. Bénéfice supplémentaire : les deux familles de connecteurs sont physiquement incompatibles entre elles, ce qui empêche tout branchement erroné (vanne sur un port capteur, par exemple).
@@ -318,8 +318,8 @@ Core 1 (temps réel, GPIO natif)          Expandeur I2C (non critique)
 
 ## 15. Ouvert / non tranché
 
-- **Saisie restante** : sortie servo (page 12) et sortie relais (page 13) — schémas KiCad dans `kicad/sortie_servo/` et `kicad/sortie_relais/`, netlists dans BOM-netlist.md. Sur U105.19 l'étiquette STEP devient SERVO_PWM ; RELAY_CMD sur U101.3, SERVO_OFF sur U101.4 ; croix « non connecté » sur U101.1, U101.2.
-- **Vérifications** : ERC complet dans EasyEDA ; références LCSC à confirmer (R122 3,9 kΩ, D101 = SS14 C2480, barrettes 1×22, barrette servo, bornier relais) ; écartement réel des rangées de la YD-ESP32-S3.
+- **Schéma** : terminé (référence du 05/10). Points restants : R123 3,9 kΩ (C23018 en rupture, secours 39 k / 10 k), D101 = SS14 C2480 à confirmer, barrettes 1×22 de la carte ESP32.
+- **Vérifications** : écartement réel des rangées de la YD-ESP32-S3 ; empreintes réelles (RJ45, DevKit, relais) avant de figer le placement.
 - **PCB** (voir `pcb/` et `docs/pcb-checklist.md`) : cotes réelles du RJ45 HanXia C25168869 et de la DevKit, orientation broche 1 des empreintes, boîtier plastique ou métallique (métallique → WROOM-1U à antenne externe, à décider avant routage), raccordement des trous de fixation à la masse.
 - **Connecteur vanne** : HX25003-2A droit ou coudé ; GX12 de façade (2 ou 4 broches).
 - **Bande passante MCP6S91 à gain ×32** à confirmer à la datasheet.
