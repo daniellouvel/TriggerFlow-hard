@@ -32,21 +32,25 @@ Méthode : schéma de référence → saisie EasyEDA Pro avec références LCSC 
 
 Le module remplace la DevKit de la v1 ; chaque signal garde son GPIO. Détail complet (broches, nets, choix, BOM vérifiée) : [docs/mcu-v2-wroom.md](docs/mcu-v2-wroom.md).
 
+GPIO réaffectés pour le placement (09/10) : chaque signal sort du côté du module qui fait face à sa destination.
+
 | Broche module | GPIO | Net |
 |---|---|---|
 | 4 à 9 | 4, 5, 6, 7, 15, 16 | TLV_OUT_1 … TLV_OUT_6 |
-| 10, 23, 32, 34 | 17, 21, 39, 41 | FLASH_1_CMD … FLASH_4_CMD |
-| 35 | 42 | SHUTTER_CMD |
-| 39, 38, 18, 31, 25, 24 | 1, 2, 10, 38, 48, 47 | GPIO_VALVE_1 … GPIO_VALVE_6 |
-| 21 | 13 | SERVO_PWM |
-| 12 / 17 | 8 / 9 | I2C_SDA / I2C_SCL |
-| 19 / 20 | 11 / 12 | SPI_MOSI / SPI_SCK |
-| 11 | 18 | GPIO18 (DAC2_LDAC) |
+| 10 / 11 | 17 / 18 | SPI_SCK / SPI_MOSI |
 | 13 / 14 | 19 / 20 | USB_DN / USB_DP |
+| 18 | 10 | DAC2_LDAC |
+| 19 / 20 | 11 / 12 | I2C_SCL / I2C_SDA |
+| 21, 22, 23, 24 | 13, 14, 21, 47 | GPIO_VALVE_6, 5, 4, 3 |
+| 25 | 48 | SERVO_PWM |
 | 27 | 0 | IO0_BOOT |
+| 31 | 38 | SHUTTER_CMD |
+| 32, 33, 34, 35 | 39, 40, 41, 42 | FLASH_1_CMD … FLASH_4_CMD |
 | 36 / 37 | RXD0 / TXD0 | TP142 / TP141 |
+| 38 / 39 | 2 / 1 | GPIO_VALVE_1 / GPIO_VALVE_2 |
 | 2 / 3 | — | 3V3_MCU / EN |
 | 1, 40, 41 | — | GND |
+| 12, 17 | 8, 9 | libres (réserve) |
 
 | Réf | Pièce | LCSC |
 |---|---|---|

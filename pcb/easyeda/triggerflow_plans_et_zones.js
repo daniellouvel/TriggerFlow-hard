@@ -48,10 +48,10 @@ const POURS = [
   { net: 'VISO_GND', layer: LAYER.INNER_1, name: 'L2_VISO_GND', shape: () => rect(0.5, 86.5, 96.3, 124.5) },
   // Inner2
   { net: 'VISO_3V3', layer: LAYER.INNER_2, name: 'L3_VISO_3V3', shape: () => rect(0.5, 86.5, 96.3, 124.5) },
-  { net: '+12V', layer: LAYER.INNER_2, name: 'L3_+12V', shape: () => poly([[104, 124.5], [174.5, 124.5], [174.5, 17], [127.5, 17], [127.5, 83.5], [104, 83.5]]) },
+  { net: '+12V', layer: LAYER.INNER_2, name: 'L3_+12V', shape: () => poly([[104, 124.5], [174.5, 124.5], [174.5, 10.5], [146.5, 10.5], [146.5, 23], [127.5, 23], [127.5, 83.5], [104, 83.5]]) },
   { net: '+3V3', layer: LAYER.INNER_2, name: 'L3_+3V3', shape: () => poly([[52, 79.5], [121, 79.5], [121, 8], [4, 8], [4, 51], [52, 51]]) },
   { net: '3V3_MCU', layer: LAYER.INNER_2, name: 'L3_3V3_MCU', shape: () => rect(9, 52.5, 50, 79.5) },
-  { net: '+5V', layer: LAYER.INNER_2, name: 'L3_+5V', shape: () => poly([[28, 83], [126.5, 83], [126.5, 15.5], [174.5, 15.5], [174.5, 0.5], [0.5, 0.5], [0.5, 7], [122, 7], [122, 80.5], [28, 80.5]]) },
+  { net: '+5V', layer: LAYER.INNER_2, name: 'L3_+5V', shape: () => poly([[28, 83], [126.5, 83], [126.5, 21.5], [145, 21.5], [145, 9], [174.5, 9], [174.5, 0.5], [0.5, 0.5], [0.5, 7], [122, 7], [122, 80.5], [28, 80.5]]) },
 ];
 const REGIONS = [
   { name: 'Interdit_antenne', shape: () => rect(0, 57, 7, 81.5) },

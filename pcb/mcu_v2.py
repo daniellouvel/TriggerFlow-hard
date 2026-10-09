@@ -14,16 +14,23 @@ WROOM_PIN = {4: 4, 5: 5, 6: 6, 7: 7, 15: 8, 16: 9, 17: 10, 18: 11, 8: 12, 19: 13
              11: 19, 12: 20, 13: 21, 14: 22, 21: 23, 47: 24, 48: 25, 45: 26, 0: 27, 35: 28, 36: 29, 37: 30, 38: 31,
              39: 32, 40: 33, 41: 34, 42: 35, 2: 38, 1: 39}          # + 1 GND, 2 3V3, 3 EN, 36 RXD0, 37 TXD0, 40/41 GND
 
+# v2 : GPIO réaffectés pour le placement (chaque signal sort du côté du module qui fait face à sa destination)
+#  bas (vers les entrées)  : TLV_OUT_1..6 = IO4, 5, 6, 7, 15, 16 ; SPI_SCK = IO17 ; SPI_MOSI = IO18 ; IO8 libre
+#  droite (bus I2C, servo, vannes) : SERVO_PWM = IO48 ; GPIO_VALVE_3..6 = IO47, 21, 14, 13 ; I2C_SDA = IO12 ;
+#                                    I2C_SCL = IO11 ; DAC2_LDAC = IO10 ; IO9 libre
+#  haut (vers les optos)   : SHUTTER = IO38 ; FLASH_1..4 = IO39, 40, 41, 42 ; GPIO_VALVE_1 = IO2 ; GPIO_VALVE_2 = IO1
+GPIO_V2 = {"TLV_OUT_1": 4, "TLV_OUT_2": 5, "TLV_OUT_3": 6, "TLV_OUT_4": 7, "TLV_OUT_5": 15, "TLV_OUT_6": 16,
+           "SPI_SCK": 17, "SPI_MOSI": 18, "SERVO_PWM": 48, "GPIO_VALVE_3": 47, "GPIO_VALVE_4": 21,
+           "GPIO_VALVE_5": 14, "GPIO_VALVE_6": 13, "I2C_SDA": 12, "I2C_SCL": 11, "DAC2_LDAC": 10,
+           "SHUTTER_CMD": 38, "FLASH_1_CMD": 39, "FLASH_2_CMD": 40, "FLASH_3_CMD": 41, "FLASH_4_CMD": 42,
+           "GPIO_VALVE_1": 2, "GPIO_VALVE_2": 1}
+RENAME = {"GPIO18": "DAC2_LDAC"}
 nets = {}
 for n, pins in t["nets"].items():
-    out = []
-    for p in pins:
-        r, k = p.split(".")
-        if r != "U105": out.append(p); continue
-        k = int(k)
-        if k in DEVKIT_GPIO: out.append(f"U105.{WROOM_PIN[DEVKIT_GPIO[k]]}")
-        # 5V (21) et GND (22, 23, 24, 44) de la DevKit : remplacés ci-dessous
-    nets[n] = out
+    n2 = RENAME.get(n, n)
+    out = [p for p in pins if not p.startswith("U105.")]
+    if n2 in GPIO_V2: out.append(f"U105.{WROOM_PIN[GPIO_V2[n2]]}")
+    nets[n2] = out
 nets["5V_MCU"] = [p for p in nets.pop("V5_DEVKIT") if p != "U105.21"]   # D101.1 (cathode)
 
 comps = dict(t["comps"])

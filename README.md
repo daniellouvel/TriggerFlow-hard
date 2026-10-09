@@ -60,9 +60,9 @@ Principe directeur de l'architecture GPIO : **seul ce qui a une exigence de timi
 
 ### 4.1 GPIO natifs (chemin critique) — affectation validée
 
-v2 : module **ESP32-S3-WROOM-1-N16R8** soudé (U105). Mêmes GPIO qu'en v1 ; seuls les numéros de broches du composant changent (tableau complet dans [docs/mcu-v2-wroom.md](docs/mcu-v2-wroom.md)). IO0 sert au bouton BOOT, IO19 / IO20 à l'USB natif ; aucune autre broche de démarrage utilisée, IO35 à IO37 libres. La colonne de droite ci-dessous donne les broches de la DevKit v1.
+v2 : module **ESP32-S3-WROOM-1-N16R8** soudé (U105), **GPIO réaffectés pour le placement** (TLV_OUT inchangés ; SPI 17/18, I2C SDA 12 / SCL 11, LDAC 10, servo 48, vannes 2, 1, 47, 21, 14, 13, shutter 38, flash 39-42). Table complète et `#define` du firmware v2 dans [docs/mcu-v2-wroom.md](docs/mcu-v2-wroom.md). Le tableau ci-dessous est celui de la **v1** (DevKit).
 
-| Signal | GPIO | Broche DevKit v1 (symbole U105) |
+| Signal | GPIO (v1) | Broche DevKit v1 (symbole U105) |
 |---|---|---|
 | TLV_OUT_1 … TLV_OUT_6 (entrées, ISR) | 4, 5, 6, 7, 15, 16 | 4 à 9 |
 | FLASH_1_CMD, FLASH_2_CMD, FLASH_3_CMD, FLASH_4_CMD | 17, 21, 39, 41 | 10, 27, 36, 38 |
@@ -334,6 +334,6 @@ Core 1 (temps réel, GPIO natif)          Expandeur I2C (non critique)
 
 Carte **175 × 125 mm, 4 couches** (JLC 1,6 mm, 1 oz) : couche 1 composants et signaux courts, couche 2 **GND plein** (îlot VISO séparé), couche 3 plages d'alimentation (+12V au quart droit, +3V3 au centre, +5V en bandes le long des bords), couche 4 signaux longs.
 
-Zones : sorties isolées au bord arrière gauche (barrière d'isolation à y = 40 mm, seuls les 3 HCPL-063L et le B0505S la traversent, ≥ 3 mm sans cuivre sur toutes les couches) ; relais et alimentation au bord arrière droit ; module ESP32 au bord gauche avec l'antenne au bord (zone sans cuivre de 7 mm, plus de fente en v2) et l'USB-C juste en dessous ; rail 3V3_MCU dédié ; bus I2C au centre ; couloir de bus de 8 mm en couche 4 ; servo et vannes (2 rangées de 3) à droite ; 6 entrées capteur au bord avant (bandes de 18 mm). Placement de 305 composants (v2) vérifié par script (chevauchements, zone antenne, barrière, trous M3).
+Zones : sorties isolées au bord arrière gauche (barrière d'isolation à y = 40 mm, seuls les 3 HCPL-063L et le B0505S la traversent, ≥ 3 mm sans cuivre sur toutes les couches) ; module ESP32 au bord gauche avec l'antenne au bord (zone sans cuivre de 7 mm, plus de fente en v2) et l'USB-C juste en dessous ; rail 3V3_MCU dédié ; colonne de droite : servo, relais et entrée 12 V à l'arrière, vannes au milieu, 12 V → 5 V et +3V3 dans le coin avant droit ; bus I2C au centre ; couloir de bus de 8 mm en couche 4 ; 6 entrées capteur au bord avant (bandes de 18 mm). Placement de 305 composants (v2) vérifié par script (chevauchements, zone antenne, barrière, trous M3).
 
 Détails, fichier de positions et scripts : [pcb/README.md](pcb/README.md) ; checklist : [docs/pcb-checklist.md](docs/pcb-checklist.md).

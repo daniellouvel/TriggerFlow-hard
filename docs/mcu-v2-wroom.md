@@ -10,33 +10,57 @@ Ce que la DevKit fournissait et qu'il faut maintenant ajouter : le 3,3 V du modu
 
 Garder la version **N16R8** : dans les versions « …V » (R8V, R16V), GPIO47 et GPIO48 (vannes 5 et 6) passent en 1,8 V.
 
-## Broches de U105 (module WROOM-1)
+## Broches de U105 (module WROOM-1) — GPIO réaffectés pour le placement
 
-| Broche module | GPIO | Net | Broche DevKit v1 |
-|---|---|---|---|
-| 1, 40, 41 (pastille) | — | GND | 22, 23, 24, 44 |
-| 2 | — | 3V3_MCU | (3V3 de la DevKit) |
-| 3 | EN | EN | 3 (RST) |
-| 4, 5, 6, 7, 8, 9 | 4, 5, 6, 7, 15, 16 | TLV_OUT_1 … TLV_OUT_6 | 4 à 9 |
-| 10 | 17 | FLASH_1_CMD | 10 |
-| 11 | 18 | GPIO18 (DAC2_LDAC) | 11 |
-| 12 / 17 | 8 / 9 | I2C_SDA / I2C_SCL | 12 / 15 |
-| 13 / 14 | 19 / 20 | USB_DN / USB_DP (USB natif) | 25 / 26 (libres en v1) |
-| 18 | 10 | GPIO_VALVE_3 | 16 |
-| 19 / 20 | 11 / 12 | SPI_MOSI / SPI_SCK | 17 / 18 |
-| 21 | 13 | SERVO_PWM | 19 |
-| 23 | 21 | FLASH_2_CMD | 27 |
-| 24 / 25 | 47 / 48 | GPIO_VALVE_6 / GPIO_VALVE_5 | 28 / 29 |
-| 27 | 0 | IO0_BOOT | 31 (libre en v1) |
-| 31 | 38 | GPIO_VALVE_4 | 35 |
-| 32 | 39 | FLASH_3_CMD | 36 |
-| 34 | 41 | FLASH_4_CMD | 38 |
-| 35 | 42 | SHUTTER_CMD | 39 |
-| 36 / 37 | RXD0 / TXD0 | RXD0 / TXD0 (pastilles de test TP142 / TP141) | 42 / 43 |
-| 38 / 39 | 2 / 1 | GPIO_VALVE_2 / GPIO_VALVE_1 | 40 / 41 |
-| 15, 16, 22, 26, 28, 29, 30, 33 | 3, 46, 14, 45, 35, 36, 37, 40 | non connectées | — |
+Les GPIO de la v1 ont été **réaffectés** (accord du 09/10 : sans impact pour le firmware, qui n'utilise qu'une table de broches par version). Le module étant tourné (antenne à gauche), chaque signal sort du côté qui fait face à sa destination :
 
-Broches de démarrage (IO0, IO3, IO45, IO46) : seul IO0 est utilisé, pour le bouton BOOT. IO35 à IO37 restent libres (PSRAM octale).
+- **bas** (broches 1-14, vers les entrées capteur) : TLV_OUT, SPI, USB ;
+- **droite** (broches 15-26, vers le bus I2C, le servo et les vannes) : I2C, DAC2_LDAC, SERVO_PWM, vannes 3 à 6 ;
+- **haut** (broches 27-40, vers les optocoupleurs) : SHUTTER, FLASH_1 à 4, console UART, vannes 1 et 2.
+
+Sur chaque côté, l'ordre des broches suit l'ordre des destinations pour que les pistes ne se croisent pas (en haut : SHUTTER vers U71 la plus proche, puis FLASH_1/2 vers U81, FLASH_3/4 vers U83, vannes 1/2 en dernier par la bande libre le long de la barrière).
+
+| Broche module | Côté | GPIO v2 | Net | GPIO v1 |
+|---|---|---|---|---|
+| 1, 40, 41 (pastille) | — | — | GND | — |
+| 2 | bas | — | 3V3_MCU | — |
+| 3 | bas | EN | EN | — |
+| 4, 5, 6, 7, 8, 9 | bas | 4, 5, 6, 7, 15, 16 | TLV_OUT_1 … TLV_OUT_6 | inchangé |
+| 10 | bas | 17 | SPI_SCK | 12 |
+| 11 | bas | 18 | SPI_MOSI | 11 |
+| 12 | bas | 8 | libre (réserve) | I2C_SDA |
+| 13 / 14 | bas | 19 / 20 | USB_DN / USB_DP | — |
+| 15, 16 | droite | 3, 46 | non connectées (démarrage) | — |
+| 17 | droite | 9 | libre (réserve) | I2C_SCL |
+| 18 | droite | 10 | DAC2_LDAC (ancien net GPIO18) | 18 |
+| 19 / 20 | droite | 11 / 12 | I2C_SCL / I2C_SDA | 9 / 8 |
+| 21, 22, 23, 24 | droite | 13, 14, 21, 47 | GPIO_VALVE_6, 5, 4, 3 | 47, 48, 38, 10 |
+| 25 | droite | 48 | SERVO_PWM | 13 |
+| 26 | droite | 45 | non connectée (démarrage) | — |
+| 27 | haut | 0 | IO0_BOOT | — |
+| 28, 29, 30 | haut | 35, 36, 37 | non connectées (PSRAM octale) | — |
+| 31 | haut | 38 | SHUTTER_CMD | 42 |
+| 32, 33 | haut | 39, 40 | FLASH_1_CMD, FLASH_2_CMD | 17, 21 |
+| 34, 35 | haut | 41, 42 | FLASH_3_CMD, FLASH_4_CMD | 39, 41 |
+| 36 / 37 | haut | RXD0 / TXD0 | RXD0 / TXD0 (TP142 / TP141, à gauche) | — |
+| 38 / 39 | haut | 2 / 1 | GPIO_VALVE_1 / GPIO_VALVE_2 | 1 / 2 |
+
+Table de broches à reprendre dans le firmware v2 :
+
+```c
+// TriggerFlow v2 (module WROOM-1) — à comparer avec la table v1 (DevKit)
+#define PIN_TLV_OUT_1 4   #define PIN_TLV_OUT_2 5   #define PIN_TLV_OUT_3 6
+#define PIN_TLV_OUT_4 7   #define PIN_TLV_OUT_5 15  #define PIN_TLV_OUT_6 16
+#define PIN_SPI_SCK   17  #define PIN_SPI_MOSI  18
+#define PIN_I2C_SDA   12  #define PIN_I2C_SCL   11  #define PIN_DAC2_LDAC 10
+#define PIN_SERVO_PWM 48
+#define PIN_VALVE_1 2  #define PIN_VALVE_2 1  #define PIN_VALVE_3 47
+#define PIN_VALVE_4 21 #define PIN_VALVE_5 14 #define PIN_VALVE_6 13
+#define PIN_SHUTTER 38 #define PIN_FLASH_1 39 #define PIN_FLASH_2 40
+#define PIN_FLASH_3 41 #define PIN_FLASH_4 42
+```
+
+Broches de démarrage (IO0, IO3, IO45, IO46) : seul IO0 est utilisé, pour le bouton BOOT. IO35 à IO37 restent libres (PSRAM octale). IO39 à IO42 sont aussi les broches JTAG externes, inutilisées puisque le JTAG passe par l'USB.
 
 ## Nouveaux nets
 
@@ -50,7 +74,7 @@ Broches de démarrage (IO0, IO3, IO45, IO46) : seul IO0 est utilisé, pour le bo
 | USB_DN | J141 A7 et B7, U142.1 et U142.6, U105.13 (IO19) |
 | USB_DP | J141 A6 et B6, U142.3 et U142.4, U105.14 (IO20) |
 | CC1 / CC2 | J141.A5 – R143.1 / J141.B5 – R144.1 |
-| TXD0 / RXD0 | U105.37 – TP141 / U105.36 – TP142 |
+| TXD0 / RXD0 | U105.37 – TP141 / U105.36 – TP142 (pastilles à gauche du module, liaison en couche Bottom sous les pistes des vannes 1-2) |
 | GND | U105.1, 40, 41 ; U141.1 ; U142.2 ; J141 A1, A12, B1, B12 et blindage ; R143.2, R144.2 ; C141 à C146 (.2) ; SW141 et SW142 (côté 3-4) |
 
 J141 SBU1 / SBU2 : non connectées. Le net V5_DEVKIT de la v1 devient 5V_MCU.
@@ -87,10 +111,12 @@ Les numéros LCSC de U105, U142, J141, SW141/142 et R143/144 ont été vérifié
 ## Implantation (voir `pcb/`)
 
 - U105 tourné de 90° : **antenne au bord gauche** (x = 0,5 à 6,8 mm), broches 1 à 14 vers les entrées capteur, 15 à 26 vers le bus I2C, 27 à 40 vers les optocoupleurs.
+- Colonne de droite reprise de l'implantation EasyEDA du 09/10 : servo, relais et entrée 12 V à l'arrière ; vannes au milieu ; 12 V → 5 V et +3V3 dans le coin avant droit, avec la boucle de découpage de U111 compacte (C112 au-dessus de l'entrée, C113-C115 et D112 collés aux broches, L111 à moins de 10 mm).
+- Bus I2C (U101 à U104) hors du couloir de bus, R108 / R109 près de U101.
 - Zone antenne interdite au cuivre sur les 4 couches : x 0 à 7, y 43,5 à 68 mm (repère du placement). Plus de fente fraisée.
 - J141 au bord gauche sous la zone antenne (y 70,3 à 79,7), U142 juste derrière, R143 / R144 à côté.
 - U141, D101, C144 à C146, R142, SW141 et SW142 dans la zone libérée par la DevKit (x 27 à 56).
-- Inner2 : nouvelle plage **3V3_MCU** (x 9 à 50, y 45,5 à 72,5) ; la plage +3V3 commence à x = 52 au-dessus du couloir de bus ; la bande gauche du +5V disparaît et le tronçon sous la barrière est prolongé jusqu'à D101 (x = 28).
+- Inner2 : nouvelle plage **3V3_MCU** (x 9 à 50, y 45,5 à 72,5) ; la plage +3V3 commence à x = 52 au-dessus du couloir de bus ; la bande gauche du +5V disparaît et le tronçon sous la barrière est prolongé jusqu'à D101 (x = 28) ; la plage **+12V** descend jusqu'à l'entrée de U111 (coin avant droit) et le **+5V** occupe le bas du coin (sortie de L111, C117, U112).
 
 ## Points à vérifier
 

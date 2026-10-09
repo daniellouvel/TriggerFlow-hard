@@ -48,9 +48,9 @@ d.saveas("TriggerFlow_3_zones_interdites.dxf")
 
 # ---------- 4. plan des zones (repères de routage)  -> couche Document ----------
 d = new(); m = d.modelspace(); d.layers.add("ZONES", color=8); d.layers.add("BARRIERE", color=1)
-Z = [("Sorties isolées VISO", 0, 0, 99, 40), ("Relais", 104, 0, 124, 40), ("Alim 12V -> 5V", 127, 0, 175, 41),
+Z = [("Sorties isolées VISO", 0, 0, 99, 40), ("Servo, relais, entrée 12V", 104, 0, 175, 43.5),
      ("U105 WROOM-1 (antenne <-)", 0.5, 45, 26, 63), ("USB-C J141", 0.5, 70.3, 8.3, 79.7), ("3V3_MCU, RESET, BOOT", 27, 44.5, 56, 72.5), ("Bus I2C", 88, 46, 124, 72), ("Couloir de bus (L4) + vias", 0, 73.5, 124, 81.5),
-     ("Servo 6V", 127, 44, 175, 69), ("Vannes 2x3", 127, 71, 175, 115), ("Entrées capteur x6", 0, 82, 124, 125), ("+3V3 / LED", 127, 115, 175, 125)]
+     ("Vannes 2x3", 127, 44, 175, 88), ("Entrées capteur x6", 0, 82, 124, 125), ("12V -> 5V, +3V3, LED", 124, 90, 175, 125)]
 for t, x1, y1, x2, y2 in Z:
     rect(m, x1, y1, x2, y2, "ZONES"); txt(m, t, x1 + 1, y1 + 1, 1.8, "ZONES")
 m.add_line(F(0, 40), F(99, 40), dxfattribs={"layer": "BARRIERE"})
@@ -62,10 +62,10 @@ d.saveas("TriggerFlow_4_zones_document.dxf")
 d = new(); m = d.modelspace()
 for n, c in (("L3_VISO_3V3", 6), ("L3_+12V", 1), ("L3_+3V3", 4), ("L3_+5V", 2), ("L3_3V3_MCU", 5)): d.layers.add(n, color=c)
 rect(m, 0.5, 0.5, 96.3, 38.5, "L3_VISO_3V3")
-poly(m, [(104, 0.5), (174.5, 0.5), (174.5, 108), (127.5, 108), (127.5, 41.5), (104, 41.5)], "L3_+12V")
+poly(m, [(104, 0.5), (174.5, 0.5), (174.5, 114.5), (146.5, 114.5), (146.5, 102), (127.5, 102), (127.5, 41.5), (104, 41.5)], "L3_+12V")   # v2 : jusqu'à l'entrée de U111 (coin avant droit)
 poly(m, [(52, 45.5), (121, 45.5), (121, 117), (4, 117), (4, 74), (52, 74)], "L3_+3V3")
 rect(m, 9, 45.5, 50, 72.5, "L3_3V3_MCU")          # rail du module (U141 -> U105)
-poly(m, [(28, 42), (126.5, 42), (126.5, 109.5), (174.5, 109.5), (174.5, 124.5), (0.5, 124.5), (0.5, 118), (122, 118), (122, 44.5), (28, 44.5)], "L3_+5V")   # v2 : plus de bande gauche, tronçon prolongé jusqu'à D101 (x = 28)
+poly(m, [(28, 42), (126.5, 42), (126.5, 103.5), (145, 103.5), (145, 116), (174.5, 116), (174.5, 124.5), (0.5, 124.5), (0.5, 118), (122, 118), (122, 44.5), (28, 44.5)], "L3_+5V")   # v2 : plus de bande gauche, tronçon prolongé jusqu'à D101 (x = 28)
 for t, x, y in (("VISO_3V3", 40, 20), ("+12V", 150, 75), ("+3V3", 30, 100), ("+5V", 145, 120), ("3V3_MCU", 30, 60)): txt(m, t, x, y, 3, "L3_" + t)
 d.saveas("TriggerFlow_5_couche3_plages.dxf")
 print("ok")

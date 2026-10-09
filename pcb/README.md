@@ -34,18 +34,16 @@ Une piste de couche 4 prend son retour dans la couche 3 (noyau épais entre L2 e
 |---|---|---|---|
 | Sorties isolées (VISO) | 0–99 | 0–40 | J71, J81-J84 au bord arrière ; TVS, 2N7002, 74LVC2G04, HCPL-063L |
 | Barrière d'isolation | 0–99 | y = 40 | seuls U71, U81, U83, U113 à cheval ; ≥ 3 mm sans cuivre sur les 4 couches |
-| Relais | 104–124 | 0–40 | J122 au bord arrière, RELAY121, Q121, D122 |
-| Alimentation 12 V → 5 V | 127–175 | 0–41 | J111 dans le coin ; flux J111 → F111 → Q111 → D111 → C112 → U111 → D112 / L111 → C117 |
+| Servo, relais, entrée 12 V | 104–175 | 0–43,5 | bord arrière : J121 (servo) + C127, J122 (relais), J111 (12 V) ; RELAY121, Q121, D122 ; U121 (languette à gauche) + L121, C125, D121 ; F111, Q111, D111 au bord droit |
 | Module ESP32-S3-WROOM-1 (v2) | 0,5–26 | 45–63 (U105 tourné de 90°) | antenne au bord gauche (x 0,5–6,8) ; broches 1-14 vers l'avant |
 | USB-C J141 + U142 | 0,5–16 | 70–80 | USB natif, protection USBLC6, CC 5,1 k |
 | 3V3_MCU, RESET, BOOT | 27–56 | 44,5–72,5 | U141 AMS1117, D101 / D141, SW141 / SW142 |
 | Zone antenne | 0–7 | 43,5–68 | sans cuivre sur les 4 couches (v2 : plus de fente) |
 | Bus I2C | 88–124 | 46–72 | U101 MCP23017, U102/U103 MCP4728, U104 ADS7828 |
 | Couloir de bus | 0–124 | 73,5–81,5 | THR / CS / ID / TLV_OUT en couche 4 ; rangée de vias de couture côté analogique |
-| Servo 6 V | 127–175 | 44–69 | U121, L121, D121, C125, U122 ; C127 et J121 (bornier) au bord droit |
-| Vannes 2 × 3 | 127–175 | 71–115 | CN91-CN96 en 2 rangées miroir, rail +12V central ; D9n entre CN9n et Q9n |
+| Vannes 2 × 3 | 127–175 | 44–88 | CN91-CN93 (y ≈ 48) et CN94-CN96 (y ≈ 83) vers l'extérieur, rail +12V au milieu ; D9n entre CN9n et Q9n |
 | Entrées capteur ×6 | 0–124 | 82–125 | J11-J61 au bord avant (x = 17, 35, 53, 79, 97, 115), bande de 18 mm par voie |
-| +3V3 et LED | 128–175 | 115–125 | U112, CN101 |
+| 12 V → 5 V, +3V3, LED | 124–175 | 90–125 | U111 tourné (broches à gauche, languette au bord droit), C112 au-dessus de l'entrée, C113-C115 et D112 collés aux broches, L111 et C117 à gauche ; U112, C116, C111, CN101 au bord avant |
 
 **Trous M3** : H1 (4, 4) et H5 (101, 6) côté VISO en **NPTH** (jamais reliés à la masse) ; H2 (171, 4), H3 (4, 121), H4 (171, 121), H6 (66, 121) en GND ; H7 supprimé (sa pastille coupait la bande +5V d'Inner2). Exclusion de 7 mm de diamètre autour de chaque trou.
 

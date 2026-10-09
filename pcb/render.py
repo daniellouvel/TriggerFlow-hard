@@ -40,9 +40,9 @@ def render(out, view=(0, BW, 0, BH), scale=1.0, labels=True, rats=True):
     fig, ax = plt.subplots(figsize=(w/175*16*scale, h/175*16*scale))
     ax.set_xlim(view[0]-2, view[1]+2); ax.set_ylim(view[3]+2, view[2]-2); ax.set_aspect("equal"); ax.axis("off")
     ax.add_patch(FancyBboxPatch((0, 0), BW, BH, boxstyle="round,pad=0,rounding_size=2", fill=False, ec="#444", lw=1.2))
-    zones = [((0,0,99,40),"#EEEDFE","Sorties isolées (VISO)"), ((104,0,124,40),"#FAECE7","Relais"), ((127,0,175,41),"#FAECE7","Alim 12 V → 5 V"),
-             ((127,44,175,67),"#FAECE7","Servo 6 V"), ((127,71,175,115),"#FAECE7","Vannes 2 × 3"), ((0,82,124,125),"#E1F5EE","Entrées capteur ×6"),
-             ((88,46,124,72),"#F1EFE8","Bus I2C"), ((27,44.5,56,72.5),"#F1EFE8","3V3_MCU")]
+    zones = [((0,0,99,40),"#EEEDFE","Sorties isolées (VISO)"), ((104,0,175,43.5),"#FAECE7","Servo · relais · entrée 12 V"),
+             ((127,44,175,88),"#FAECE7","Vannes 2 × 3"), ((124,90,175,125),"#FAECE7","12 V → 5 V · +3V3"),
+             ((0,82,124,125),"#E1F5EE","Entrées capteur ×6"), ((88,46,124,72),"#F1EFE8","Bus I2C"), ((27,44.5,56,72.5),"#F1EFE8","3V3_MCU")]
     for (x1,y1,x2,y2),c,t in zones:
         ax.add_patch(Rectangle((x1,y1),x2-x1,y2-y1,fc=c,ec="none",alpha=0.55,zorder=0))
     ax.add_patch(Rectangle((0,73.5),124,8,fc="none",ec="#888",ls=(0,(3,2)),lw=0.8)); ax.plot([1,123],[81.6,81.6],color="#888",lw=0.6,ls=(0,(0.6,1.4)))
