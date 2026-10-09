@@ -1,6 +1,6 @@
 # Implantation PCB TriggerFlow (v4, 04/10/2026)
 
-> Branche **v2-wroom** : placement avec le module WROOM-1 (305 composants). Netlist d'entrée `netlist_v2_wroom.json` = **export EasyEDA du 10/10** (`netlist_v2_easyeda_2026-10-10.tel`), numérotation EasyEDA (U10 = module, U15 = LM2596 5 V, U13 = LM2596 servo… correspondance complète dans `docs/mcu-v2-wroom.md`). `mcu_v2.py` (ancienne netlist construite depuis la v1) n'écrit plus que `netlist_v2_ancienne_numerotation.json`. Zoom de la zone module : `zoom_mcu_v2.png`.
+> Branche **v2-wroom** : placement avec le module WROOM-1 (304 composants, C87 exclu). Netlist d'entrée `netlist_v2_wroom.json` = **export EasyEDA du 10/10** (`netlist_v2_easyeda_2026-10-10.tel`), numérotation EasyEDA (U10 = module, U15 = LM2596 5 V, U13 = LM2596 servo… correspondance complète dans `docs/mcu-v2-wroom.md`). `mcu_v2.py` (ancienne netlist construite depuis la v1) n'écrit plus que `netlist_v2_ancienne_numerotation.json`. Zoom de la zone module : `zoom_mcu_v2.png`.
 
 Placement des **287 composants** en v1, **305** en v2 (export EasyEDA de référence du 05/10, servo et relais compris, sans moteur ni PWM) sur une carte **175 × 125 mm, 4 couches**. Repère : origine au coin arrière gauche, x vers la droite, y vers l'avant. Tailles = encombrements estimés, à recaler sur les vraies empreintes.
 
