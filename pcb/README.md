@@ -43,7 +43,7 @@ Une piste de couche 4 prend son retour dans la couche 3 (noyau épais entre L2 e
 | Entrées capteur ×6 | 0–124 | 82–125 | J11-J61 au bord avant (x = 17, 35, 53, 79, 97, 115), bande de 18 mm par voie |
 | +3V3 et LED | 128–175 | 115–125 | U112, CN101 |
 
-**Trous M3** : H1 (4, 4) et H5 (101, 6) côté VISO en **NPTH** (jamais reliés à la masse) ; H2 (171, 4), H3 (4, 121), H4 (171, 121), H6 (66, 121) en GND ; H7 (124, 76) optionnel. Exclusion de 7 mm de diamètre autour de chaque trou.
+**Trous M3** : H1 (4, 4) et H5 (101, 6) côté VISO en **NPTH** (jamais reliés à la masse) ; H2 (171, 4), H3 (4, 121), H4 (171, 121), H6 (66, 121) en GND ; H7 supprimé (sa pastille coupait la bande +5V d'Inner2). Exclusion de 7 mm de diamètre autour de chaque trou.
 
 ## Règles clés appliquées au placement
 

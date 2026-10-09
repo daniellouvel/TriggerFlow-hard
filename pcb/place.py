@@ -102,7 +102,7 @@ for i, cx in enumerate(VX):
 put("C116", 128.6, 119.5, 90); put("U112", 134, 119.5); put("C111", 140, 119.5, 90); put("CN101", 151, 121.75)
 
 HOLES = {"H1": (4, 4, "NPTH"), "H5": (101, 6, "NPTH"), "H2": (171, 4, "GND"), "H3": (4, 121, "GND"),
-         "H4": (171, 121, "GND"), "H6": (66, 121, "GND"), "H7": (124, 76, "GND (option)")}
+         "H4": (171, 121, "GND"), "H6": (66, 121, "GND")}  # H7 (124, 76) supprimé : il coupait la bande +5V d'Inner2
 KEEPOUT_ANT = (58, 43.5, 86, 73)        # sans cuivre, toutes couches
 BARRIER = (0, 38.5, 99, 41.5)           # seuls les composants à cheval
 STRADDLE = {"U71", "U81", "U83", "U113"}

@@ -21,7 +21,7 @@ Carte 175 × 125 mm, 4 couches, vue de dessus. Origine au coin arrière gauche, 
 | Entrées capteur ×6 | 0–124 | 82–125 | J11-J61 (centres x = 17, 35, 53, 79, 97, 115) ; une bande de 18 mm par voie |
 | +3V3 et LED | 127–175 | 115–125 | U112 (AMS1117), C116, C111, CN101 au bord avant |
 
-Trous M3 : H1 (4, 4) et H5 (101, 6) côté VISO en NPTH ; H2 (171, 4), H3 (4, 121), H4 (171, 121), H6 (66, 121) entre J31 et J41 ; H7 optionnel (124, 76).
+Trous M3 : H1 (4, 4) et H5 (101, 6) côté VISO en NPTH ; H2 (171, 4), H3 (4, 121), H4 (171, 121), H6 (66, 121) entre J31 et J41 ; H7 supprimé (il coupait la bande +5V d'Inner2).
 
 ## Partitionnement et chemins de courant
 
@@ -89,7 +89,7 @@ Les deux LM2596 dissipent chacun 2 à 3 W dans le même coin : boucles courtes, 
 
 Onze RJ45 subissent un effort à chaque branchement : un trou de fixation près de chaque groupe de connecteurs, pas seulement aux coins.
 
-- [ ] 6 trous M3 (H1 à H6), plus H7 au centre si la carte fléchit
+- [ ] 6 trous M3 (H1 à H6) ; H7 supprimé, il coupait la bande +5V d'Inner2
 - [ ] Zone d'exclusion de 7 mm de diamètre autour de chaque trou (tête de vis, entretoise)
 - [ ] Décider si les trous GND (H2, H3, H4, H6) sont reliés à la masse du boîtier ; H1 et H5 jamais
 - [ ] RJ45 alignés sur le bord, nez au ras ou en léger débord selon la façade
