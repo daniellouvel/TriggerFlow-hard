@@ -5,22 +5,28 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, Circle, FancyBboxPatch
 PLANES = {"GND", "+3V3", "+5V", "+12V", "VISO_3V3", "VISO_GND"}
 PWRSET = {f"{p}9{i}" for p in ("CN","Q","D","F") for i in range(1,7)} | {f"R{i}" for i in range(93,105)}
+# classement par fonction, numérotation EasyEDA du 10/10
+ESP = {"U10","D10","D19","U26","U25","J10","SW10","SW11","R105","R10","R106","R107","C10","C78","C79","C80","C85","C86","U85",
+       "CN11","U16","C39","C58"}
+I2C = {"U19","U20","U23","U24","C73","C74","C75","C76","C77","R70","R77","R78","R79","R80"}
+ISO = {"U17","U18","C68","C69","C70","R60","R69"}
+PWR = {"J12","F12","Q12","R50","R59","D17","U15","L12","D18","C40","C48","C49","C50","C59","C60",
+       "U13","L13","D14","C18","C19","C20","C28","C29","C30","R19","R20","R29","R30","R39","U14","C38","D16","J13",
+       "RELAY13","Q13","R40","R49","D15","J14"}
 def block(ref):
-    if ref in PWRSET: return "pwr"
+    if ref in PWRSET or ref in PWR: return "pwr"
+    if ref in ESP: return "esp"
+    if ref in I2C: return "i2c"
+    if ref in ISO: return "iso"
     m = re.match(r"([A-Z]+)(\d+)", ref); p, d = m.group(1), int(m.group(2))
-    if ref in ("U105", "D101") or ref[:-3] in ("U","J","SW","R","C","D") and ref[-3:-1] == "14": return "esp"
-    if ref in ("U101","U102","U103","U104","C101","C102","C103","C104","C105","R105","R106","R107","R108","R109"): return "i2c"
-    if ref in ("CN101","U112","C111","C116"): return "esp"
-    if ref in ("RELAY121","Q121","D122","R126","R127","J122"): return "pwr"
-    if 10 <= d <= 69 or p == "JP": return "ana"
-    if 70 <= d <= 92 or ref in ("U113","U114","C119","C120","C121","R113","R114"): return "iso"
-    return "pwr"
+    if 70 <= d <= 92: return "iso"
+    return "ana"
 COL = {"ana": ("#E1F5EE", "#0F6E56"), "iso": ("#EEEDFE", "#534AB7"), "pwr": ("#FAECE7", "#993C1D"),
        "esp": ("#F1EFE8", "#5F5E5A"), "i2c": ("#F1EFE8", "#5F5E5A")}
 def pinxy(p):
     r, n = p.split('.')
     x, y, rot = P[r]
-    if r == "U105":                     # module WROOM-1 tourné : antenne à gauche
+    if r == "U10":                     # module WROOM-1 tourné : antenne à gauche
         n = int(n)
         if n <= 14: xn, yn = -9.0, -5.15 + (n - 1) * 1.27
         elif n <= 26: xn, yn = -7.0 + (n - 15) * 1.27, 12.75
@@ -55,12 +61,12 @@ def render(out, view=(0, BW, 0, BH), scale=1.0, labels=True, rats=True):
         ax.add_patch(Circle((hx,hy),3.5,fc="none",ec="#999",lw=0.5,ls=":")); ax.text(hx,hy+5.2,hname,clip_on=True,fontsize=4.5*scale,ha="center",color="#333")
     for r,(x,y,rot) in P.items():
         q = rect(r); fc, ec = COL[block(r)]
-        if r == "U105":
+        if r == "U10":
             ax.add_patch(Rectangle((q[0],q[1]),q[2]-q[0],q[3]-q[1],fc=fc,ec=ec,lw=0.9,zorder=4))
             ax.add_patch(Rectangle((q[0],q[1]),6.3,q[3]-q[1],fc="none",ec=ec,hatch="////",lw=0.5,zorder=4))
             for k in range(1, 41):
-                px, py = pinxy(f"U105.{k}"); ax.add_patch(Circle((px, py), 0.35, fc=ec, ec="none", zorder=5))
-            ax.text(x+3,y,"U105\nWROOM-1",fontsize=5.5*scale,ha="center",va="center",color=ec,clip_on=True); continue
+                px, py = pinxy(f"U10.{k}"); ax.add_patch(Circle((px, py), 0.35, fc=ec, ec="none", zorder=5))
+            ax.text(x+3,y,"U10\nWROOM-1",fontsize=5.5*scale,ha="center",va="center",color=ec,clip_on=True); continue
         ax.add_patch(Rectangle((q[0],q[1]),q[2]-q[0],q[3]-q[1],fc=fc,ec=ec,lw=0.5,zorder=4))
         if labels:
             fs = 3.2*scale if (q[2]-q[0])*(q[3]-q[1]) < 12 else 4.5*scale

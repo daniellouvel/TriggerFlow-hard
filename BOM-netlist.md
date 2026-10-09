@@ -22,13 +22,13 @@ Numérotation : chiffre(s) de page + index (page 1 = voie 1 → R11, U11… ; pa
 | 12 | Sortie servo, rail 6 V dédié | ✅ validé (page 12) |
 | 13 | Sortie relais (contact sec) | ✅ validé (page 12) |
 | PCB | Implantation 175 × 125 mm, 4 couches | 📝 placement v4 recalé sur la netlist du 05/10 (`pcb/`), checklist (`docs/pcb-checklist.md`) |
-| ESP32 | Feuille U105 (YD-ESP32-S3 N16R8) | ✅ validé |
+| ESP32 | Feuille U10 (YD-ESP32-S3 N16R8) | ✅ validé |
 
 Méthode : schéma de référence → saisie EasyEDA Pro avec références LCSC → export netlist (.tel) → comparaison net par net.
 
 ---
 
-## Feuille MCU v2 — U105 ESP32-S3-WROOM-1-N16R8 (branche v2-wroom)
+## Feuille MCU v2 — U10 ESP32-S3-WROOM-1-N16R8 (branche v2-wroom)
 
 Le module remplace la DevKit de la v1 ; chaque signal garde son GPIO. Détail complet (broches, nets, choix, BOM vérifiée) : [docs/mcu-v2-wroom.md](docs/mcu-v2-wroom.md).
 
@@ -46,7 +46,7 @@ GPIO réaffectés pour le placement (09/10) : chaque signal sort du côté du mo
 | 27 | 0 | IO0_BOOT |
 | 31 | 38 | SHUTTER_CMD |
 | 32, 33, 34, 35 | 39, 40, 41, 42 | FLASH_1_CMD … FLASH_4_CMD |
-| 36 / 37 | RXD0 / TXD0 | TP142 / TP141 |
+| 36 / 37 | RXD0 / TXD0 | barrette U85 (broches 3 / 2) |
 | 38 / 39 | 2 / 1 | GPIO_VALVE_1 / GPIO_VALVE_2 |
 | 2 / 3 | — | 3V3_MCU / EN |
 | 1, 40, 41 | — | GND |
@@ -54,18 +54,18 @@ GPIO réaffectés pour le placement (09/10) : chaque signal sort du côté du mo
 
 | Réf | Pièce | LCSC |
 |---|---|---|
-| U105 | ESP32-S3-WROOM-1-N16R8 | C2913202 |
-| U141 | AMS1117-3.3 (3V3_MCU) | C6186 |
-| U142 | USBLC6-2SC6 | C7519 |
-| J141 | USB-C HRO TYPE-C-31-M-12 | C165948 |
-| SW141, SW142 | TS-1187A-B-A-B (RESET, BOOT) | C318884 |
-| D101, D141 | SS14 (+5V et VBUS vers 5V_MCU) | C2480 |
-| R141, R142 | 10 kΩ (EN, IO0) | C25804 |
-| R143, R144 | 5,1 kΩ (CC1, CC2) | C23186 |
-| C141 | 1 µF (EN) | C5673 |
-| C143 | 100 nF | C14663 |
-| C142, C144, C145, C146 | 10 µF 0805 | C15850 |
-| R108, R109 | 4,7 kΩ, pull-ups I2C vers +3V3 (inchangés) | C23162 |
+| U10 | ESP32-S3-WROOM-1-N16R8 | C2913202 |
+| U26 | AMS1117-3.3 (3V3_MCU) | C6186 |
+| U25 | USBLC6-2SC6 | C7519 |
+| J10 | USB-C HRO TYPE-C-31-M-12 | C165948 |
+| SW10, SW11 | TS-1187A-B-A-B (RESET, BOOT) | C318884 |
+| D10, D19 | SS14 (+5V et VBUS vers 5V_MCU) | C2480 |
+| R106, R107 | 10 kΩ (EN, IO0) | C25804 |
+| R105, R10 | 5,1 kΩ (CC1, CC2) | C23186 |
+| C86 | 1 µF (EN) | C5673 |
+| C78 | 100 nF | C14663 |
+| C10, C79, C80, C85 | 10 µF 0805 | C15850 |
+| R79, R80 | 4,7 kΩ, pull-ups I2C vers +3V3 (inchangés) | C23162 |
 
 ---
 
@@ -79,12 +79,12 @@ Référence voie 1 (voies 2 à 6 identiques, chiffre des dizaines = n° de voie)
 | CLAMP | R16.2, D12.3 (BAT54S), C12 (100 pF → GND), U12.2 (CH0) |
 | MCP6S91_OUT | U12.1, R15.1 (10 k) |
 | HYST_NODE | R15.2, R18.1 (680 k), U11.3 (+) |
-| TLV_OUT_1 | U11.6, R18.2, U105.4 |
+| TLV_OUT_1 | U11.6, R18.2, U10.4 |
 | THR_1 → filtre | THR_1 (DAC) → R13 (1 k) → C11 (100 nF → GND) → U11.2 (−) |
 | V_SENS | J11.1, J11.2, F11 (PTC 200 mA, depuis +5V), C13 (10 µF) |
 | ID (connecteur) | J11.7, J11.8, R14 (10 k → +3V3), D11 (TVS → GND), R11.1 |
-| ID_ADC_1 | R11.2 (1 k), U104.1 (ADS7828) |
-| CS_1 | U12.5, U101.21 |
+| ID_ADC_1 | R11.2 (1 k), U24.1 (ADS7828) |
+| CS_1 | U12.5, U19.21 |
 | SPI_MOSI / SPI_SCK (communs) | U12.6 / U12.7 |
 | +3V3 | U11.7, U12.8, D12 (K), JP11, R14, découplages C14-C17 |
 | GND | U11.4, U11.8 (SHDN), U12.3 (VREF du PGA), U12.4, D12 (A), D11, D13, R17, J11.3/.6/.9/.10 |
@@ -130,8 +130,8 @@ Brochages : HCPL-063L SO-8 : 1 A1, 2 K1, 3 K2, 4 A2, 5 GND sortie, 6 VO2, 7 VO1,
 | Net | Broches |
 |---|---|
 | GND (côté ESP32) | U71.2, U71.3, U81.2, U81.3, U83.2, U83.3 |
-| VISO_3V3 | U71.8, U81.8, U83.8, U72.5, U82.5, U84.5, R71, R76, R81, R86, R87, R92, C71-C72, C81-C84 (.1), U114 (Bloc 5b) |
-| VISO_GND | U71.5, U81.5, U83.5, U72.2, U82.2, U84.2, sources Q71-Q84, R72/R75/R82/R85/R88/R91, anodes D71-D84, J71.5, J71.6, J81.5 … J84.5, U113.3, U114.1 |
+| VISO_3V3 | U71.8, U81.8, U83.8, U72.5, U82.5, U84.5, R71, R76, R81, R86, R87, R92, C71-C72, C81-C84 (.1), U18 (Bloc 5b) |
+| VISO_GND | U71.5, U81.5, U83.5, U72.2, U82.2, U84.2, sources Q71-Q84, R72/R75/R82/R85/R88/R91, anodes D71-D84, J71.5, J71.6, J81.5 … J84.5, U17.3, U18.1 |
 
 **Règles** : aucun composant entre GND et VISO_GND ; TVS cathode côté sortie, anode VISO_GND ; RJ45 de sortie : broches 1-2, 7-10 (et 3, 6 sur les flashs) non connectées, blindage non connecté.
 
@@ -185,32 +185,32 @@ Bloc secteur **12 V, 5 A minimum**.
 
 | Net | Broches |
 |---|---|
-| VIN_RAW | J111.1, F111.1 |
-| VIN_F | F111.2, Q111.5-8 (drain) |
-| +12V | Q111.1-3 (source), R111, D111 (cathode), C112 (470 µF), 2 × 10 µF, 100 nF, U111.1 (VIN), F91-F96, U121.1 (servo), bobine K131 (relais) |
-| Q111_G | Q111.4, R111 (→ +12V), R112 (→ GND) : VGS ≈ −6 V |
-| BUCK_SW | U111.2, L111.1, D112 (cathode) |
-| +5V | L111.2, U111.4 (FB), C117 (330 µF), 100 nF, U112.3, 10 µF, D101, F11-F61, U113.2 |
-| +3V3 | U112.2 + languette (4), C111 (10 µF) |
-| GND | J111.2, R112, D111, D112 (anode), U111.3, U111.5 (ON/OFF), U111.6 (languette), U112.1, condensateurs |
+| VIN_RAW | J12.1, F12.1 |
+| VIN_F | F12.2, Q12.5-8 (drain) |
+| +12V | Q12.1-3 (source), R50, D17 (cathode), C40 (470 µF), 2 × 10 µF, 100 nF, U15.1 (VIN), F91-F96, U13.1 (servo), bobine K131 (relais) |
+| Q12_G | Q12.4, R50 (→ +12V), R59 (→ GND) : VGS ≈ −6 V |
+| BUCK_SW | U15.2, L12.1, D18 (cathode) |
+| +5V | L12.2, U15.4 (FB), C59 (330 µF), 100 nF, U16.3, 10 µF, D10, F11-F61, U17.2 |
+| +3V3 | U16.2 + languette (4), C39 (10 µF) |
+| GND | J12.2, R59, D17, D18 (anode), U15.3, U15.5 (ON/OFF), U15.6 (languette), U16.1, condensateurs |
 
 | Réf | Pièce | LCSC |
 |---|---|---|
-| J111 | bornier KF128-5.08-2P | C474952 |
-| F111 | fusible 6,3 A temporisé TLC TA3VT6.3 (2410) | C3014144 |
-| Q111 | AO4407A (P-MOS 30 V 12 A, SOIC-8) | C16072 |
-| R111, R112 | 10 kΩ 0603 | C25804 |
-| D111 | SMBJ15A (TVS 600 W) | C83846 |
-| C112 | 470 µF 25 V DMBJ RVT1E471M1010 | C970707 |
+| J12 | bornier KF128-5.08-2P | C474952 |
+| F12 | fusible 6,3 A temporisé TLC TA3VT6.3 (2410) | C3014144 |
+| Q12 | AO4407A (P-MOS 30 V 12 A, SOIC-8) | C16072 |
+| R50, R59 | 10 kΩ 0603 | C25804 |
+| D17 | SMBJ15A (TVS 600 W) | C83846 |
+| C40 | 470 µF 25 V DMBJ RVT1E471M1010 | C970707 |
 | 2 × 10 µF entrée, 10 µF AMS1117 entrée/sortie | 10 µF 25 V 0805 | C15850 |
 | 100 nF ×2 | 0603 | C14663 |
-| U111 | LM2596S-5.0 (UMW, TO-263-5) | C347421 |
-| D112 | SS54 | C22452 |
-| L111 | 33 µH 4,25 A SMDRI129-330MT | C2924828 |
-| C117 | 330 µF 25 V low-ESR Panasonic EEE-FK1E331P (**pas de polymère** : instabilité du LM2596) | C178543 (alt. C970701) |
-| U112 | AMS1117-3.3 | C6186 |
+| U15 | LM2596S-5.0 (UMW, TO-263-5) | C347421 |
+| D18 | SS54 | C22452 |
+| L12 | 33 µH 4,25 A SMDRI129-330MT | C2924828 |
+| C59 | 330 µF 25 V low-ESR Panasonic EEE-FK1E331P (**pas de polymère** : instabilité du LM2596) | C178543 (alt. C970701) |
+| U16 | AMS1117-3.3 | C6186 |
 
-PCB : boucle C112-U111-D112 courte ; cuivre + vias sous la languette de U111 (~3 W) ; pistes 12 V ≥ 2 mm.
+PCB : boucle C40-U15-D18 courte ; cuivre + vias sous la languette de U15 (~3 W) ; pistes 12 V ≥ 2 mm.
 
 ---
 
@@ -220,20 +220,20 @@ B0505S-1WR3 (5 V → 5 V isolé, non régulé, charge mini 20 mA) puis AMS1117-3
 
 | Net | Broches |
 |---|---|
-| +5V / GND | U113.2 (VIN) / U113.1, condensateur d'entrée 10 µF |
-| VISO_5V | U113.4 (+VO), C120 (10 µF), R113, U114.3 (VIN) |
-| PRELOAD | R113 – R114 (2 × 220 Ω ≈ 11 mA) |
-| VISO_3V3 | U114.2 + U114.4 (languette), C121 (10 µF) |
-| VISO_GND | U113.3 (0V), C120, R114, U114.1, C121 |
+| +5V / GND | U17.2 (VIN) / U17.1, condensateur d'entrée 10 µF |
+| VISO_5V | U17.4 (+VO), C69 (10 µF), R60, U18.3 (VIN) |
+| PRELOAD | R60 – R69 (2 × 220 Ω ≈ 11 mA) |
+| VISO_3V3 | U18.2 + U18.4 (languette), C70 (10 µF) |
+| VISO_GND | U17.3 (0V), C69, R69, U18.1, C70 |
 
 | Réf | Pièce | LCSC |
 |---|---|---|
-| U113 | B0505S-1WR3 (SIP-4 : 1 GND, 2 VIN, 3 0V, 4 +VO) | C7465178 (EVISUN, alt. HI-LINK C5183119 ; Mornsun C131038 indisponible) |
-| U114 | AMS1117-3.3 | C6186 |
+| U17 | B0505S-1WR3 (SIP-4 : 1 GND, 2 VIN, 3 0V, 4 +VO) | C7465178 (EVISUN, alt. HI-LINK C5183119 ; Mornsun C131038 indisponible) |
+| U18 | AMS1117-3.3 | C6186 |
 | 3 × 10 µF | 0805 25 V | C15850 |
-| R113, R114 | 220 Ω 0603 | C22962 |
+| R60, R69 | 220 Ω 0603 | C22962 |
 
-PCB : bande sans cuivre (~2 mm) sous U113 entre les broches 1-2 et 3-4 ; plan VISO_GND séparé pour tout le côté isolé.
+PCB : bande sans cuivre (~2 mm) sous U17 entre les broches 1-2 et 3-4 ; plan VISO_GND séparé pour tout le côté isolé.
 
 ---
 
@@ -253,23 +253,23 @@ La lumière 12 V dimmable passe par une sortie vanne (même étage AO3400A + dio
 
 | Composant | Adresse | Rôle |
 |---|---|---|
-| U101 MCP23017 (SSOP-28) | 0x20 (A0-A2 à GND) | GPA0-5 = CS_1-6, GPA6 = FOCUS_CMD, **GPB2 = RELAY_CMD** (Bloc 13), **GPB3 = SERVO_OFF** (Bloc 12), GPB5 = LED de statut (R105 1 kΩ → CN101), RESET via R107 (10 k → +3V3) ; GPA7, GPB0-1, GPB4, GPB6-7 libres |
-| U102 MCP4728 | 0x60 | LDAC à GND ; VOUTA-D (6-9) = THR_1-4 |
-| U103 MCP4728 | 0x61 (reprogrammée au 1er démarrage) | LDAC = DAC2_LDAC (GPIO10 en v2, GPIO18 en v1) + R106 10 k → GND ; VOUTA/B = THR_5/6 |
-| U104 ADS7828 (TSSOP-16) | 0x48 (A0, A1 à GND) | CH0-5 = ID_ADC_1-6, CH6-7 et COM à GND, REF : C105 1 µF (référence interne 2,5 V) |
+| U19 MCP23017 (SSOP-28) | 0x20 (A0-A2 à GND) | GPA0-5 = CS_1-6, GPA6 = FOCUS_CMD, **GPB2 = RELAY_CMD** (Bloc 13), **GPB3 = SERVO_OFF** (Bloc 12), GPB5 = LED de statut (R70 1 kΩ → CN11), RESET via R78 (10 k → +3V3) ; GPA7, GPB0-1, GPB4, GPB6-7 libres |
+| U20 MCP4728 | 0x60 | LDAC à GND ; VOUTA-D (6-9) = THR_1-4 |
+| U23 MCP4728 | 0x61 (reprogrammée au 1er démarrage) | LDAC = DAC2_LDAC (GPIO10 en v2, GPIO18 en v1) + R77 10 k → GND ; VOUTA/B = THR_5/6 |
+| U24 ADS7828 (TSSOP-16) | 0x48 (A0, A1 à GND) | CH0-5 = ID_ADC_1-6, CH6-7 et COM à GND, REF : C77 1 µF (référence interne 2,5 V) |
 
-MCP4728 MSOP-10 : 1 VDD, 2 SCL, 3 SDA, 4 LDAC, 5 RDY, 6-9 VOUTA-D, 10 VSS (attention : symbole EasyEDA numéroté en miroir côté droit). Découplage C101-C104 (100 nF).
+MCP4728 MSOP-10 : 1 VDD, 2 SCL, 3 SDA, 4 LDAC, 5 RDY, 6-9 VOUTA-D, 10 VSS (attention : symbole EasyEDA numéroté en miroir côté droit). Découplage C73-C76 (100 nF).
 
 | Réf | Pièce | LCSC |
 |---|---|---|
-| U101 | MCP23017-E/SS | C506653 |
-| U102, U103 | MCP4728-E/UN | C108207 |
-| U104 | ADS7828E/250 | C701648 |
-| R105 | 1 kΩ | C21190 |
-| R106, R107 | 10 kΩ | C25804 |
-| C101-C104 | 100 nF | C14663 |
-| C105 | 1 µF | C5673 |
-| CN101 | connecteur 2 points (LED de statut déportée, anode broche 1) | — |
+| U19 | MCP23017-E/SS | C506653 |
+| U20, U23 | MCP4728-E/UN | C108207 |
+| U24 | ADS7828E/250 | C701648 |
+| R70 | 1 kΩ | C21190 |
+| R77, R78 | 10 kΩ | C25804 |
+| C73-C76 | 100 nF | C14663 |
+| C77 | 1 µF | C5673 |
+| CN11 | connecteur 2 points (LED de statut déportée, anode broche 1) | — |
 
 ---
 
@@ -301,7 +301,7 @@ Pièces principales : TLV9062IDR C398355, BPW34 C85128, micro GMI6027P C529943, 
 | ID (×6) | PESD5V0S1BB (D11 … D61) + 1 kΩ série vers l'ADC (R11 … R61) |
 | V_SENS | PTC + 10 µF (absorbe une décharge 8 kV / 150 pF) |
 | FOCUS, SHUTTER, FLASH_1-4 | SMF24A vers VISO_GND (D71, D72, D81-D84) |
-| SERVO_SIG | PESD5V0S1BB D122 (Bloc 12) + 220 Ω série |
+| SERVO_SIG | PESD5V0S1BB D15 (Bloc 12) + 220 Ω série |
 | Vannes | diodes de roue libre SS14 / diode interne de l'AO3400A |
 | Relais | contacts isolés de la bobine (aucune protection nécessaire) |
 | Entrée 12 V | SMBJ15A (Bloc 5) |
@@ -312,39 +312,39 @@ Pas de condensateur entre VISO_GND et GND (isolation conservée).
 
 ## Bloc 12 — Sortie servo, rail 6 V dédié (validé, page 12)
 
-LM2596S-ADJ alimenté par le +12V : V_SERVO = 1,23 V × (1 + R123 / R122) = 1,23 × (1 + 3,9 k / 1 k) ≈ **6,0 V, 3 A** (limitation interne, pas de PTC). Rail coupable par le MCP23017 : servo **hors tension au démarrage** tant que le firmware n'a pas fixé sa position. Repères = export EasyEDA du 05/10 (les feuilles KiCad de `kicad/sortie_servo/` utilisent une numérotation antérieure).
+LM2596S-ADJ alimenté par le +12V : V_SERVO = 1,23 V × (1 + R29 / R20) = 1,23 × (1 + 3,9 k / 1 k) ≈ **6,0 V, 3 A** (limitation interne, pas de PTC). Rail coupable par le MCP23017 : servo **hors tension au démarrage** tant que le firmware n'a pas fixé sa position. Repères = export EasyEDA du 05/10 (les feuilles KiCad de `kicad/sortie_servo/` utilisent une numérotation antérieure).
 
 | Net | Broches |
 |---|---|
-| +12V | U121.1 (VIN), C122, C123 (10 µF), C124 (100 nF) |
-| SERVO_SW | U121.2, L121.1, D121 (cathode, SS54) |
-| V_SERVO | L121.2, R123 (3,9 kΩ), C125+ (330 µF), C126 (100 nF), C127+ (470 µF), J121.2 |
-| SERVO_FB | U121.4, R123, R122 (1 kΩ → GND) |
-| SERVO_OFF | U121.5 (ON/OFF), R121 (10 kΩ → +3V3), U101.4 (GPB3) — haut / haute impédance = coupé |
-| SERVO_PWM | U105.19 (GPIO13, LEDC 50 Hz), R124 (10 kΩ → GND), U122.2 (A) |
-| (sans nom) | U122.4 (Y), R125 (220 Ω) |
-| (sans nom) | R125, D123 (TVS), J121.3 (signal) |
-| +5V | U122.5 (VCC), C128 (100 nF) |
-| GND | U121.3, U121 languette, R122, D121 anode, C122-C128, U122.1 (OE), U122.3, R124, D123, J121.1 |
+| +12V | U13.1 (VIN), C18, C19 (10 µF), C20 (100 nF) |
+| SERVO_SW | U13.2, L13.1, D14 (cathode, SS54) |
+| V_SERVO | L13.2, R29 (3,9 kΩ), C28+ (330 µF), C29 (100 nF), C30+ (470 µF), J13.2 |
+| SERVO_FB | U13.4, R29, R20 (1 kΩ → GND) |
+| SERVO_OFF | U13.5 (ON/OFF), R19 (10 kΩ → +3V3), U19.4 (GPB3) — haut / haute impédance = coupé |
+| SERVO_PWM | U10.19 (GPIO13, LEDC 50 Hz), R30 (10 kΩ → GND), U14.2 (A) |
+| (sans nom) | U14.4 (Y), R39 (220 Ω) |
+| (sans nom) | R39, D16 (TVS), J13.3 (signal) |
+| +5V | U14.5 (VCC), C38 (100 nF) |
+| GND | U13.3, U13 languette, R20, D14 anode, C18-C38, U14.1 (OE), U14.3, R30, D16, J13.1 |
 
-J121 : bornier 3 points — 1 = GND, 2 = V_SERVO (6 V), 3 = signal (rallonge servo à câbler).
+J13 : bornier 3 points — 1 = GND, 2 = V_SERVO (6 V), 3 = signal (rallonge servo à câbler).
 
 | Réf | Pièce | LCSC |
 |---|---|---|
-| U121 | LM2596S-ADJ (UMW, TO-263-5) | C347423 |
-| L121 | 33 µH 4,25 A SMDRI129-330MT | C2924828 |
-| D121 | SS54 | C22452 |
-| C125 | 330 µF 25 V low-ESR Panasonic EEE-FK1E331P (pas de polymère) | C178543 (alt. C970701) |
-| C127 | 470 µF 25 V DMBJ RVT1E471M1010 | C970707 |
-| C122, C123 | 10 µF 25 V 0805 | C15850 |
-| C124, C126, C128 | 100 nF 0603 | C14663 |
-| R122 | 1 kΩ 1 % | C21190 |
-| R123 | 3,9 kΩ 1 % UNI-ROYAL 0603WAF3901T5E | C23018 (rupture constatée le 05/10 ; secours : R123 = 39 kΩ C23153 + R122 = 10 kΩ C25804, même rapport, R122/R123 collées à U121.4) |
-| R121, R124 | 10 kΩ | C25804 |
-| R125 | 220 Ω | C22962 |
-| U122 | SN74AHCT1G125DBVR (1 OE, 2 A, 3 GND, 4 Y, 5 VCC) | C7484 |
-| D123 | PESD5V0S1BB | C97640 |
-| J121 | bornier KEFA KF128-5.08-3P-AA | C474953 |
+| U13 | LM2596S-ADJ (UMW, TO-263-5) | C347423 |
+| L13 | 33 µH 4,25 A SMDRI129-330MT | C2924828 |
+| D14 | SS54 | C22452 |
+| C28 | 330 µF 25 V low-ESR Panasonic EEE-FK1E331P (pas de polymère) | C178543 (alt. C970701) |
+| C30 | 470 µF 25 V DMBJ RVT1E471M1010 | C970707 |
+| C18, C19 | 10 µF 25 V 0805 | C15850 |
+| C20, C29, C38 | 100 nF 0603 | C14663 |
+| R20 | 1 kΩ 1 % | C21190 |
+| R29 | 3,9 kΩ 1 % UNI-ROYAL 0603WAF3901T5E | C23018 (rupture constatée le 05/10 ; secours : R29 = 39 kΩ C23153 + R20 = 10 kΩ C25804, même rapport, R20/R29 collées à U13.4) |
+| R19, R30 | 10 kΩ | C25804 |
+| R39 | 220 Ω | C22962 |
+| U14 | SN74AHCT1G125DBVR (1 OE, 2 A, 3 GND, 4 Y, 5 VCC) | C7484 |
+| D16 | PESD5V0S1BB | C97640 |
+| J13 | bornier KEFA KF128-5.08-3P-AA | C474953 |
 
 ---
 
@@ -352,27 +352,27 @@ J121 : bornier 3 points — 1 = GND, 2 = V_SERVO (6 V), 3 = signal (rallonge ser
 
 | Net | Broches |
 |---|---|
-| RELAY_CMD | U101.3 (GPB2), R126 (220 Ω) |
-| (grille) | R126, Q121.1, R127 (100 kΩ → GND, relais ouvert au démarrage) |
-| (bobine −) | Q121.3 (drain), RELAY121.2, D122 anode |
-| +12V | RELAY121.1 (bobine +), D122 cathode (SS14, roue libre) |
-| GND | Q121.2 (source), R127 |
-| RELAY_COM | RELAY121.5 (contact mobile), J122.1 |
-| RELAY_NO | RELAY121.4, J122.2 |
-| RELAY_NC | RELAY121.3, J122.3 |
+| RELAY_CMD | U19.3 (GPB2), R40 (220 Ω) |
+| (grille) | R40, Q13.1, R49 (100 kΩ → GND, relais ouvert au démarrage) |
+| (bobine −) | Q13.3 (drain), RELAY13.2, D15 anode |
+| +12V | RELAY13.1 (bobine +), D15 cathode (SS14, roue libre) |
+| GND | Q13.2 (source), R49 |
+| RELAY_COM | RELAY13.5 (contact mobile), J14.1 |
+| RELAY_NO | RELAY13.4, J14.2 |
+| RELAY_NC | RELAY13.3, J14.3 |
 
 Brochage COM / NO / NC vérifié sur le symbole LCSC de la C3633 (lame au repos sur le contact NC).
 
 | Réf | Pièce | LCSC |
 |---|---|---|
-| RELAY121 | HONGFA HF32F/012-ZS3 (bobine 12 V, 1RT, 3 A) | C3633 |
-| Q121 | AO3400A | C20917 |
-| D122 | SS14 | C2480 |
-| R126 | 220 Ω | C22962 |
-| R127 | 100 kΩ | C25803 |
-| J122 | bornier KEFA KF128-5.08-3P-AA | C474953 |
+| RELAY13 | HONGFA HF32F/012-ZS3 (bobine 12 V, 1RT, 3 A) | C3633 |
+| Q13 | AO3400A | C20917 |
+| D15 | SS14 | C2480 |
+| R40 | 220 Ω | C22962 |
+| R49 | 100 kΩ | C25803 |
+| J14 | bornier KEFA KF128-5.08-3P-AA | C474953 |
 
-Contact 3 A / 30 V DC — **basse tension uniquement, jamais de 230 V** (sérigraphie près de J122).
+Contact 3 A / 30 V DC — **basse tension uniquement, jamais de 230 V** (sérigraphie près de J14).
 
 ---
 

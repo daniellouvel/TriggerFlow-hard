@@ -15,7 +15,7 @@ Statut (05/10/2026) : **schéma complet et validé** dans EasyEDA (Blocs 1, 2, 3
 - **MCU** : module ESP32-S3-WROOM-1-**N16R8** soudé sur la carte (16 Mo flash Quad, 8 Mo PSRAM Octal) ; en v1, le même module sur une DevKitC-1
 - **Cœurs** : dual-core Xtensa LX7, 240 MHz
 - **Connectivité native** : Wi-Fi 2.4 GHz, Bluetooth LE, USB natif (device)
-- v2 : **1 port USB-C** sur l'USB natif (GPIO 19/20) → programmation (USB-Serial/JTAG) et **contrôle PC** ; console série UART0 (GPIO 43/44) sur pastilles de test TP141 / TP142
+- v2 : **1 port USB-C** sur l'USB natif (GPIO 19/20) → programmation (USB-Serial/JTAG) et **contrôle PC** ; console série UART0 (GPIO 43/44) sur pastilles de test la barrette U85 (GND, TX, RX)
 - v1 : la DevKit avait 2 ports USB-C (pont série et USB natif)
 
 ## 2. Cahier des charges fonctionnel
@@ -60,9 +60,9 @@ Principe directeur de l'architecture GPIO : **seul ce qui a une exigence de timi
 
 ### 4.1 GPIO natifs (chemin critique) — affectation validée
 
-v2 : module **ESP32-S3-WROOM-1-N16R8** soudé (U105), **GPIO réaffectés pour le placement** (TLV_OUT inchangés ; SPI 17/18, I2C SDA 12 / SCL 11, LDAC 10, servo 48, vannes 2, 1, 47, 21, 14, 13, shutter 38, flash 39-42). Table complète et `#define` du firmware v2 dans [docs/mcu-v2-wroom.md](docs/mcu-v2-wroom.md). Le tableau ci-dessous est celui de la **v1** (DevKit).
+v2 : module **ESP32-S3-WROOM-1-N16R8** soudé (U10), **GPIO réaffectés pour le placement** (TLV_OUT inchangés ; SPI 17/18, I2C SDA 12 / SCL 11, LDAC 10, servo 48, vannes 2, 1, 47, 21, 14, 13, shutter 38, flash 39-42). Table complète et `#define` du firmware v2 dans [docs/mcu-v2-wroom.md](docs/mcu-v2-wroom.md). Le tableau ci-dessous est celui de la **v1** (DevKit).
 
-| Signal | GPIO (v1) | Broche DevKit v1 (symbole U105) |
+| Signal | GPIO (v1) | Broche DevKit v1 (symbole U10) |
 |---|---|---|
 | TLV_OUT_1 … TLV_OUT_6 (entrées, ISR) | 4, 5, 6, 7, 15, 16 | 4 à 9 |
 | FLASH_1_CMD, FLASH_2_CMD, FLASH_3_CMD, FLASH_4_CMD | 17, 21, 39, 41 | 10, 27, 36, 38 |
@@ -75,19 +75,19 @@ v2 : module **ESP32-S3-WROOM-1-N16R8** soudé (U105), **GPIO réaffectés pour l
 | DAC2_LDAC (programmation adresse du 2e MCP4728) | 18 | 11 |
 | **Total** | **24 utilisés** | GPIO14 et GPIO40 libres |
 
-Alimentation v2 : 5V_MCU par deux diodes SS14 (D101 depuis +5V, D141 depuis le VBUS de l'USB) → U141 AMS1117-3.3 → **3V3_MCU**, rail dédié au module, séparé du +3V3 de l'électronique (U112).
+Alimentation v2 : 5V_MCU par deux diodes SS14 (D10 depuis +5V, D19 depuis le VBUS de l'USB) → U26 AMS1117-3.3 → **3V3_MCU**, rail dédié au module, séparé du +3V3 de l'électronique (U16).
 
 ### 4.2 Périphériques I2C (non critique en timing)
 
 ```
-ESP32-S3 (I2C : v1 GPIO 8 = SDA, GPIO 9 = SCL ; v2 GPIO 12 = SDA, GPIO 11 = SCL ; pull-ups 4,7 kΩ R108/R109 vers +3V3, sur la feuille MCU)
+ESP32-S3 (I2C : v1 GPIO 8 = SDA, GPIO 9 = SCL ; v2 GPIO 12 = SDA, GPIO 11 = SCL ; pull-ups 4,7 kΩ R79/R80 vers +3V3, sur la feuille MCU)
    │
    ├── MCP23017 (0x20) — expandeur 16 E/S
    │      ├── GPA0-5 : CS_1 … CS_6 des 6 MCP6S91
    │      ├── GPA6   : FOCUS_CMD
    │      ├── GPB2   : RELAY_CMD (sortie relais)
    │      ├── GPB3   : SERVO_OFF (coupure du rail servo)
-   │      ├── GPB5   : LED de statut (déportée, CN101)
+   │      ├── GPB5   : LED de statut (déportée, CN11)
    │      └── GPA7, GPB0-1, GPB4, GPB6-7 : réserve
    ├── MCP4728 #1 (0x60) — seuils THR_1 … THR_4 (LDAC à GND)
    ├── MCP4728 #2 (0x61, reprogrammée via LDAC = GPIO18) — THR_5, THR_6
@@ -243,18 +243,18 @@ Choix retenu : **connecteurs circulaires aviation GX12** pour les vannes et l'al
 Alimentation externe : **bloc secteur 12 V, 5 A minimum (60 W)**, pas de 230 V dans le boîtier.
 
 ```
-Bloc secteur 12 V → J111 → F111 (6,3 A T) → Q111 AO4407A (anti-inversion) → +12V
-                                                  D111 SMBJ15A (TVS)        │
+Bloc secteur 12 V → J12 → F12 (6,3 A T) → Q12 AO4407A (anti-inversion) → +12V
+                                                  D17 SMBJ15A (TVS)        │
       ┌───────────────────────────────────────────────────────────────────┤
       ▼                                                                    ▼
-  vannes (F91-96), relais (K131), U121 LM2596S-ADJ          U111 LM2596S-5.0 → +5V (3 A)
-  → V_SERVO 6 V / 3 A (coupable, servo)                     ├→ module ESP32 (D101 → U141 → 3V3_MCU), capteurs (F11-61), buffer servo
-                                                             ├→ U112 AMS1117-3.3 → +3V3 (électronique)
-                                                             └→ U113 B0505S-1WR3 (isolé) → U114 AMS1117-3.3 → VISO_3V3 / VISO_GND
+  vannes (F91-96), relais (K131), U13 LM2596S-ADJ          U15 LM2596S-5.0 → +5V (3 A)
+  → V_SERVO 6 V / 3 A (coupable, servo)                     ├→ module ESP32 (D10 → U26 → 3V3_MCU), capteurs (F11-61), buffer servo
+                                                             ├→ U16 AMS1117-3.3 → +3V3 (électronique)
+                                                             └→ U17 B0505S-1WR3 (isolé) → U18 AMS1117-3.3 → VISO_3V3 / VISO_GND
                                                                                          (sorties flash / appareil photo)
 ```
 
-- Le 3V3_MCU (U141) n'alimente que le module ESP32 ; tout le reste est sur +3V3 (U112). L'USB (VBUS, D141) peut alimenter le module seul pour la programmation.
+- Le 3V3_MCU (U26) n'alimente que le module ESP32 ; tout le reste est sur +3V3 (U16). L'USB (VBUS, D19) peut alimenter le module seul pour la programmation.
 - Le côté isolé (VISO) n'a **aucun conducteur commun** avec GND : il protège l'ESP32 et les entrées analogiques des perturbations des flashs, évite les boucles de masse entre boîtier, appareil photo et flashs secteur.
 
 ## 14. Synoptique général du montage
@@ -319,7 +319,7 @@ Core 1 (temps réel, GPIO natif)          Expandeur I2C (non critique)
 
 ## 15. Ouvert / non tranché
 
-- **Schéma** : terminé (référence du 05/10). Points restants : R123 3,9 kΩ (C23018 en rupture, secours 39 k / 10 k), D101 = SS14 C2480 à confirmer (en v2, plus de barrettes : le module est soudé).
+- **Schéma** : terminé (référence du 05/10). Points restants : R29 3,9 kΩ (C23018 en rupture, secours 39 k / 10 k), D10 = SS14 C2480 à confirmer (en v2, plus de barrettes : le module est soudé).
 - **v2 (module WROOM)** : saisie de la feuille MCU dans la copie EasyEDA « TriggerFlow v2 WROOM » et vérification de sa netlist ; orientation réelle de l'empreinte du module (broche 1, antenne).
 - **Vérifications** : empreintes réelles (RJ45, module, USB-C, relais) avant de figer le placement.
 - **PCB** (voir `pcb/` et `docs/pcb-checklist.md`) : cotes réelles du RJ45 HanXia C25168869, orientation broche 1 des empreintes, boîtier plastique ou métallique (métallique → WROOM-1U à antenne externe, C3013946, à décider avant routage), raccordement des trous de fixation à la masse.

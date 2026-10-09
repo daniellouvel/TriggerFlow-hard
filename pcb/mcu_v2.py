@@ -67,7 +67,7 @@ add = {
 }
 for n, p in add.items(): nets[n] = nets.get(n, []) + p
 json.dump({"comps": comps, "nets": nets, "lcsc_new": {r: v[2] for r, v in NEW.items()}},
-          open(os.path.join(HERE, "netlist_v2_wroom.json"), "w"), ensure_ascii=False, indent=1)
+          open(os.path.join(HERE, "netlist_v2_ancienne_numerotation.json"), "w"), ensure_ascii=False, indent=1)
 u = sorted({int(p.split(".")[1]) for ps in nets.values() for p in ps if p.startswith("U105.")})
 print("U105 broches utilisées :", u)
 print("composants :", len(comps), "| nets :", len(nets))

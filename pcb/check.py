@@ -8,12 +8,12 @@ bad = []
 refs = sorted(R)
 for i, a in enumerate(refs):
     for b in refs[i + 1:]:
-        if {a, b} & {"U105"} and ({a, b} - {"U105"}) <= under_devkit_ok: continue
+        if {a, b} & {"U10"} and ({a, b} - {"U10"}) <= under_devkit_ok: continue
         if ov(R[a], R[b]): bad.append((a, b))
 print("chevauchements:", bad)
 out = [r for r, q in R.items() if q[0] < 0.5 or q[1] < 0 or q[2] > BW - 0.5 or q[3] > BH]
 print("hors carte:", out)
-ka = [r for r, q in R.items() if r != "U105" and ov(q, KEEPOUT_ANT, 0)]
+ka = [r for r, q in R.items() if r != "U10" and ov(q, KEEPOUT_ANT, 0)]
 print("dans zone antenne:", ka)
 kb = [r for r, q in R.items() if r not in STRADDLE and ov(q, BARRIER, 0)]
 print("sur la barrière:", kb)
