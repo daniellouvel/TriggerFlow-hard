@@ -67,6 +67,12 @@ def layout():
         tp = add("Connector:TestPoint", ref, net, 40.64, y, 0, ref_at=(2.54, -3.81), val_at=(2.54, -1.27), justify="left")
         wire_abs(tp.pin("1"), A(40.64, y + 2.54), A(55.88, y + 2.54)); labels.append((net, A(55.88, y + 2.54), 0))
 
+    # ---------------- tirages I2C (vers +3V3, alimentation des circuits du bus) ----------------
+    for ref, net, x in (("R108", "I2C_SDA", 76.2), ("R109", "I2C_SCL", 91.44)):
+        rr = add("Device:R", ref, "4.7k", x, 118.11, 180, ref_at=(2.54, -1.27), val_at=(2.54, 1.27), justify="left")   # broche 2 en haut
+        add("power:+3V3", pwr_ref(), "+3V3", x, 111.76, 0, hide_ref=True, val_at=(0, -3.81)); wire_abs(rr.pin("2"), A(x, 111.76))
+        wire_abs(rr.pin("1"), A(x, 125.73)); labels.append((net, A(x, 125.73), 270))
+
     # ---------------- USB-C natif ----------------
     j = add("Connector:USB_C_Receptacle_USB2.0_16P", "J141", "TYPE-C-31-M-12", 220.98, 63.5, 0, ref_at=(0, -27.94), val_at=(0, -25.4))
     e = add("Power_Protection:USBLC6-2SC6", "U142", "USBLC6-2SC6", 261.62, 66.04, 0, ref_at=(0, -10.16), val_at=(0, 10.16))
@@ -91,7 +97,7 @@ def layout():
 
     # ---------------- zones et notes ----------------
     zone("1 · Alimentation 3V3_MCU", 20.32, 30.48, 116.84, 60.96 - 2.54)
-    zone("2 · RESET, BOOT, console", 20.32, 60.96, 116.84, 130.81)
+    zone("2 · RESET, BOOT, console, tirages I2C", 20.32, 60.96, 116.84, 130.81)
     zone("3 · Module ESP32-S3-WROOM-1-N16R8", 119.38, 30.48, 199.39, 130.81)
     zone("4 · USB-C natif (IO19 / IO20)", 201.93, 30.48, 284.48, 101.6)
     note("Notes :\n"
@@ -101,5 +107,6 @@ def layout():
          "• 5V_MCU par D101 (depuis +5V) ou D141 (depuis VBUS) : programmation par l'USB sans le 12 V ; l'USB n'alimente que le module.\n"
          "• U141 AMS1117-3.3 dédié au module (pointe Wi-Fi ≈ 355 mA) ; C142 + C143 au plus près de la broche 2 du module.\n"
          "• EN : 10 k / 1 µF (Espressif) + RESET ; BOOT maintenu + RESET = mode téléchargement. Console UART0 sur TP141 / TP142.\n"
+         "• R108 / R109 : tirages I2C 4,7 k vers +3V3 (inchangés depuis la v1, rail des circuits du bus).\n"
          "• USB-C : CC1 / CC2 5,1 k vers GND (périphérique) ; USBLC6-2SC6 contre les décharges ; D+ / D- courtes, même longueur, sans via.",
          20.32, 137.16, 1.27)

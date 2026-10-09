@@ -6,7 +6,7 @@ Branche `v2-wroom`. La v1 (DevKit sur barrettes) reste sur `main` et l'étiquett
 
 - `kicad/mcu_v2/mcu_wroom.kicad_sch` : feuille KiCad (A4) générée par `generateur/build_mcu.py`, aperçu `kicad/mcu_v2/apercu.png`.
 - `kicad/easyeda/mcu_wroom.kicad_sch` : même feuille sans champs cachés, à importer dans EasyEDA Pro (copie « TriggerFlow v2 WROOM »).
-- Netlist de la feuille vérifiée par calcul contre `pcb/netlist_v2_wroom.json` : 36 nets, aucun écart (la languette de U141 n'est pas une broche séparée du symbole KiCad ; elle est reliée à VO dans l'empreinte). Non ouverte dans KiCad 10 ni dans EasyEDA : ERC à faire.
+- Netlist de la feuille vérifiée par calcul contre `pcb/netlist_v2_wroom.json` : 37 nets (avec les tirages I2C R108 / R109), aucun écart (la languette de U141 n'est pas une broche séparée du symbole KiCad ; elle est reliée à VO dans l'empreinte). Non ouverte dans KiCad 10 ni dans EasyEDA : ERC à faire.
 - Les signaux vers les autres feuilles sont des étiquettes de net (TLV_OUT_1…, SPI_SCK, I2C_SDA, GPIO_VALVE_1…, FLASH_1_CMD…), comme dans les feuilles servo et relais.
 
 ## Principe

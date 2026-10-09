@@ -80,7 +80,7 @@ Alimentation v2 : 5V_MCU par deux diodes SS14 (D101 depuis +5V, D141 depuis le V
 ### 4.2 Périphériques I2C (non critique en timing)
 
 ```
-ESP32-S3 (I2C : GPIO 8 = SDA, GPIO 9 = SCL, pull-ups 4,7 kΩ R108/R109)
+ESP32-S3 (I2C : v1 GPIO 8 = SDA, GPIO 9 = SCL ; v2 GPIO 12 = SDA, GPIO 11 = SCL ; pull-ups 4,7 kΩ R108/R109 vers +3V3, sur la feuille MCU)
    │
    ├── MCP23017 (0x20) — expandeur 16 E/S
    │      ├── GPA0-5 : CS_1 … CS_6 des 6 MCP6S91

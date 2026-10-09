@@ -475,6 +475,46 @@
       )
     )
   )
+		(symbol "power:+3V3" (power) (pin_names (offset 0)) (in_bom yes) (on_board yes)
+    (property "Reference" "#PWR" (at 0 -3.81 0)
+      (effects (font (size 1.27 1.27)) (hide yes))
+    )
+    (property "Value" "+3V3" (at 0 3.556 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (symbol "+3V3_0_1"
+      (polyline
+        (pts
+          (xy -0.762 1.27)
+          (xy 0 2.54)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 0 0)
+          (xy 0 2.54)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 0 2.54)
+          (xy 0.762 1.27)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+    )
+    (symbol "+3V3_1_1"
+      (pin power_in line (at 0 0 90) (length 0) (hide yes)
+        (name "+3V3" (effects (font (size 1.27 1.27))))
+        (number "1" (effects (font (size 1.27 1.27))))
+      )
+    )
+  )
 		(symbol "Connector:USB_C_Receptacle_USB2.0_16P" (pin_names (offset 1.016)) (in_bom yes) (on_board yes)
     (property "Reference" "J" (at 0 22.225 0)
       (effects (font (size 1.27 1.27)))
@@ -2100,6 +2140,166 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R")
+		(at 86.36 118.11 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "948fdcea-40e2-5047-a4bb-aab31f61de96")
+		(property "Reference" "R108"
+			(at 88.9 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "4.7k"
+			(at 88.9 119.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "1"
+			(uuid "3a71fdd8-ddc9-59e1-a63b-702eeabfca11")
+		)
+		(pin "2"
+			(uuid "532ef38b-729a-5408-bd84-4539394af4a6")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/476d30b8-f0c5-5687-9ea7-652f83ae5ac5"
+					(reference "R108")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3V3")
+		(at 86.36 111.76 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "addb6aee-0b4d-5a9b-a494-40d85b589e43")
+		(property "Reference" "#PWR1412"
+			(at 86.36 111.76 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 86.36 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "ad32e6c4-3366-5918-8e49-8f930e81d3eb")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/476d30b8-f0c5-5687-9ea7-652f83ae5ac5"
+					(reference "#PWR1412")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 101.6 118.11 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "2810d35f-eae1-52ec-98d8-ef78a9368f55")
+		(property "Reference" "R109"
+			(at 104.14 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "4.7k"
+			(at 104.14 119.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "1"
+			(uuid "3948ff23-1f37-522f-a85e-7aa14b348cc6")
+		)
+		(pin "2"
+			(uuid "cb00ead2-0d56-5c3c-8847-b8199f41680b")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/476d30b8-f0c5-5687-9ea7-652f83ae5ac5"
+					(reference "R109")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3V3")
+		(at 101.6 111.76 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b5a628ee-02ff-503c-9200-41f4934ceefa")
+		(property "Reference" "#PWR1413"
+			(at 101.6 111.76 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 101.6 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "ec47f489-e864-502a-bf68-22a58ec7d4c4")
+		)
+		(instances
+			(project "TriggerFlow"
+				(path "/476d30b8-f0c5-5687-9ea7-652f83ae5ac5"
+					(reference "#PWR1413")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Connector:USB_C_Receptacle_USB2.0_16P")
 		(at 231.14 63.5 0)
 		(unit 1)
@@ -2107,7 +2307,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "948fdcea-40e2-5047-a4bb-aab31f61de96")
+		(uuid "ec6c7ad4-f0cf-5ba8-8c1d-56c5e3c75302")
 		(property "Reference" "J141"
 			(at 231.14 35.56 0)
 			(effects
@@ -2125,55 +2325,55 @@
 			)
 		)
 		(pin "A1"
-			(uuid "f679c2c9-c35a-5aa1-84d3-d637b6d7927f")
+			(uuid "1b665e1c-b5f6-5ace-b192-112147307808")
 		)
 		(pin "A12"
-			(uuid "5c877a14-eb6c-52a2-968a-3f35d9b133fe")
+			(uuid "73c2de30-cb9c-557c-bdb8-798fffb96252")
 		)
 		(pin "A4"
-			(uuid "6c5d3016-9196-5d9a-9131-06c90e7d1cf5")
+			(uuid "6270265c-69d6-540d-8ccb-ca773dc2d675")
 		)
 		(pin "A5"
-			(uuid "20986ed3-04c2-5d3c-a464-20afac94d460")
+			(uuid "3a1ede6b-547b-50fd-abee-8387f4d719cc")
 		)
 		(pin "A6"
-			(uuid "f9a13868-a44b-54b7-bedf-588361df5b13")
+			(uuid "22d79a6b-bbf1-5163-993c-e1033223f826")
 		)
 		(pin "A7"
-			(uuid "24732ba9-64b6-57dd-bcbd-59346ef63e8a")
+			(uuid "923f48fe-1ebd-50d1-8583-41ba4297325a")
 		)
 		(pin "A8"
-			(uuid "9204c73c-b5b3-5b0a-af66-f99513c4dbb7")
+			(uuid "88640907-1553-5236-a37a-b9ef3049b483")
 		)
 		(pin "A9"
-			(uuid "187b8186-5860-5238-9538-c7c7ba592ab6")
+			(uuid "f42f7680-55c9-5b25-9b04-51a63d71f2ef")
 		)
 		(pin "B1"
-			(uuid "ef072804-02d3-5de8-b753-70f2b476b675")
+			(uuid "fe910ce2-8458-5fcd-bb7e-afc1acdf575d")
 		)
 		(pin "B12"
-			(uuid "020b7903-a7f5-51ae-9c88-d2578ac02665")
+			(uuid "680de7df-b633-584a-bfea-485e514cfb47")
 		)
 		(pin "B4"
-			(uuid "f3f47ee2-2434-51cc-813a-65e3d04699bd")
+			(uuid "f88f608f-5646-5728-abd9-50e5a7a657f0")
 		)
 		(pin "B5"
-			(uuid "45e78b7e-4e96-5ac3-9da7-e63c71a86451")
+			(uuid "4d729b4c-c3b9-50d6-9f30-f5cbc92914a2")
 		)
 		(pin "B6"
-			(uuid "997ba69b-6903-50c3-b166-1fcd2862f2ab")
+			(uuid "1eceabf2-9f95-5cc3-a521-7aa51fe190ae")
 		)
 		(pin "B7"
-			(uuid "61ea94a4-14dd-5c04-a173-02f57c568e49")
+			(uuid "c7eaff88-8bf9-5388-8337-2b8ef4aff5b2")
 		)
 		(pin "B8"
-			(uuid "39a900b0-bdb7-5f46-a13c-75c86e69ab4a")
+			(uuid "4c20a257-ba82-501b-a0b2-e56d4b53ac79")
 		)
 		(pin "B9"
-			(uuid "ae66a20d-6b4f-52ea-a060-e643fb73acb8")
+			(uuid "25dcfa8c-e42c-5cf5-8a16-762f1b2c977d")
 		)
 		(pin "S1"
-			(uuid "a6c3a5d2-c465-5f1f-b00e-51935686c96d")
+			(uuid "00d035fa-3ce9-59e7-b35b-070860eff6eb")
 		)
 		(instances
 			(project "TriggerFlow"
@@ -2192,7 +2392,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "addb6aee-0b4d-5a9b-a494-40d85b589e43")
+		(uuid "5c3e6771-0c18-5c41-afde-c052df317c71")
 		(property "Reference" "U142"
 			(at 271.78 55.88 0)
 			(effects
@@ -2210,22 +2410,22 @@
 			)
 		)
 		(pin "1"
-			(uuid "ad32e6c4-3366-5918-8e49-8f930e81d3eb")
+			(uuid "65793d0c-71ba-56f1-80b7-9422c4fcc8ad")
 		)
 		(pin "2"
-			(uuid "4749d114-4762-530e-be5e-8017e0838310")
+			(uuid "2108008e-cf1f-5c18-b503-5ac725a12dbe")
 		)
 		(pin "3"
-			(uuid "1edf99b5-bad7-5e9b-a6f7-0054be2db235")
+			(uuid "3211dce6-763f-5c6a-b6de-5859cfc1d087")
 		)
 		(pin "4"
-			(uuid "0ecd6ad0-f54e-5a2f-a0fe-7fb8d12e9de0")
+			(uuid "cb4a9f46-55e8-5616-aed8-ed958c6dc00f")
 		)
 		(pin "5"
-			(uuid "4f0c91da-cabb-528d-9aab-cab932bc3879")
+			(uuid "2e9bd7b4-fbfc-5504-9ff8-6f41681286d3")
 		)
 		(pin "6"
-			(uuid "2997e51a-4543-5a3a-bdc2-85b473df6236")
+			(uuid "145563ab-59f8-5025-99c4-36512a24515a")
 		)
 		(instances
 			(project "TriggerFlow"
@@ -2244,7 +2444,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "2810d35f-eae1-52ec-98d8-ef78a9368f55")
+		(uuid "fa2e6e57-fdd0-5fe5-a42f-24d17dceb218")
 		(property "Reference" "R143"
 			(at 254 50.8 90)
 			(effects
@@ -2262,10 +2462,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "3948ff23-1f37-522f-a85e-7aa14b348cc6")
+			(uuid "897e887c-f3c3-58dd-abe3-e907358c81e2")
 		)
 		(pin "2"
-			(uuid "cb00ead2-0d56-5c3c-8847-b8199f41680b")
+			(uuid "1fc66303-3f0d-5179-abef-14a2d96f74ff")
 		)
 		(instances
 			(project "TriggerFlow"
@@ -2284,8 +2484,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "b5a628ee-02ff-503c-9200-41f4934ceefa")
-		(property "Reference" "#PWR1412"
+		(uuid "11dd239b-801c-58cd-bbb2-653304433fd9")
+		(property "Reference" "#PWR1414"
 			(at 260.35 53.34 90)
 			(hide yes)
 			(effects
@@ -2304,12 +2504,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "ec47f489-e864-502a-bf68-22a58ec7d4c4")
+			(uuid "983b715d-4271-5eda-8acc-374ce4e5886d")
 		)
 		(instances
 			(project "TriggerFlow"
 				(path "/476d30b8-f0c5-5687-9ea7-652f83ae5ac5"
-					(reference "#PWR1412")
+					(reference "#PWR1414")
 					(unit 1)
 				)
 			)
@@ -2323,7 +2523,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "ec6c7ad4-f0cf-5ba8-8c1d-56c5e3c75302")
+		(uuid "60c9d23a-80d2-5758-b40d-1429e1a96a07")
 		(property "Reference" "R144"
 			(at 264.16 58.42 90)
 			(effects
@@ -2341,10 +2541,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "6ea8f6eb-0750-5750-8fd7-46c555ec010c")
+			(uuid "bf6677b6-5997-530d-9ffa-8fd64bf088f3")
 		)
 		(pin "2"
-			(uuid "23391d12-c700-583a-88ae-284b87272138")
+			(uuid "18581d04-5d8c-5893-99ce-98dff0042592")
 		)
 		(instances
 			(project "TriggerFlow"
@@ -2363,8 +2563,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "5c3e6771-0c18-5c41-afde-c052df317c71")
-		(property "Reference" "#PWR1413"
+		(uuid "7b821dda-7619-57f8-ad4f-e8845ac60b06")
+		(property "Reference" "#PWR1415"
 			(at 270.51 55.88 90)
 			(hide yes)
 			(effects
@@ -2383,12 +2583,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "65793d0c-71ba-56f1-80b7-9422c4fcc8ad")
+			(uuid "393d0369-0a0d-518c-9a96-11627051c71d")
 		)
 		(instances
 			(project "TriggerFlow"
 				(path "/476d30b8-f0c5-5687-9ea7-652f83ae5ac5"
-					(reference "#PWR1413")
+					(reference "#PWR1415")
 					(unit 1)
 				)
 			)
@@ -2402,8 +2602,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "fa2e6e57-fdd0-5fe5-a42f-24d17dceb218")
-		(property "Reference" "#PWR1414"
+		(uuid "51fe202f-405e-5639-8a67-74437dbaf479")
+		(property "Reference" "#PWR1416"
 			(at 271.78 76.2 0)
 			(hide yes)
 			(effects
@@ -2421,12 +2621,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "897e887c-f3c3-58dd-abe3-e907358c81e2")
+			(uuid "d81c7e7f-f27c-5274-822b-a310cb3faf1e")
 		)
 		(instances
 			(project "TriggerFlow"
 				(path "/476d30b8-f0c5-5687-9ea7-652f83ae5ac5"
-					(reference "#PWR1414")
+					(reference "#PWR1416")
 					(unit 1)
 				)
 			)
@@ -2440,8 +2640,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "11dd239b-801c-58cd-bbb2-653304433fd9")
-		(property "Reference" "#PWR1415"
+		(uuid "b2ea3a6a-46bb-5d31-aeef-bf000b464f70")
+		(property "Reference" "#PWR1417"
 			(at 231.14 88.9 0)
 			(hide yes)
 			(effects
@@ -2459,12 +2659,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "983b715d-4271-5eda-8acc-374ce4e5886d")
+			(uuid "f847be9a-ff39-59df-a07b-9f0648367ba4")
 		)
 		(instances
 			(project "TriggerFlow"
 				(path "/476d30b8-f0c5-5687-9ea7-652f83ae5ac5"
-					(reference "#PWR1415")
+					(reference "#PWR1417")
 					(unit 1)
 				)
 			)
@@ -2478,8 +2678,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "60c9d23a-80d2-5758-b40d-1429e1a96a07")
-		(property "Reference" "#PWR1416"
+		(uuid "cdb1cb9b-ae65-5e2a-bb3b-c851f7eae921")
+		(property "Reference" "#PWR1418"
 			(at 223.52 88.9 0)
 			(hide yes)
 			(effects
@@ -2497,12 +2697,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "bf6677b6-5997-530d-9ffa-8fd64bf088f3")
+			(uuid "616f8db3-5a66-5e2e-9601-ee9da59847be")
 		)
 		(instances
 			(project "TriggerFlow"
 				(path "/476d30b8-f0c5-5687-9ea7-652f83ae5ac5"
-					(reference "#PWR1416")
+					(reference "#PWR1418")
 					(unit 1)
 				)
 			)
@@ -3070,7 +3270,7 @@
 	)
 	(wire
 		(pts
-			(xy 246.38 48.26) (xy 271.78 48.26)
+			(xy 86.36 114.3) (xy 86.36 111.76)
 		)
 		(stroke
 			(width 0)
@@ -3080,7 +3280,7 @@
 	)
 	(wire
 		(pts
-			(xy 271.78 48.26) (xy 271.78 60.96)
+			(xy 86.36 121.92) (xy 86.36 125.73)
 		)
 		(stroke
 			(width 0)
@@ -3090,7 +3290,7 @@
 	)
 	(wire
 		(pts
-			(xy 246.38 53.34) (xy 250.19 53.34)
+			(xy 101.6 114.3) (xy 101.6 111.76)
 		)
 		(stroke
 			(width 0)
@@ -3100,7 +3300,7 @@
 	)
 	(wire
 		(pts
-			(xy 257.81 53.34) (xy 260.35 53.34)
+			(xy 101.6 121.92) (xy 101.6 125.73)
 		)
 		(stroke
 			(width 0)
@@ -3110,7 +3310,7 @@
 	)
 	(wire
 		(pts
-			(xy 246.38 55.88) (xy 260.35 55.88)
+			(xy 246.38 48.26) (xy 271.78 48.26)
 		)
 		(stroke
 			(width 0)
@@ -3120,7 +3320,7 @@
 	)
 	(wire
 		(pts
-			(xy 267.97 55.88) (xy 270.51 55.88)
+			(xy 271.78 48.26) (xy 271.78 60.96)
 		)
 		(stroke
 			(width 0)
@@ -3130,7 +3330,7 @@
 	)
 	(wire
 		(pts
-			(xy 246.38 60.96) (xy 246.38 63.5)
+			(xy 246.38 53.34) (xy 250.19 53.34)
 		)
 		(stroke
 			(width 0)
@@ -3140,7 +3340,7 @@
 	)
 	(wire
 		(pts
-			(xy 246.38 66.04) (xy 246.38 68.58)
+			(xy 257.81 53.34) (xy 260.35 53.34)
 		)
 		(stroke
 			(width 0)
@@ -3150,7 +3350,7 @@
 	)
 	(wire
 		(pts
-			(xy 246.38 63.5) (xy 256.54 63.5)
+			(xy 246.38 55.88) (xy 260.35 55.88)
 		)
 		(stroke
 			(width 0)
@@ -3160,7 +3360,7 @@
 	)
 	(wire
 		(pts
-			(xy 256.54 63.5) (xy 256.54 66.04)
+			(xy 267.97 55.88) (xy 270.51 55.88)
 		)
 		(stroke
 			(width 0)
@@ -3170,7 +3370,7 @@
 	)
 	(wire
 		(pts
-			(xy 256.54 66.04) (xy 266.7 66.04)
+			(xy 246.38 60.96) (xy 246.38 63.5)
 		)
 		(stroke
 			(width 0)
@@ -3180,7 +3380,7 @@
 	)
 	(wire
 		(pts
-			(xy 246.38 68.58) (xy 261.62 68.58)
+			(xy 246.38 66.04) (xy 246.38 68.58)
 		)
 		(stroke
 			(width 0)
@@ -3190,7 +3390,7 @@
 	)
 	(wire
 		(pts
-			(xy 261.62 68.58) (xy 266.7 68.58)
+			(xy 246.38 63.5) (xy 256.54 63.5)
 		)
 		(stroke
 			(width 0)
@@ -3200,7 +3400,7 @@
 	)
 	(wire
 		(pts
-			(xy 276.86 66.04) (xy 281.94 66.04)
+			(xy 256.54 63.5) (xy 256.54 66.04)
 		)
 		(stroke
 			(width 0)
@@ -3210,7 +3410,7 @@
 	)
 	(wire
 		(pts
-			(xy 276.86 68.58) (xy 281.94 68.58)
+			(xy 256.54 66.04) (xy 266.7 66.04)
 		)
 		(stroke
 			(width 0)
@@ -3220,7 +3420,7 @@
 	)
 	(wire
 		(pts
-			(xy 271.78 73.66) (xy 271.78 76.2)
+			(xy 246.38 68.58) (xy 261.62 68.58)
 		)
 		(stroke
 			(width 0)
@@ -3230,7 +3430,7 @@
 	)
 	(wire
 		(pts
-			(xy 231.14 86.36) (xy 231.14 88.9)
+			(xy 261.62 68.58) (xy 266.7 68.58)
 		)
 		(stroke
 			(width 0)
@@ -3240,13 +3440,53 @@
 	)
 	(wire
 		(pts
-			(xy 223.52 86.36) (xy 223.52 88.9)
+			(xy 276.86 66.04) (xy 281.94 66.04)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "9446b95a-7848-5208-9216-d5f89c5350e5")
+	)
+	(wire
+		(pts
+			(xy 276.86 68.58) (xy 281.94 68.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "81011272-8840-562a-aaa5-269118c90e5d")
+	)
+	(wire
+		(pts
+			(xy 271.78 73.66) (xy 271.78 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ab40efc4-295a-5a1d-9213-c34871352ee8")
+	)
+	(wire
+		(pts
+			(xy 231.14 86.36) (xy 231.14 88.9)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "61f36848-c2a5-5c19-83bd-193b4822c500")
+	)
+	(wire
+		(pts
+			(xy 223.52 86.36) (xy 223.52 88.9)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6f5186c4-87b4-5199-ba30-5567cda40635")
 	)
 	(junction
 		(at 58.42 45.72)
@@ -3744,8 +3984,8 @@
 		)
 		(uuid "d91d4c8e-a65e-56bf-b5a2-41e991e40827")
 	)
-	(label "VBUS"
-		(at 251.46 48.26 0)
+	(label "I2C_SDA"
+		(at 86.36 125.73 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3754,8 +3994,8 @@
 		)
 		(uuid "e0e626db-d56f-587d-9c73-99b0e9baff0d")
 	)
-	(label "USB_DN"
-		(at 248.92 63.5 0)
+	(label "I2C_SCL"
+		(at 101.6 125.73 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3764,8 +4004,8 @@
 		)
 		(uuid "5ecde24c-e5c1-5379-bf96-e1863311059f")
 	)
-	(label "USB_DP"
-		(at 248.92 68.58 0)
+	(label "VBUS"
+		(at 251.46 48.26 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3775,7 +4015,7 @@
 		(uuid "d9ca3b77-109a-5082-af48-3fa217f2fb0c")
 	)
 	(label "USB_DN"
-		(at 281.94 66.04 0)
+		(at 248.92 63.5 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3785,7 +4025,7 @@
 		(uuid "0f30b7c6-ef3e-5583-8c7d-48b64fa49bd8")
 	)
 	(label "USB_DP"
-		(at 281.94 68.58 0)
+		(at 248.92 68.58 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3793,6 +4033,26 @@
 			(justify left bottom)
 		)
 		(uuid "5fb6c754-5d2e-59e0-b41d-9c2d7b81dc71")
+	)
+	(label "USB_DN"
+		(at 281.94 66.04 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "cb906475-d679-58c7-ba5c-5ffa9c2d44df")
+	)
+	(label "USB_DP"
+		(at 281.94 68.58 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "ea812e00-3eb5-5d4d-9040-39b6efbde665")
 	)
 	(rectangle
 		(start 30.48 30.48)
@@ -3854,7 +4114,7 @@
 		)
 		(uuid "e55ab2cc-8c07-5993-9cdc-cc2e95cb36c8")
 	)
-	(text "2 · RESET, BOOT, console"
+	(text "2 · RESET, BOOT, console, tirages I2C"
 		(exclude_from_sim no)
 		(at 33.02 63.5 0)
 		(effects
@@ -3890,7 +4150,7 @@
 		)
 		(uuid "48f9b9ab-b073-5677-8018-cc59f39b973b")
 	)
-	(text "Notes :\n• GPIO réaffectés pour le placement (v2) : TLV_OUT_1..6 = IO4-7, IO15, IO16 ; SPI SCK / MOSI = IO17 / IO18 ; I2C SCL / SDA = IO11 / IO12 ;\n  DAC2_LDAC = IO10 ; SERVO_PWM = IO48 ; vannes 1..6 = IO2, IO1, IO47, IO21, IO14, IO13 ; SHUTTER = IO38 ; FLASH_1..4 = IO39..IO42.\n• Non connectées : IO3, IO45, IO46 (démarrage), IO35-37 (PSRAM octale), IO8 et IO9 (réserve).\n• 5V_MCU par D101 (depuis +5V) ou D141 (depuis VBUS) : programmation par l'USB sans le 12 V ; l'USB n'alimente que le module.\n• U141 AMS1117-3.3 dédié au module (pointe Wi-Fi ≈ 355 mA) ; C142 + C143 au plus près de la broche 2 du module.\n• EN : 10 k / 1 µF (Espressif) + RESET ; BOOT maintenu + RESET = mode téléchargement. Console UART0 sur TP141 / TP142.\n• USB-C : CC1 / CC2 5,1 k vers GND (périphérique) ; USBLC6-2SC6 contre les décharges ; D+ / D- courtes, même longueur, sans via."
+	(text "Notes :\n• GPIO réaffectés pour le placement (v2) : TLV_OUT_1..6 = IO4-7, IO15, IO16 ; SPI SCK / MOSI = IO17 / IO18 ; I2C SCL / SDA = IO11 / IO12 ;\n  DAC2_LDAC = IO10 ; SERVO_PWM = IO48 ; vannes 1..6 = IO2, IO1, IO47, IO21, IO14, IO13 ; SHUTTER = IO38 ; FLASH_1..4 = IO39..IO42.\n• Non connectées : IO3, IO45, IO46 (démarrage), IO35-37 (PSRAM octale), IO8 et IO9 (réserve).\n• 5V_MCU par D101 (depuis +5V) ou D141 (depuis VBUS) : programmation par l'USB sans le 12 V ; l'USB n'alimente que le module.\n• U141 AMS1117-3.3 dédié au module (pointe Wi-Fi ≈ 355 mA) ; C142 + C143 au plus près de la broche 2 du module.\n• EN : 10 k / 1 µF (Espressif) + RESET ; BOOT maintenu + RESET = mode téléchargement. Console UART0 sur TP141 / TP142.\n• R108 / R109 : tirages I2C 4,7 k vers +3V3 (inchangés depuis la v1, rail des circuits du bus).\n• USB-C : CC1 / CC2 5,1 k vers GND (périphérique) ; USBLC6-2SC6 contre les décharges ; D+ / D- courtes, même longueur, sans via."
 		(exclude_from_sim no)
 		(at 30.48 137.16 0)
 		(effects
