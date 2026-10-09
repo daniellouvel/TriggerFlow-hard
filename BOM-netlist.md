@@ -28,37 +28,40 @@ Méthode : schéma de référence → saisie EasyEDA Pro avec références LCSC 
 
 ---
 
-## Feuille ESP32 — U105 (YD-ESP32-S3 N16R8, symbole ESP32-S3-DEVKITC-1)
+## Feuille MCU v2 — U105 ESP32-S3-WROOM-1-N16R8 (branche v2-wroom)
 
-Brochage du symbole : côté gauche 1-22 = rangée J1 ; côté droit 44 → 23 = rangée J3 (J3.k = broche 45-k).
+Le module remplace la DevKit de la v1 ; chaque signal garde son GPIO. Détail complet (broches, nets, choix, BOM vérifiée) : [docs/mcu-v2-wroom.md](docs/mcu-v2-wroom.md).
 
-| Broche U105 | GPIO | Net |
+| Broche module | GPIO | Net |
 |---|---|---|
-| 4, 5, 6, 7, 8, 9 | 4, 5, 6, 7, 15, 16 | TLV_OUT_1 … TLV_OUT_6 |
-| 10 | 17 | FLASH_1_CMD |
-| 11 | 18 | DAC2_LDAC (Bloc 8) |
-| 12 / 15 | 8 / 9 | I2C_SDA / I2C_SCL |
-| 16 | 10 | GPIO_VALVE_3 |
-| 17 / 18 | 11 / 12 | SPI_MOSI / SPI_SCK |
-| 19 | 13 | SERVO_PWM (Bloc 12) |
-| 20 | 14 | libre (réserve) |
-| 21 | 5V | via D101 (SS14) depuis +5V |
-| 22, 23, 24, 44 | G | GND |
-| 41, 40 | 1, 2 | GPIO_VALVE_1, GPIO_VALVE_2 |
-| 39 | 42 | SHUTTER_CMD |
-| 38 | 41 | FLASH_4_CMD |
-| 36 | 39 | FLASH_3_CMD |
-| 35 | 38 | GPIO_VALVE_4 |
-| 29 | 48 | GPIO_VALVE_5 (pastille « RGB » de la carte laissée ouverte) |
-| 28 | 47 | GPIO_VALVE_6 |
-| 27 | 21 | FLASH_2_CMD |
-| libres | 3V3 ×2, RST, 0, 3, 45, 46, 19, 20, 43, 44, 35-37, 40, **14** | non connectées |
+| 4 à 9 | 4, 5, 6, 7, 15, 16 | TLV_OUT_1 … TLV_OUT_6 |
+| 10, 23, 32, 34 | 17, 21, 39, 41 | FLASH_1_CMD … FLASH_4_CMD |
+| 35 | 42 | SHUTTER_CMD |
+| 39, 38, 18, 31, 25, 24 | 1, 2, 10, 38, 48, 47 | GPIO_VALVE_1 … GPIO_VALVE_6 |
+| 21 | 13 | SERVO_PWM |
+| 12 / 17 | 8 / 9 | I2C_SDA / I2C_SCL |
+| 19 / 20 | 11 / 12 | SPI_MOSI / SPI_SCK |
+| 11 | 18 | GPIO18 (DAC2_LDAC) |
+| 13 / 14 | 19 / 20 | USB_DN / USB_DP |
+| 27 | 0 | IO0_BOOT |
+| 36 / 37 | RXD0 / TXD0 | TP142 / TP141 |
+| 2 / 3 | — | 3V3_MCU / EN |
+| 1, 40, 41 | — | GND |
 
 | Réf | Pièce | LCSC |
 |---|---|---|
-| U105 | Carte YD-ESP32-S3 N16R8 sur 2 barrettes femelles 1×22 (2,54 mm) | carte achetée à part (exclue de la BOM d'assemblage) |
-| D101 | SS14, anode +5V → cathode U105.21 (anti-retour USB) | C2480 |
-| R108, R109 | 4,7 kΩ, pull-ups I2C_SDA / I2C_SCL vers +3V3 | C23162 |
+| U105 | ESP32-S3-WROOM-1-N16R8 | C2913202 |
+| U141 | AMS1117-3.3 (3V3_MCU) | C6186 |
+| U142 | USBLC6-2SC6 | C7519 |
+| J141 | USB-C HRO TYPE-C-31-M-12 | C165948 |
+| SW141, SW142 | TS-1187A-B-A-B (RESET, BOOT) | C318884 |
+| D101, D141 | SS14 (+5V et VBUS vers 5V_MCU) | C2480 |
+| R141, R142 | 10 kΩ (EN, IO0) | C25804 |
+| R143, R144 | 5,1 kΩ (CC1, CC2) | C23186 |
+| C141 | 1 µF (EN) | C5673 |
+| C143 | 100 nF | C14663 |
+| C142, C144, C145, C146 | 10 µF 0805 | C15850 |
+| R108, R109 | 4,7 kΩ, pull-ups I2C vers +3V3 (inchangés) | C23162 |
 
 ---
 

@@ -1,5 +1,5 @@
 /**
- * TriggerFlow : plans internes et zones interdites (EasyEDA Pro, API PCB bêta).
+ * TriggerFlow v2 (module ESP32-S3-WROOM-1) : plans internes et zones interdites (EasyEDA Pro, API PCB bêta).
  * À exécuter dans l'éditeur PCB ouvert, sur une COPIE du projet.
  *
  * Cotes en mm, repère des DXF : origine au coin AVANT gauche, Y vers l'ARRIÈRE.
@@ -9,8 +9,8 @@
  * Ce qu'il fait :
  *  1. supprime les remplissages existants sur Inner1 et Inner2 ;
  *  2. Inner1 : GND (polygone sans l'îlot) + VISO_GND (îlot), 3 mm d'écart ;
- *  3. Inner2 : VISO_3V3, +12V, +3V3, +5V (un seul polygone, bande verticale élargie à 4,5 mm) ;
- *  4. zones interdites toutes couches : antenne, barrière d'isolation, cercles R 4,8 mm autour de H1 et H5.
+ *  3. Inner2 : VISO_3V3, +12V, +3V3, 3V3_MCU (rail du module), +5V (un seul polygone, bande verticale 4,5 mm) ;
+ *  4. zones interdites toutes couches : antenne du module au bord gauche, barrière d'isolation, cercles R 4,8 mm autour de H1 et H5.
  */
 const DRY_RUN = false;          // true : calcule et affiche sans rien créer
 const KEEP_ISLANDS = true;      // true tant que le schéma n'est pas importé (sinon les plages sans pastille disparaissent)
@@ -49,11 +49,12 @@ const POURS = [
   // Inner2
   { net: 'VISO_3V3', layer: LAYER.INNER_2, name: 'L3_VISO_3V3', shape: () => rect(0.5, 86.5, 96.3, 124.5) },
   { net: '+12V', layer: LAYER.INNER_2, name: 'L3_+12V', shape: () => poly([[104, 124.5], [174.5, 124.5], [174.5, 17], [127.5, 17], [127.5, 83.5], [104, 83.5]]) },
-  { net: '+3V3', layer: LAYER.INNER_2, name: 'L3_+3V3', shape: () => rect(4, 8, 121, 79.5) },
-  { net: '+5V', layer: LAYER.INNER_2, name: 'L3_+5V', shape: () => poly([[84, 83], [126.5, 83], [126.5, 15.5], [174.5, 15.5], [174.5, 0.5], [0.5, 0.5], [0.5, 80.5], [3, 80.5], [3, 7], [122, 7], [122, 80.5], [84, 80.5]]) },
+  { net: '+3V3', layer: LAYER.INNER_2, name: 'L3_+3V3', shape: () => poly([[52, 79.5], [121, 79.5], [121, 8], [4, 8], [4, 51], [52, 51]]) },
+  { net: '3V3_MCU', layer: LAYER.INNER_2, name: 'L3_3V3_MCU', shape: () => rect(9, 52.5, 50, 79.5) },
+  { net: '+5V', layer: LAYER.INNER_2, name: 'L3_+5V', shape: () => poly([[28, 83], [126.5, 83], [126.5, 15.5], [174.5, 15.5], [174.5, 0.5], [0.5, 0.5], [0.5, 7], [122, 7], [122, 80.5], [28, 80.5]]) },
 ];
 const REGIONS = [
-  { name: 'Interdit_antenne', shape: () => rect(58, 52, 86, 81.5) },
+  { name: 'Interdit_antenne', shape: () => rect(0, 57, 7, 81.5) },
   { name: 'Interdit_barriere_isolation', shape: () => rect(0, 83.5, 99.4, 86.5) },
   { name: 'Interdit_H1_3mm', shape: () => circle(4, 121, 4.8) },
   { name: 'Interdit_H5_3mm', shape: () => circle(100.965, 119, 4.8) },

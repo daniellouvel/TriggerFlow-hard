@@ -8,7 +8,7 @@ PWRSET = {f"{p}9{i}" for p in ("CN","Q","D","F") for i in range(1,7)} | {f"R{i}"
 def block(ref):
     if ref in PWRSET: return "pwr"
     m = re.match(r"([A-Z]+)(\d+)", ref); p, d = m.group(1), int(m.group(2))
-    if ref in ("U105", "D101"): return "esp"
+    if ref in ("U105", "D101") or ref[:-3] in ("U","J","SW","R","C","D") and ref[-3:-1] == "14": return "esp"
     if ref in ("U101","U102","U103","U104","C101","C102","C103","C104","C105","R105","R106","R107","R108","R109"): return "i2c"
     if ref in ("CN101","U112","C111","C116"): return "esp"
     if ref in ("RELAY121","Q121","D122","R126","R127","J122"): return "pwr"
@@ -20,10 +20,13 @@ COL = {"ana": ("#E1F5EE", "#0F6E56"), "iso": ("#EEEDFE", "#534AB7"), "pwr": ("#F
 def pinxy(p):
     r, n = p.split('.')
     x, y, rot = P[r]
-    if r == "U105":
+    if r == "U105":                     # module WROOM-1 tourné : antenne à gauche
         n = int(n)
-        if n <= 22: return (x + 26.67 - (n - 1) * 2.54, y + 11.43)
-        k = 45 - n; return (x + 26.67 - (k - 1) * 2.54, y - 11.43)
+        if n <= 14: xn, yn = -9.0, -5.15 + (n - 1) * 1.27
+        elif n <= 26: xn, yn = -7.0 + (n - 15) * 1.27, 12.75
+        elif n <= 40: xn, yn = 9.0, 11.36 - (n - 27) * 1.27
+        else: xn, yn = 0.0, 2.0
+        return (x + yn, y - xn)
     return (x, y)
 def mst(pts):
     if len(pts) < 2: return []
@@ -39,13 +42,13 @@ def render(out, view=(0, BW, 0, BH), scale=1.0, labels=True, rats=True):
     ax.add_patch(FancyBboxPatch((0, 0), BW, BH, boxstyle="round,pad=0,rounding_size=2", fill=False, ec="#444", lw=1.2))
     zones = [((0,0,99,40),"#EEEDFE","Sorties isolées (VISO)"), ((104,0,124,40),"#FAECE7","Relais"), ((127,0,175,41),"#FAECE7","Alim 12 V → 5 V"),
              ((127,44,175,67),"#FAECE7","Servo 6 V"), ((127,71,175,115),"#FAECE7","Vannes 2 × 3"), ((0,82,124,125),"#E1F5EE","Entrées capteur ×6"),
-             ((88,46,124,72),"#F1EFE8","Bus I2C")]
+             ((88,46,124,72),"#F1EFE8","Bus I2C"), ((27,44.5,56,72.5),"#F1EFE8","3V3_MCU")]
     for (x1,y1,x2,y2),c,t in zones:
         ax.add_patch(Rectangle((x1,y1),x2-x1,y2-y1,fc=c,ec="none",alpha=0.55,zorder=0))
     ax.add_patch(Rectangle((0,73.5),124,8,fc="none",ec="#888",ls=(0,(3,2)),lw=0.8)); ax.plot([1,123],[81.6,81.6],color="#888",lw=0.6,ls=(0,(0.6,1.4)))
     ax.text(16,77.5,"couloir des bus THR / CS / ID / TLV_OUT (couche 4) · rangée de vias de couture côté analogique",fontsize=5*scale,color="#666",va="center",clip_on=True)
     x1,y1,x2,y2 = KEEPOUT_ANT; ax.add_patch(Rectangle((x1,y1),x2-x1,y2-y1,fc="none",ec="#E24B4A",ls=(0,(4,2)),lw=1))
-    ax.add_patch(Rectangle((58,46),12,24,fc="none",ec="#E24B4A",ls=(0,(1,1)),lw=0.8)); ax.text(72,45.5,"antenne : sans cuivre + fente",fontsize=5*scale,color="#A32D2D",ha="center",clip_on=True)
+    ax.text(3.5,69.6,"antenne",fontsize=4.5*scale,color="#A32D2D",ha="center",clip_on=True)
     ax.plot([0,99],[40,40],color="#A32D2D",lw=1.2,ls=(0,(5,3)))
     for hname,(hx,hy,kind) in HOLES.items():
         ax.add_patch(Circle((hx,hy),1.6,fc="white",ec="#333",lw=0.8,ls="--" if kind=="NPTH" else "-"))
@@ -53,10 +56,11 @@ def render(out, view=(0, BW, 0, BH), scale=1.0, labels=True, rats=True):
     for r,(x,y,rot) in P.items():
         q = rect(r); fc, ec = COL[block(r)]
         if r == "U105":
-            ax.add_patch(Rectangle((q[0],q[1]),q[2]-q[0],q[3]-q[1],fc="none",ec=ec,lw=1.0,ls="--",zorder=3))
-            for k in range(22):
-                for yy in (y-11.43, y+11.43): ax.add_patch(Circle((x+26.67-k*2.54, yy),0.5,fc=ec,ec="none",zorder=3))
-            ax.text(x-12,y,"U105 ESP32-S3 DevKit\n(USB-C ←)",fontsize=6*scale,ha="center",va="center",color=ec,clip_on=True); continue
+            ax.add_patch(Rectangle((q[0],q[1]),q[2]-q[0],q[3]-q[1],fc=fc,ec=ec,lw=0.9,zorder=4))
+            ax.add_patch(Rectangle((q[0],q[1]),6.3,q[3]-q[1],fc="none",ec=ec,hatch="////",lw=0.5,zorder=4))
+            for k in range(1, 41):
+                px, py = pinxy(f"U105.{k}"); ax.add_patch(Circle((px, py), 0.35, fc=ec, ec="none", zorder=5))
+            ax.text(x+3,y,"U105\nWROOM-1",fontsize=5.5*scale,ha="center",va="center",color=ec,clip_on=True); continue
         ax.add_patch(Rectangle((q[0],q[1]),q[2]-q[0],q[3]-q[1],fc=fc,ec=ec,lw=0.5,zorder=4))
         if labels:
             fs = 3.2*scale if (q[2]-q[0])*(q[3]-q[1]) < 12 else 4.5*scale

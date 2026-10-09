@@ -12,8 +12,10 @@ Carte 175 × 125 mm, 4 couches, vue de dessus. Origine au coin arrière gauche, 
 | Barrière d'isolation | 0–99 | y = 40 | U71, U81, U83 (HCPL-063L) et U113 (B0505S, sous J84, x = 90) à cheval ; ≥ 3 mm sans cuivre, toutes couches |
 | Relais | 104–124 | 0–40 | J122 au bord arrière, RELAY121, Q121, D122 |
 | Alimentation 12 V → 5 V | 127–175 | 0–41 | J111 dans le coin, F111, Q111, D111, C112, U111 (languette en haut), D112, L111, C117 |
-| ESP32-S3 DevKit (U105) | 1–70 | 44,5–72,5 | USB-C au bord gauche, rangée J1 vers l'avant ; D101 sous la carte |
-| Zone antenne | 58–86 | 43,5–73 | sans cuivre sur les 4 couches ; fente fraisée ≈ 12 × 24 mm sous l'antenne (x 58–70, y 46–70) |
+| Module ESP32-S3-WROOM-1 (U105, v2) | 0,5–26 | 45–63 | tourné de 90°, antenne au bord gauche, broches 1-14 vers l'avant |
+| USB-C J141, U142 (v2) | 0,5–16 | 70–80 | USB natif protégé, CC1 / CC2 5,1 k |
+| 3V3_MCU, RESET, BOOT (v2) | 27–56 | 44,5–72,5 | U141, D101, D141, SW141, SW142 |
+| Zone antenne (v2) | 0–7 | 43,5–68 | sans cuivre sur les 4 couches ; plus de fente |
 | Bus I2C (bloc 8) | 88–124 | 46–72 | U101 MCP23017, U102/U103 MCP4728, U104 ADS7828 |
 | Couloir de bus | 0–124 | 73,5–81,5 | THR, CS, ID, TLV_OUT en couche 4 ; rangée de vias de couture côté analogique (y ≈ 81,6) |
 | Servo 6 V | 127–175 | 44–69 | U121, L121, D121, C125, U122 ; C127 et J121 (bornier) au bord droit |
@@ -28,7 +30,7 @@ Trous M3 : H1 (4, 4) et H5 (101, 6) côté VISO en NPTH ; H2 (171, 4), H3 (4, 12
 Analogique, numérique, puissance et isolé restent dans leurs zones ; aucun courant fort ne passe sous l'analogique.
 
 - [ ] Couche 2 = GND plein, jamais coupée sous les bandes analogiques ni sous la zone I2C
-- [ ] Couche 3 : +3V3 en grande plage continue sous la moitié gauche et le centre (entrées, ESP32, I2C) ; +12V limité au quart droit (alim, relais, servo, vannes) ; +5V en bandes étroites le long des bords (avant sous les RJ45 vers F11-F61, gauche vers la DevKit, bande verticale vers U112, tronçon sous la barrière vers U113) ; VISO_3V3 dans l'îlot
+- [ ] Couche 3 : +3V3 au centre et à l'avant (entrées, I2C) ; v2 : plage 3V3_MCU sous le module et U141 ; +12V limité au quart droit (alim, relais, servo, vannes) ; +5V en bandes étroites le long des bords (avant sous les RJ45 vers F11-F61, bande verticale de 4,5 mm vers U112, tronçon sous la barrière vers U113 et D101) ; v2 : plus de bande gauche ; VISO_3V3 dans l'îlot
 - [ ] Retours des vannes, du servo et du LM2596 vers J111 par le quart droit uniquement
 - [ ] Une piste qui traverse une bande analogique passe en couche 4 et la croise à angle droit
 - [ ] Chaque voie d'entrée suit l'ordre du signal : RJ45 → TVS/PTC → R16/BAT54S → MCP6S91 → TLV3501 → TLV\_OUT vers l'ESP32
@@ -37,16 +39,16 @@ Analogique, numérique, puissance et isolé restent dans leurs zones ; aucun cou
 - [ ] Pistes +12V, VALVE\_PWR, VALVE\_SW : ≥ 2 mm ou plages de cuivre
 - [ ] Au moins 2 vias par source de MOSFET (Q91-Q96, Q121) vers la couche 2
 
-## Antenne de l'ESP32
+## Antenne de l'ESP32 (v2 : module au bord)
 
-Sur la DevKit, l'USB et l'antenne sont aux deux bouts : l'USB va au bord gauche, l'antenne pointe vers le bus I2C, loin de l'avant.
+En v2, l'antenne du module est au bord gauche de la carte, comme le recommande Espressif. Le problème de la v1 (antenne vers l'intérieur, près des voies analogiques) disparaît.
 
-- [ ] Zone x 58–86, y 43,5–73 sans cuivre sur les 4 couches, sans composant ni piste
-- [ ] Fente fraisée dans la carte sous la partie antenne de la DevKit (environ 12 × 24 mm, à caler sur la carte réelle)
-- [ ] Couloir de bus (y 73,5–81,5) entre l'antenne et les voies analogiques, rangée de vias de couture tous les 3 à 5 mm côté analogique
-- [ ] Dans chaque voie, TLV3501 côté ESP32 et MCP6S91 côté connecteur : entrée du PGA à ≈ 18 mm de la zone antenne
-- [ ] Aucun RJ45 blindé ni électrolytique à moins de 10 mm de l'antenne
-- [ ] Si le boîtier est métallique : passer à une carte WROOM-1U avec antenne externe (u.FL) avant de router
+- [ ] Zone x 0–7, y 43,5–68 sans cuivre sur les 4 couches, sans composant ni piste
+- [ ] Partie antenne du module (x 0,5–6,8) au ras du bord, rien au-delà
+- [ ] Aucun composant métallique (USB-C, électrolytique) à moins de 5 mm de la zone antenne ; J141 est à ≈ 2 mm de la zone et ≈ 7 mm de l'antenne : à surveiller
+- [ ] Plan GND d'Inner1 plein sous le corps du module (hors antenne), avec de nombreux vias sous la pastille centrale (broche 41)
+- [ ] Couloir de bus (y 73,5–81,5) entre le module et les voies analogiques, rangée de vias de couture côté analogique
+- [ ] Si le boîtier est métallique : module WROOM-1U-N16R8 (C3013946) à antenne externe u.FL
 
 ## Empilement 4 couches
 
@@ -83,7 +85,8 @@ Les deux LM2596 dissipent chacun 2 à 3 W dans le même coin : boucles courtes, 
 - [ ] Électrolytiques C112, C117, C125, C127 à ≥ 5 mm des languettes des LM2596
 - [ ] C127 (470 µF) au plus près de J121
 - [ ] Dans chaque canal vanne, D9n entre CN9n et Q9n : boucle de roue libre ≤ 10 mm
-- [ ] D101 (anti-retour USB) près de la broche 5V de la DevKit
+- [ ] v2 : C142 + C143 collés à la broche 2 (3V3) du module ; C144 / C145 en sortie de U141 ; R141 / C141 près de EN
+- [ ] v2 : USB_DP / USB_DN courtes, de même longueur, sans via, au-dessus d'Inner1 ; U142 entre J141 et le module
 
 ## Mécanique et fixations
 
@@ -95,8 +98,8 @@ Onze RJ45 subissent un effort à chaque branchement : un trou de fixation près 
 - [ ] RJ45 alignés sur le bord, nez au ras ou en léger débord selon la façade
 - [ ] Dégagement de 5 mm autour de CN91-CN96, J121 et J122 pour les doigts
 - [ ] Rien de haut contre les connecteurs de vannes (C127, RELAY121)
-- [ ] Relever les hauteurs maximales : DevKit sur barrettes, relais, électrolytiques, LM2596 ; vérifier sous le couvercle
-- [ ] Découpe de façade pour les deux USB-C de la DevKit (hauteur des barrettes femelles comprise)
+- [ ] Relever les hauteurs maximales : relais, électrolytiques, LM2596 (v2 : plus de DevKit sur barrettes) ; vérifier sous le couvercle
+- [ ] Découpe de façade pour l'USB-C J141 au bord gauche (v2 : un seul port)
 
 ## Fabrication, points de test et sérigraphie
 
@@ -118,7 +121,7 @@ Tout sur la face du dessus pour un assemblage JLC en simple face, le moins cher.
 Les cotes du plan sont estimées ; ces données les figent.
 
 - [ ] Empreinte exacte du RJ45 HanXia C25168869 (largeur supposée 16 mm, pas de 18 mm)
-- [ ] Dimensions de la YD-ESP32-S3 N16R8, entraxe des rangées J1/J3, position de la broche 1, emplacement de l'antenne
+- [ ] Empreinte EasyEDA du module WROOM-1 : position de la broche 1 et de l'antenne, pour fixer la rotation
 - [ ] HX25003-2A : version droite ou coudée
 - [ ] Boîtier : plastique ou métallique (décide de la WROOM-1U et du raccordement des trous à la masse)
 - [x] Borniers J121 (servo) et J122 (relais) : KF128-5.08-3P-AA, C474953

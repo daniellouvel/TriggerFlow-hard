@@ -1,6 +1,8 @@
 # Implantation PCB TriggerFlow (v4, 04/10/2026)
 
-Placement des **287 composants** (export EasyEDA de référence du 05/10, servo et relais compris, sans moteur ni PWM) sur une carte **175 × 125 mm, 4 couches**. Repère : origine au coin arrière gauche, x vers la droite, y vers l'avant. Tailles = encombrements estimés, à recaler sur les vraies empreintes.
+> Branche **v2-wroom** : placement avec le module WROOM-1 (305 composants). Netlist d'entrée `netlist_v2_wroom.json`, générée par `mcu_v2.py` à partir de la netlist v1 du 05/10. Zoom de la zone module : `zoom_mcu_v2.png`.
+
+Placement des **287 composants** en v1, **305** en v2 (export EasyEDA de référence du 05/10, servo et relais compris, sans moteur ni PWM) sur une carte **175 × 125 mm, 4 couches**. Repère : origine au coin arrière gauche, x vers la droite, y vers l'avant. Tailles = encombrements estimés, à recaler sur les vraies empreintes.
 
 ![Placement complet](placement_complet.png)
 
@@ -21,7 +23,7 @@ Usage : `python3 check.py && python3 render.py && python3 export_csv.py` (dépen
 |---|---|
 | 1 (dessus) | composants et signaux, dont les signaux analogiques courts |
 | 2 | **GND plein**, sans aucune piste (sauf l'îlot VISO_GND séparé) ; jamais coupé sous les bandes analogiques ni sous l'I2C |
-| 3 | plages d'alimentation : **+12V** limité au quart droit (alim, servo, relais, vannes) ; **+3V3** grande plage continue au centre et à l'avant ; **+5V** en bandes étroites le long des bords (avant sous les RJ45 pour F11-F61, gauche pour la DevKit, bande verticale vers U112, tronçon sous la barrière vers U113) ; **VISO_3V3** dans l'îlot |
+| 3 | plages d'alimentation : **+12V** limité au quart droit (alim, servo, relais, vannes) ; **+3V3** au centre et à l'avant (à partir de x = 52 au-dessus du couloir de bus) ; **3V3_MCU** sous le module et son régulateur (x 9–50, y 45,5–72,5) ; **+5V** en bandes étroites (avant sous les RJ45, bande verticale vers U112, tronçon sous la barrière prolongé jusqu'à D101) ; **VISO_3V3** dans l'îlot |
 | 4 (dessous) | signaux longs : SPI, CS, I2C, SERVO_PWM, commandes des vannes, TLV_OUT |
 
 Une piste de couche 4 prend son retour dans la couche 3 (noyau épais entre L2 et L3) : elle ne traverse jamais une frontière entre plages de la couche 3 (sinon condensateur de couture 100 nF ou passage en couche 1). Une piste qui doit entrer dans la zone 12 V change donc de couche avant la frontière (ex. SERVO_PWM : couche 4 puis via et couche 1 jusqu'à U122). Une piste qui traverse une bande analogique passe en couche 4, à angle droit.
@@ -34,8 +36,10 @@ Une piste de couche 4 prend son retour dans la couche 3 (noyau épais entre L2 e
 | Barrière d'isolation | 0–99 | y = 40 | seuls U71, U81, U83, U113 à cheval ; ≥ 3 mm sans cuivre sur les 4 couches |
 | Relais | 104–124 | 0–40 | J122 au bord arrière, RELAY121, Q121, D122 |
 | Alimentation 12 V → 5 V | 127–175 | 0–41 | J111 dans le coin ; flux J111 → F111 → Q111 → D111 → C112 → U111 → D112 / L111 → C117 |
-| ESP32-S3 DevKit | 1–70 | 44,5–72,5 (U105 en y = 58,5) | USB-C au bord gauche ; antenne vers l'intérieur |
-| Zone antenne | 58–86 | 43,5–73 | sans cuivre sur les 4 couches, fente fraisée sous l'antenne (≈ 12 × 24 mm) |
+| Module ESP32-S3-WROOM-1 (v2) | 0,5–26 | 45–63 (U105 tourné de 90°) | antenne au bord gauche (x 0,5–6,8) ; broches 1-14 vers l'avant |
+| USB-C J141 + U142 | 0,5–16 | 70–80 | USB natif, protection USBLC6, CC 5,1 k |
+| 3V3_MCU, RESET, BOOT | 27–56 | 44,5–72,5 | U141 AMS1117, D101 / D141, SW141 / SW142 |
+| Zone antenne | 0–7 | 43,5–68 | sans cuivre sur les 4 couches (v2 : plus de fente) |
 | Bus I2C | 88–124 | 46–72 | U101 MCP23017, U102/U103 MCP4728, U104 ADS7828 |
 | Couloir de bus | 0–124 | 73,5–81,5 | THR / CS / ID / TLV_OUT en couche 4 ; rangée de vias de couture côté analogique |
 | Servo 6 V | 127–175 | 44–69 | U121, L121, D121, C125, U122 ; C127 et J121 (bornier) au bord droit |
@@ -53,7 +57,7 @@ Une piste de couche 4 prend son retour dans la couche 3 (noyau épais entre L2 e
 - Pistes +12V, VALVE_PWR, VALVE_SW ≥ 2 mm ou plages ; ≥ 2 vias par source de MOSFET (Q91-Q96, Q121) vers la couche 2.
 - Isolation : aucune piste, via ou plan ne traverse la barrière hors U71/U81/U83/U113 ; bande sans cuivre sous U113 ; blindages J71/J81-J84 non connectés ; ≥ 3 mm entre la zone relais (GND) et l'îlot VISO.
 - Tout sur la face du dessus (assemblage JLC simple face) ; 3 fiducials ; ≥ 0,5 mm entre cuivre et bord.
-- Points de test : +12V, +5V, +3V3, VISO_3V3, V_SERVO, GND, VISO_GND, I2C_SDA/SCL, SPI_MOSI/SCK, TLV_OUT_1 à 6.
+- Points de test : +12V, +5V, +3V3, 3V3_MCU, VISO_3V3, V_SERVO, GND, VISO_GND, I2C_SDA/SCL, SPI_MOSI/SCK, TLV_OUT_1 à 6 ; console UART0 sur TP141 / TP142 (v2).
 - Sérigraphie : V1 à V6 et + / − près de CN91-CN96 ; « BASSE TENSION, 30 V max, jamais de 230 V » près de J122 ; numéro de voie près de chaque RJ45 ; marquage de la zone isolée.
 
 Checklist complète à cocher : [docs/pcb-checklist.md](../docs/pcb-checklist.md).
@@ -67,8 +71,8 @@ Checklist complète à cocher : [docs/pcb-checklist.md](../docs/pcb-checklist.md
 
 ## Encore approximatif / à confirmer
 
-- Empreinte exacte du RJ45 HanXia C25168869 (largeur supposée 16 mm, pas de 18 mm), dimensions de la DevKit, du relais.
+- Empreinte exacte du RJ45 HanXia C25168869 (largeur supposée 16 mm, pas de 18 mm), dimensions du relais, orientation réelle de l'empreinte du module (broche 1, antenne).
 - Rotation 0 = orientation par défaut de l'empreinte : vérifier la broche 1 sur la bibliothèque réelle.
 - Dégagement autour des connecteurs de vannes de la 1re rangée ≈ 1,5 mm entre C127 et CN93 (5 mm visés) : à reprendre avec les vraies empreintes.
-- Boîtier plastique ou métallique (métallique → carte WROOM-1U à antenne externe u.FL, à décider avant routage).
+- Boîtier plastique ou métallique (métallique → module WROOM-1U-N16R8 C3013946 à antenne externe u.FL, à décider avant routage).
 - Application dans EasyEDA Pro : saisie manuelle ou Claude Code + easyeda-copilot lisant le CSV (déplacer une empreinte sur le PCB ne casse pas les liaisons).

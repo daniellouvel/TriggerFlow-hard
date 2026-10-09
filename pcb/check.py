@@ -3,7 +3,7 @@ miss = sorted(set(comps) - set(P)); extra = sorted(set(P) - set(comps))
 print("non placés:", miss); print("inconnus:", extra)
 R = {r: rect(r) for r in P}
 def ov(a, b, m=0.2): return a[0] < b[2] + m and b[0] < a[2] + m and a[1] < b[3] + m and b[1] < a[3] + m
-under_devkit_ok = {"D101"}
+under_devkit_ok = set()
 bad = []
 refs = sorted(R)
 for i, a in enumerate(refs):

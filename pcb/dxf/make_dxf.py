@@ -22,12 +22,11 @@ def txt(msp, s, x, y, h, layer):
 
 HOLES = {"H1": (4, 4, "NPTH"), "H5": (101, 6, "NPTH"), "H2": (171, 4, "GND"), "H3": (4, 121, "GND"),
          "H4": (171, 121, "GND"), "H6": (66, 121, "GND")}   # H7 supprimé
-SLOT = (58, 46, 70, 70)
 
 # ---------- 1. contour + fente + trous non métallisés  -> couche Contour de carte ----------
 d = new(); m = d.modelspace(); d.layers.add("CONTOUR", color=7)
 rrect(m, 0, 0, BW, BH, RC, "CONTOUR")
-rrect(m, *SLOT, 1.0, "CONTOUR")                                   # fente sous l'antenne (découpe)
+# v2 : plus de fente, l'antenne du module est au bord gauche
 for h, (x, y, k) in HOLES.items():
     if k == "NPTH": m.add_circle(F(x, y), 1.6, dxfattribs={"layer": "CONTOUR"})
 d.saveas("TriggerFlow_1_contour.dxf")
@@ -43,14 +42,14 @@ d.saveas("TriggerFlow_2_trous_GND.dxf")
 
 # ---------- 3. zones interdites (antenne, bande sous U113)  -> à convertir en zones interdites ----------
 d = new(); m = d.modelspace(); d.layers.add("INTERDIT", color=1)
-rect(m, 58, 43.5, 86, 73, "INTERDIT")                              # antenne : sans cuivre, toutes couches
-rect(m, 89.0, 39.0, 91.0, 41.0, "INTERDIT")                       # entre broches 2 et 3 de U113 (≈ 2 mm)
+rect(m, 0, 43.5, 7, 68, "INTERDIT")                                 # antenne du module au bord : sans cuivre, toutes couches
+rect(m, 0, 38.5, 99.4, 41.5, "INTERDIT")                            # barrière d'isolation
 d.saveas("TriggerFlow_3_zones_interdites.dxf")
 
 # ---------- 4. plan des zones (repères de routage)  -> couche Document ----------
 d = new(); m = d.modelspace(); d.layers.add("ZONES", color=8); d.layers.add("BARRIERE", color=1)
 Z = [("Sorties isolées VISO", 0, 0, 99, 40), ("Relais", 104, 0, 124, 40), ("Alim 12V -> 5V", 127, 0, 175, 41),
-     ("ESP32 U105 (USB-C <-)", 1, 44.5, 70, 72.5), ("Bus I2C", 88, 46, 124, 72), ("Couloir de bus (L4) + vias", 0, 73.5, 124, 81.5),
+     ("U105 WROOM-1 (antenne <-)", 0.5, 45, 26, 63), ("USB-C J141", 0.5, 70.3, 8.3, 79.7), ("3V3_MCU, RESET, BOOT", 27, 44.5, 56, 72.5), ("Bus I2C", 88, 46, 124, 72), ("Couloir de bus (L4) + vias", 0, 73.5, 124, 81.5),
      ("Servo 6V", 127, 44, 175, 69), ("Vannes 2x3", 127, 71, 175, 115), ("Entrées capteur x6", 0, 82, 124, 125), ("+3V3 / LED", 127, 115, 175, 125)]
 for t, x1, y1, x2, y2 in Z:
     rect(m, x1, y1, x2, y2, "ZONES"); txt(m, t, x1 + 1, y1 + 1, 1.8, "ZONES")
@@ -61,11 +60,12 @@ d.saveas("TriggerFlow_4_zones_document.dxf")
 
 # ---------- 5. découpage de la couche 3 (plages d'alimentation)  -> Interne 2 ----------
 d = new(); m = d.modelspace()
-for n, c in (("L3_VISO_3V3", 6), ("L3_+12V", 1), ("L3_+3V3", 4), ("L3_+5V", 2)): d.layers.add(n, color=c)
+for n, c in (("L3_VISO_3V3", 6), ("L3_+12V", 1), ("L3_+3V3", 4), ("L3_+5V", 2), ("L3_3V3_MCU", 5)): d.layers.add(n, color=c)
 rect(m, 0.5, 0.5, 96.3, 38.5, "L3_VISO_3V3")
 poly(m, [(104, 0.5), (174.5, 0.5), (174.5, 108), (127.5, 108), (127.5, 41.5), (104, 41.5)], "L3_+12V")
-rect(m, 4, 45.5, 121, 117, "L3_+3V3")             # moins la zone antenne (fichier 3)
-poly(m, [(84, 42), (126.5, 42), (126.5, 109.5), (174.5, 109.5), (174.5, 124.5), (0.5, 124.5), (0.5, 44.5), (3, 44.5), (3, 118), (122, 118), (122, 44.5), (84, 44.5)], "L3_+5V")   # un seul polygone, bande verticale 4,5 mm
-for t, x, y in (("VISO_3V3", 40, 20), ("+12V", 150, 75), ("+3V3", 30, 100), ("+5V", 145, 120)): txt(m, t, x, y, 3, "L3_" + t if not t.startswith("+5") else "L3_+5V")
+poly(m, [(52, 45.5), (121, 45.5), (121, 117), (4, 117), (4, 74), (52, 74)], "L3_+3V3")
+rect(m, 9, 45.5, 50, 72.5, "L3_3V3_MCU")          # rail du module (U141 -> U105)
+poly(m, [(28, 42), (126.5, 42), (126.5, 109.5), (174.5, 109.5), (174.5, 124.5), (0.5, 124.5), (0.5, 118), (122, 118), (122, 44.5), (28, 44.5)], "L3_+5V")   # v2 : plus de bande gauche, tronçon prolongé jusqu'à D101 (x = 28)
+for t, x, y in (("VISO_3V3", 40, 20), ("+12V", 150, 75), ("+3V3", 30, 100), ("+5V", 145, 120), ("3V3_MCU", 30, 60)): txt(m, t, x, y, 3, "L3_" + t)
 d.saveas("TriggerFlow_5_couche3_plages.dxf")
 print("ok")

@@ -1,5 +1,7 @@
 # TriggerFlow — Architecture matérielle
 
+> **Branche `v2-wroom`** : version 2, la DevKit est remplacée par le module ESP32-S3-WROOM-1-N16R8 soudé sur la carte (mêmes GPIO, firmware inchangé). Voir [docs/mcu-v2-wroom.md](docs/mcu-v2-wroom.md). La v1 (DevKit) est sur `main` et l'étiquette `v1.0`.
+
 Boîtier de déclenchement généraliste pour photographie haute vitesse : détection multi-capteurs, moteur de règles programmable, pilotage de sorties variées (flash, électrovannes, appareil photo, servo, relais) et d'appareils secteur via des prises Wi-Fi.
 
 Contrôlable par **USB (PC)** et **Wi-Fi/BLE (application mobile)**.
@@ -10,12 +12,11 @@ Statut (05/10/2026) : **schéma complet et validé** dans EasyEDA (Blocs 1, 2, 3
 
 ## 1. Plateforme
 
-- **MCU** : ESP32-S3-DevKitC-1, module WROOM-1-**N16R8** (16 Mo flash Quad, 8 Mo PSRAM Octal)
+- **MCU** : module ESP32-S3-WROOM-1-**N16R8** soudé sur la carte (16 Mo flash Quad, 8 Mo PSRAM Octal) ; en v1, le même module sur une DevKitC-1
 - **Cœurs** : dual-core Xtensa LX7, 240 MHz
 - **Connectivité native** : Wi-Fi 2.4 GHz, Bluetooth LE, USB natif (device)
-- Carte équipée de **2 ports USB-C** distincts sur le PCB :
-  - Port USB-UART (pont série, GPIO 43/44) → programmation firmware / debug
-  - Port USB natif (device, GPIO 19/20) → **contrôle PC** de l'application
+- v2 : **1 port USB-C** sur l'USB natif (GPIO 19/20) → programmation (USB-Serial/JTAG) et **contrôle PC** ; console série UART0 (GPIO 43/44) sur pastilles de test TP141 / TP142
+- v1 : la DevKit avait 2 ports USB-C (pont série et USB natif)
 
 ## 2. Cahier des charges fonctionnel
 
@@ -59,9 +60,9 @@ Principe directeur de l'architecture GPIO : **seul ce qui a une exigence de timi
 
 ### 4.1 GPIO natifs (chemin critique) — affectation validée
 
-Carte : **YD-ESP32-S3 N16R8** (copie de la DevKitC-1, même brochage ; pastille « RGB » laissée **ouverte** : GPIO48 libre). Aucune broche réservée ni de strapping utilisée (0, 3, 45, 46, 19, 20, 43, 44, 35-37 libres).
+v2 : module **ESP32-S3-WROOM-1-N16R8** soudé (U105). Mêmes GPIO qu'en v1 ; seuls les numéros de broches du composant changent (tableau complet dans [docs/mcu-v2-wroom.md](docs/mcu-v2-wroom.md)). IO0 sert au bouton BOOT, IO19 / IO20 à l'USB natif ; aucune autre broche de démarrage utilisée, IO35 à IO37 libres. La colonne de droite ci-dessous donne les broches de la DevKit v1.
 
-| Signal | GPIO | Broche symbole U105 |
+| Signal | GPIO | Broche DevKit v1 (symbole U105) |
 |---|---|---|
 | TLV_OUT_1 … TLV_OUT_6 (entrées, ISR) | 4, 5, 6, 7, 15, 16 | 4 à 9 |
 | FLASH_1_CMD, FLASH_2_CMD, FLASH_3_CMD, FLASH_4_CMD | 17, 21, 39, 41 | 10, 27, 36, 38 |
@@ -74,7 +75,7 @@ Carte : **YD-ESP32-S3 N16R8** (copie de la DevKitC-1, même brochage ; pastille 
 | DAC2_LDAC (programmation adresse du 2e MCP4728) | 18 | 11 |
 | **Total** | **24 utilisés** | GPIO14 et GPIO40 libres |
 
-Alimentation : 5V de la carte via D101 (SS14, anti-retour USB) ; broches 3V3 de la carte non connectées (le 3,3 V périphérique vient du Bloc 5).
+Alimentation v2 : 5V_MCU par deux diodes SS14 (D101 depuis +5V, D141 depuis le VBUS de l'USB) → U141 AMS1117-3.3 → **3V3_MCU**, rail dédié au module, séparé du +3V3 de l'électronique (U112).
 
 ### 4.2 Périphériques I2C (non critique en timing)
 
@@ -247,13 +248,13 @@ Bloc secteur 12 V → J111 → F111 (6,3 A T) → Q111 AO4407A (anti-inversion) 
       ┌───────────────────────────────────────────────────────────────────┤
       ▼                                                                    ▼
   vannes (F91-96), relais (K131), U121 LM2596S-ADJ          U111 LM2596S-5.0 → +5V (3 A)
-  → V_SERVO 6 V / 3 A (coupable, servo)                     ├→ DevKit (via D101), capteurs (F11-61), buffer servo
+  → V_SERVO 6 V / 3 A (coupable, servo)                     ├→ module ESP32 (D101 → U141 → 3V3_MCU), capteurs (F11-61), buffer servo
                                                              ├→ U112 AMS1117-3.3 → +3V3 (électronique)
                                                              └→ U113 B0505S-1WR3 (isolé) → U114 AMS1117-3.3 → VISO_3V3 / VISO_GND
                                                                                          (sorties flash / appareil photo)
 ```
 
-- Le 3,3 V de la carte ESP32 n'alimente que le module ; tout le reste est sur +3V3 (U112).
+- Le 3V3_MCU (U141) n'alimente que le module ESP32 ; tout le reste est sur +3V3 (U112). L'USB (VBUS, D141) peut alimenter le module seul pour la programmation.
 - Le côté isolé (VISO) n'a **aucun conducteur commun** avec GND : il protège l'ESP32 et les entrées analogiques des perturbations des flashs, évite les boucles de masse entre boîtier, appareil photo et flashs secteur.
 
 ## 14. Synoptique général du montage
@@ -267,7 +268,7 @@ Plutôt qu'un seul diagramme complet (illisible avec autant de blocs), voici la 
                   │
                   ▼
    ┌─────────────────────────────────┐
-   │   ESP32-S3-DevKitC-1 (N16R8)     │
+   │   ESP32-S3-WROOM-1 (N16R8)       │
    │                                  │
    │   Core 0 : réseau / contrôle     │
    │   Core 1 : temps réel (critique) │
@@ -318,20 +319,21 @@ Core 1 (temps réel, GPIO natif)          Expandeur I2C (non critique)
 
 ## 15. Ouvert / non tranché
 
-- **Schéma** : terminé (référence du 05/10). Points restants : R123 3,9 kΩ (C23018 en rupture, secours 39 k / 10 k), D101 = SS14 C2480 à confirmer, barrettes 1×22 de la carte ESP32.
-- **Vérifications** : écartement réel des rangées de la YD-ESP32-S3 ; empreintes réelles (RJ45, DevKit, relais) avant de figer le placement.
-- **PCB** (voir `pcb/` et `docs/pcb-checklist.md`) : cotes réelles du RJ45 HanXia C25168869 et de la DevKit, orientation broche 1 des empreintes, boîtier plastique ou métallique (métallique → WROOM-1U à antenne externe, à décider avant routage), raccordement des trous de fixation à la masse.
+- **Schéma** : terminé (référence du 05/10). Points restants : R123 3,9 kΩ (C23018 en rupture, secours 39 k / 10 k), D101 = SS14 C2480 à confirmer (en v2, plus de barrettes : le module est soudé).
+- **v2 (module WROOM)** : saisie de la feuille MCU dans la copie EasyEDA « TriggerFlow v2 WROOM » et vérification de sa netlist ; orientation réelle de l'empreinte du module (broche 1, antenne).
+- **Vérifications** : empreintes réelles (RJ45, module, USB-C, relais) avant de figer le placement.
+- **PCB** (voir `pcb/` et `docs/pcb-checklist.md`) : cotes réelles du RJ45 HanXia C25168869, orientation broche 1 des empreintes, boîtier plastique ou métallique (métallique → WROOM-1U à antenne externe, C3013946, à décider avant routage), raccordement des trous de fixation à la masse.
 - **Connecteur vanne** : HX25003-2A droit ou coudé ; GX12 de façade (2 ou 4 broches).
 - **Bande passante MCP6S91 à gain ×32** à confirmer à la datasheet.
 - **Limite connue** : au-delà de 4 sorties simultanées à délai < 20 µs, plancher `esp_timer` (~20 µs).
 - **Module capteur universel** : saisie EasyEDA et PCB (schéma KiCad dans `kicad/module_capteur/`).
 - **Firmware** : moteur de règles, protocole USB CDC / web / BLE, Wi-Fi en point d'accès + pilotage des prises, mode « lumière » des sorties vannes, servo (coupure SERVO_OFF au démarrage), lecture ID et presets par variante, reprogrammation d'adresse du 2e MCP4728.
-- **Mécanique** : boîtier, façade (11 RJ45, 6 GX12, entrée 12 V, servo, relais, 2 USB-C).
+- **Mécanique** : boîtier, façade (11 RJ45, 6 GX12, entrée 12 V, servo, relais, 1 USB-C en v2).
 
 ## 16. Implantation PCB
 
 Carte **175 × 125 mm, 4 couches** (JLC 1,6 mm, 1 oz) : couche 1 composants et signaux courts, couche 2 **GND plein** (îlot VISO séparé), couche 3 plages d'alimentation (+12V au quart droit, +3V3 au centre, +5V en bandes le long des bords), couche 4 signaux longs.
 
-Zones : sorties isolées au bord arrière gauche (barrière d'isolation à y = 40 mm, seuls les 3 HCPL-063L et le B0505S la traversent, ≥ 3 mm sans cuivre sur toutes les couches) ; relais et alimentation au bord arrière droit ; ESP32 à gauche avec l'USB-C au bord et l'antenne vers l'intérieur (zone sans cuivre + fente) ; bus I2C au centre ; couloir de bus de 8 mm en couche 4 ; servo et vannes (2 rangées de 3) à droite ; 6 entrées capteur au bord avant (bandes de 18 mm). Placement de 287 composants vérifié par script (chevauchements, zone antenne, barrière, trous M3).
+Zones : sorties isolées au bord arrière gauche (barrière d'isolation à y = 40 mm, seuls les 3 HCPL-063L et le B0505S la traversent, ≥ 3 mm sans cuivre sur toutes les couches) ; relais et alimentation au bord arrière droit ; module ESP32 au bord gauche avec l'antenne au bord (zone sans cuivre de 7 mm, plus de fente en v2) et l'USB-C juste en dessous ; rail 3V3_MCU dédié ; bus I2C au centre ; couloir de bus de 8 mm en couche 4 ; servo et vannes (2 rangées de 3) à droite ; 6 entrées capteur au bord avant (bandes de 18 mm). Placement de 305 composants (v2) vérifié par script (chevauchements, zone antenne, barrière, trous M3).
 
 Détails, fichier de positions et scripts : [pcb/README.md](pcb/README.md) ; checklist : [docs/pcb-checklist.md](docs/pcb-checklist.md).

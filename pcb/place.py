@@ -1,7 +1,8 @@
 """Placement des composants TriggerFlow (carte 175 x 125 mm, 4 couches).
 Origine : coin arrière gauche, x vers la droite, y vers l'avant (vers le bas sur le dessin). Cotes en mm.
 Tailles = zones d'encombrement estimées (corps + pastilles), à recaler sur les empreintes réelles.
-Repris de la conversation « Implémentation PCB optimisée » du 04/10/2026 (version v4)."""
+Repris de la conversation « Implémentation PCB optimisée » du 04/10/2026 (version v4).
+Branche v2-wroom : module ESP32-S3-WROOM-1 (U105) au bord gauche, antenne au bord, USB-C natif (J141)."""
 import json, csv, math, collections, os
 
 BW, BH = 175.0, 125.0
@@ -13,6 +14,7 @@ FP = {  # nom d'empreinte (préfixe) -> (largeur, hauteur) à rot 0
  "SOT-223": (6.9, 7.4), "TO-263": (10.5, 15.0), "IND": (13.0, 13.0), "CAP-SMD_BD10": (11.0, 11.0),
  "CAP-SMD_BD8": (9.0, 9.0), "CONN-TH_2P-P2.50": (8.0, 6.5), "KF128-5.08-2P": (10.5, 8.5), "KF128-5.08-3P": (15.8, 10.7),
  "RJ45-90": (16.3, 21.5), "DEVKIT": (69.0, 28.0), "B0505S": (12.0, 6.5), "PWRM": (12.0, 6.5), "HF32F": (21.0, 7.6), "HDR1x3": (7.8, 2.8),
+ "WIRELM-SMD_ESP32-S3-WROOM-1": (18.0, 25.5), "USB-C_SMD-TYPE-C-31-M-12": (9.4, 7.8), "SW-SMD_4P-L5.1-W5.1": (5.1, 5.1), "TP-1.5": (1.6, 1.6),
 }
 def size_of(fp):
     for k in sorted(FP, key=len, reverse=True):
@@ -20,7 +22,7 @@ def size_of(fp):
     if "ESP32" in fp: return FP["DEVKIT"]
     raise KeyError(fp)
 
-tel = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "netlist_2026-10-05.json")))
+tel = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "netlist_v2_wroom.json")))
 comps = {r: fp for r, (fp, v) in tel["comps"].items()}
 vals = {r: v for r, (fp, v) in tel["comps"].items()}
 nets = {n: p for n, p in tel["nets"].items()}
@@ -43,8 +45,20 @@ for n, cx in enumerate(CX, 1):
     put(f"D{n}1", cx + 3.6, 101.2); put(f"R{n}1", cx + 7.2, 101.2)
 
 # ---------------- ESP32 ----------------
-put("U105", 35.5, 58.5, 0)           # USB-C côté x = 0, antenne côté x = 70
-put("D101", 12.0, 65.0, 0)           # sous la DevKit (CMS bas), près de la broche 5V
+# module tourné de 90° : antenne au bord gauche (x = 0,5), broches 1-14 vers l'avant (TLV_OUT), 15-26 vers le bus I2C,
+# 27-40 vers les optos (commandes flash, vannes 1-2-4)
+put("U105", 13.25, 54.0, 90)
+put("C142", 9.2, 65.7, 90); put("C143", 11.3, 65.5, 90)               # découplage au plus près de la broche 2 (3V3)
+put("R141", 13.3, 65.5, 90); put("C141", 15.3, 65.5, 90)              # RC de EN (10 k / 1 µF)
+put("J141", 4.4, 75.0, 90); put("U142", 12.0, 74.8)                   # USB-C au bord gauche, protection juste derrière
+put("R143", 12.0, 78.6); put("R144", 15.2, 78.6)                      # CC1 / CC2 5,1 k
+put("D141", 20.0, 70.5)                                               # VBUS -> 5V_MCU
+put("D101", 31.0, 47.2)                                               # +5V -> 5V_MCU (via vers la bande +5V d'Inner2)
+put("C146", 35.5, 51.5, 90); put("U141", 40.5, 50.0)                  # régulateur 3V3_MCU
+put("C144", 46.0, 49.0, 90); put("C145", 48.4, 49.0, 90)
+put("R142", 28.5, 52.0, 90)                                           # tirage de IO0
+put("SW141", 33.0, 60.0); put("SW142", 41.0, 60.0)                    # RESET, BOOT
+put("TP141", 24.5, 43.4); put("TP142", 26.6, 43.4)                    # console UART0 (TXD0, RXD0) pour adaptateur 3,3 V
 
 # ---------------- bus I2C ----------------
 put("U101", 113.0, 54.0); put("C101", 106.5, 55.0, 90); put("R107", 106.5, 58.5, 90); put("R105", 106.5, 51.5, 90)
@@ -103,7 +117,7 @@ put("C116", 128.6, 119.5, 90); put("U112", 134, 119.5); put("C111", 140, 119.5, 
 
 HOLES = {"H1": (4, 4, "NPTH"), "H5": (101, 6, "NPTH"), "H2": (171, 4, "GND"), "H3": (4, 121, "GND"),
          "H4": (171, 121, "GND"), "H6": (66, 121, "GND")}  # H7 (124, 76) supprimé : il coupait la bande +5V d'Inner2
-KEEPOUT_ANT = (58, 43.5, 86, 73)        # sans cuivre, toutes couches
+KEEPOUT_ANT = (0, 43.5, 7, 68)          # antenne du module au bord : sans cuivre, toutes couches
 BARRIER = (0, 38.5, 99, 41.5)           # seuls les composants à cheval
 STRADDLE = {"U71", "U81", "U83", "U113"}
 
