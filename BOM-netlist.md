@@ -255,7 +255,7 @@ La lumière 12 V dimmable passe par une sortie vanne (même étage AO3400A + dio
 |---|---|---|
 | U101 MCP23017 (SSOP-28) | 0x20 (A0-A2 à GND) | GPA0-5 = CS_1-6, GPA6 = FOCUS_CMD, **GPB2 = RELAY_CMD** (Bloc 13), **GPB3 = SERVO_OFF** (Bloc 12), GPB5 = LED de statut (R105 1 kΩ → CN101), RESET via R107 (10 k → +3V3) ; GPA7, GPB0-1, GPB4, GPB6-7 libres |
 | U102 MCP4728 | 0x60 | LDAC à GND ; VOUTA-D (6-9) = THR_1-4 |
-| U103 MCP4728 | 0x61 (reprogrammée au 1er démarrage) | LDAC = DAC2_LDAC (GPIO18) + R106 10 k → GND ; VOUTA/B = THR_5/6 |
+| U103 MCP4728 | 0x61 (reprogrammée au 1er démarrage) | LDAC = DAC2_LDAC (GPIO10 en v2, GPIO18 en v1) + R106 10 k → GND ; VOUTA/B = THR_5/6 |
 | U104 ADS7828 (TSSOP-16) | 0x48 (A0, A1 à GND) | CH0-5 = ID_ADC_1-6, CH6-7 et COM à GND, REF : C105 1 µF (référence interne 2,5 V) |
 
 MCP4728 MSOP-10 : 1 VDD, 2 SCL, 3 SDA, 4 LDAC, 5 RDY, 6-9 VOUTA-D, 10 VSS (attention : symbole EasyEDA numéroté en miroir côté droit). Découplage C101-C104 (100 nF).
