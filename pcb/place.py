@@ -2,8 +2,8 @@
 Origine : coin arrière gauche, x vers la droite, y vers l'avant (vers le bas sur le dessin). Cotes en mm.
 Tailles = zones d'encombrement estimées (corps + pastilles), à recaler sur les empreintes réelles.
 Repris de la conversation « Implémentation PCB optimisée » du 04/10/2026 (version v4).
-Branche v2-wroom : module ESP32-S3-WROOM-1 (U10) au bord gauche, antenne au bord, USB-C natif (J10).
-Numérotation EasyEDA du 10/10 : netlist_v2_wroom.json = export EasyEDA (netlist_v2_easyeda_2026-10-10.tel)."""
+Branche v2-wroom : module ESP32-S3-WROOM-1 (U101) au bord gauche, antenne au bord, USB-C natif (J101).
+Numérotation EasyEDA (2e renumérotation du 10/10) : netlist_v2_wroom.json = export EasyEDA (netlist_v2_easyeda_2026-10-10.tel)."""
 import json, csv, math, collections, os
 
 BW, BH = 175.0, 125.0
@@ -15,7 +15,7 @@ FP = {  # nom d'empreinte (préfixe) -> (largeur, hauteur) à rot 0
  "SOT-223": (6.9, 7.4), "TO-263": (10.5, 15.0), "IND": (13.0, 13.0), "CAP-SMD_BD10": (11.0, 11.0),
  "CAP-SMD_BD8": (9.0, 9.0), "CONN-TH_2P-P2.50": (8.0, 6.5), "KF128-5.08-2P": (10.5, 8.5), "KF128-5.08-3P": (15.8, 10.7),
  "RJ45-90": (16.3, 21.5), "DEVKIT": (69.0, 28.0), "B0505S": (12.0, 6.5), "PWRM": (12.0, 6.5), "HF32F": (21.0, 7.6), "HDR1x3": (7.8, 2.8),
- "WIRELM-SMD_ESP32-S3-WROOM-1": (18.0, 25.5), "USB-C_SMD-TYPE-C-31-M-12": (9.4, 7.8), "SW-SMD_4P-L5.1-W5.1": (5.1, 5.1), "TP-1.5": (1.6, 1.6), "HDR-TH_3P-P2.54-V-M": (7.8, 2.8),
+ "WIRELM-SMD_ESP32-S3-WROOM-1": (18.0, 25.5), "USB-C_SMD-TYPE-C-31-M-12": (9.4, 7.8), "SW-SMD_4P-L5.1-W5.1": (5.1, 5.1), "TP-1.5": (1.6, 1.6), "HDR-TH_3P-P2.54-V-M": (7.8, 2.8), "HDR-TH_2P-P2.54-V-M": (5.3, 2.8),
 }
 def size_of(fp):
     for k in sorted(FP, key=len, reverse=True):
@@ -27,9 +27,6 @@ tel = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "n
 comps = {r: fp for r, (fp, v) in tel["comps"].items()}
 vals = {r: v for r, (fp, v) in tel["comps"].items()}
 nets = {n: p for n, p in tel["nets"].items()}
-for r in ("C87",):          # 1 µF sur IO0 : à supprimer du schéma (fausserait le démarrage), non placé
-    comps.pop(r, None); vals.pop(r, None)
-    for n in nets: nets[n] = [x for x in nets[n] if not x.startswith(r + ".")]
 # servo et relais présents dans la netlist du 05/10 (repères EasyEDA)
 
 P = {}   # ref -> (x, y, rot)
@@ -51,25 +48,25 @@ for n, cx in enumerate(CX, 1):
 # ---------------- ESP32 ----------------
 # module tourné de 90° : antenne au bord gauche (x = 0,5), broches 1-14 vers l'avant (TLV_OUT), 15-26 vers le bus I2C,
 # 27-40 vers les optos (commandes flash, vannes 1-2-4)
-put("U10", 13.25, 54.0, 90)
-put("C10", 9.2, 65.7, 90); put("C78", 11.3, 65.5, 90)               # découplage au plus près de la broche 2 (3V3)
-put("R106", 13.3, 65.5, 90); put("C86", 15.3, 65.5, 90)              # RC de EN (10 k / 1 µF)
-put("J10", 4.4, 75.0, 90); put("U25", 12.0, 74.8)                   # USB-C au bord gauche, protection juste derrière
-put("R105", 12.0, 78.6); put("R10", 15.2, 78.6)                      # CC1 / CC2 5,1 k
-put("D19", 20.0, 70.5)                                               # VBUS -> 5V_MCU
-put("D10", 31.0, 47.2)                                               # +5V -> 5V_MCU (via vers la bande +5V d'Inner2)
-put("C85", 35.5, 51.5, 90); put("U26", 40.5, 50.0)                  # régulateur 3V3_MCU
-put("C79", 46.0, 49.0, 90); put("C80", 48.4, 49.0, 90)
-put("R107", 28.5, 52.0, 90)                                           # tirage de IO0
-put("SW10", 33.0, 60.0); put("SW11", 41.0, 60.0)                    # RESET, BOOT
-put("U85", 50.0, 66.0)                                                # barrette console UART0 1 x 3 (GND, TX, RX), non montée par JLC
+put("U101", 13.25, 54.0, 90)
+put("C101", 9.2, 65.7, 90); put("C102", 11.3, 65.5, 90)               # découplage au plus près de la broche 2 (3V3)
+put("R107", 13.3, 65.5, 90); put("C103", 15.3, 65.5, 90)              # RC de EN (10 k / 1 µF)
+put("J101", 4.4, 75.0, 90); put("U102", 12.0, 74.8)                   # USB-C au bord gauche, protection juste derrière
+put("R106", 12.0, 78.6); put("R105", 15.2, 78.6)                      # CC1 / CC2 5,1 k
+put("D102", 20.0, 70.5)                                               # VBUS -> 5V_MCU
+put("D101", 31.0, 47.2)                                               # +5V -> 5V_MCU (via vers la bande +5V d'Inner2)
+put("C106", 35.5, 51.5, 90); put("U104", 40.5, 50.0)                  # régulateur 3V3_MCU
+put("C104", 46.0, 49.0, 90); put("C105", 48.4, 49.0, 90)
+put("R108", 28.5, 52.0, 90)                                           # tirage de IO0
+put("SW101", 33.0, 60.0); put("SW102", 41.0, 60.0)                    # RESET, BOOT
+put("U103", 50.0, 66.0)                                                # barrette console UART0 1 x 3 (GND, TX, RX), non montée par JLC
 
 # ---------------- bus I2C ----------------
-put("U19", 113.0, 54.0); put("C73", 106.5, 55.0, 90); put("R78", 106.5, 58.5, 90); put("R70", 106.5, 51.5, 90)
-put("U20", 95.0, 66.0); put("C74", 95.0, 69.5)
-put("U23", 104.0, 66.0); put("C75", 104.0, 69.5); put("R77", 108.4, 66.0, 90)
-put("U24", 117.0, 66.0); put("C76", 117.0, 70.3); put("C77", 121.8, 66.0, 90)
-put("R79", 96.0, 50.0); put("R80", 96.0, 52.2)
+put("U111", 113.0, 54.0); put("C111", 106.5, 55.0, 90); put("R113", 106.5, 58.5, 90); put("R111", 106.5, 51.5, 90)
+put("U112", 95.0, 66.0); put("C112", 95.0, 69.5)
+put("U113", 104.0, 66.0); put("C113", 104.0, 69.5); put("R112", 108.4, 66.0, 90)
+put("U114", 117.0, 66.0); put("C114", 117.0, 70.3); put("C115", 121.8, 66.0, 90)
+put("R114", 96.0, 50.0); put("R115", 96.0, 52.2)
 
 # ---------------- sorties isolées ----------------
 ISO = [("J71", 17), ("J81", 35), ("J82", 53), ("J83", 71), ("J84", 89)]
@@ -85,25 +82,25 @@ def pair(ux, qa, qb, xa, xb, ra, rb, pa, pb, ca, cb, inv, opto, rin_a, rin_b):
     put(opto, ux, 40, 90); put(ca, ux, 35.0); put(rin_a, ux - 4.4, 42.6); put(rin_b, ux + 4.4, 42.6)
 pair(44, "Q81", "Q82", 35, 53, "R82", "R85", "R81", "R86", "C81", "C82", "U82", "U81", "R83", "R84")
 pair(80, "Q83", "Q84", 71, 89, "R88", "R91", "R87", "R92", "C83", "C84", "U84", "U83", "R89", "R90")
-# alimentation isolée (U17 hors de l'axe de l'antenne)
-put("U17", 90, 40, 90); put("C68", 95.5, 44.5); put("C69", 94.6, 34.5, 90)
-put("U18", 62.0, 28.0); put("C70", 67.5, 33.0, 90); put("R60", 96.5, 36.8, 90); put("R69", 98.0, 31.0, 90)
+# alimentation isolée (U117 hors de l'axe de l'antenne)
+put("U117", 90, 40, 90); put("C124", 95.5, 44.5); put("C125", 94.6, 34.5, 90)
+put("U118", 62.0, 28.0); put("C126", 67.5, 33.0, 90); put("R118", 96.5, 36.8, 90); put("R119", 98.0, 31.0, 90)
 
 # ======== colonne de droite, reprise de l'implantation EasyEDA du 09/10 (servo et relais à l'arrière, 5 V à l'avant) ========
 # ---------------- entrée 12 V (coin arrière droit) ----------------
-put("J12", 162, 4.5); put("F12", 171.5, 16.5, 90); put("R50", 163, 16.5); put("R59", 163, 18.7)
-put("Q12", 171, 27, 90); put("D17", 163, 27, 90)
+put("J112", 162, 4.5); put("F112", 171.5, 16.5, 90); put("R116", 163, 16.5); put("R117", 163, 18.7)
+put("Q112", 171, 27, 90); put("D112", 163, 27, 90)
 
 # ---------------- relais ----------------
-put("J14", 147, 5.5); put("RELAY13", 147, 24, 90); put("D15", 154.5, 24, 90)
-put("Q13", 139.5, 22); put("R40", 139.5, 17.5, 90); put("R49", 139.5, 26.5, 90)
+put("J132", 147, 5.5); put("RELAY131", 147, 24, 90); put("D132", 154.5, 24, 90)
+put("Q131", 139.5, 22); put("R136", 139.5, 17.5, 90); put("R137", 139.5, 26.5, 90)
 
-# ---------------- servo 6 V (languette de U13 à gauche, broches vers L13 et les condensateurs) ----------------
-put("J13", 116, 5.5); put("C30", 130.5, 7)                           # bornier servo et 470 µF au bord arrière
-put("U13", 113, 34, 90); put("L13", 129.5, 31); put("C28", 123, 18.5); put("C29", 131, 16.5)
-put("D14", 123, 41.6); put("C18", 128, 40.5); put("C19", 131.8, 40.5); put("C20", 135.2, 40.5)
-put("R19", 107, 42.2); put("R20", 110.4, 42.2); put("R29", 113.8, 42.2)
-put("U14", 116, 15); put("R39", 112, 15, 90); put("R30", 110.2, 15, 90); put("D16", 108.5, 15, 90); put("C38", 116, 18.6)
+# ---------------- servo 6 V (languette de U131 à gauche, broches vers L131 et les condensateurs) ----------------
+put("J131", 116, 5.5); put("C136", 130.5, 7)                           # bornier servo et 470 µF au bord arrière
+put("U131", 113, 34, 90); put("L131", 129.5, 31); put("C134", 123, 18.5); put("C135", 131, 16.5)
+put("D131", 123, 41.6); put("C131", 128, 40.5); put("C132", 131.8, 40.5); put("C133", 135.2, 40.5)
+put("R131", 107, 42.2); put("R132", 110.4, 42.2); put("R133", 113.8, 42.2)
+put("U132", 116, 15); put("R135", 112, 15, 90); put("R134", 110.2, 15, 90); put("D133", 108.5, 15, 90); put("C123", 116, 18.6)
 
 # ---------------- vannes 2 x 3 (connecteurs vers l'extérieur du bloc, rail 12 V au milieu) ----------------
 VX = [134, 150, 166]
@@ -117,19 +114,19 @@ for i, cx in enumerate(VX):
     put(f"Q9{b_}", cx - 4, 104 + DY); put(f"D9{b_}", cx + 3.5, 104 + DY); put(f"CN9{b_}", cx, 110.5 + DY, 180)
 
 # ---------------- 12 V -> 5 V (coin avant droit), boucle de découpage compacte ----------------
-# U15 tourné : broches vers la gauche (C48-C50 et D18 collés), languette au bord droit ; C40 au-dessus de l'entrée
-put("U15", 166, 108, 90); put("C40", 152, 96.8)
-put("C48", 155.5, 105); put("C49", 155.5, 107.3); put("C50", 155.5, 109.5); put("D18", 151.5, 108.5, 90)
-put("L12", 141.5, 109.3); put("C59", 130, 109); put("C60", 130, 115.3, 90)
+# U115 tourné : broches vers la gauche (C118-C120 et D113 collés), languette au bord droit ; C117 au-dessus de l'entrée
+put("U115", 166, 108, 90); put("C117", 152, 96.8)
+put("C118", 155.5, 105); put("C119", 155.5, 107.3); put("C120", 155.5, 109.5); put("D113", 151.5, 108.5, 90)
+put("L112", 141.5, 109.3); put("C122", 130, 109); put("C137", 130, 115.3, 90)
 
-# ---------------- +3V3 (U16) et LED ----------------
-put("C58", 137.6, 120.5, 90); put("U16", 144, 120.5); put("C39", 149.8, 120.5, 90); put("CN11", 157.5, 121.75)
+# ---------------- +3V3 (U116) et LED ----------------
+put("C121", 137.6, 120.5, 90); put("U116", 144, 120.5); put("C116", 149.8, 120.5, 90); put("CN111", 157.5, 121.75)
 
 HOLES = {"H1": (4, 4, "NPTH"), "H5": (101, 6, "NPTH"), "H2": (171, 4, "GND"), "H3": (4, 121, "GND"),
          "H4": (171, 121, "GND"), "H6": (66, 121, "GND")}  # H7 (124, 76) supprimé : il coupait la bande +5V d'Inner2
 KEEPOUT_ANT = (0, 43.5, 7, 68)          # antenne du module au bord : sans cuivre, toutes couches
 BARRIER = (0, 38.5, 99, 41.5)           # seuls les composants à cheval
-STRADDLE = {"U71", "U81", "U83", "U17"}
+STRADDLE = {"U71", "U81", "U83", "U117"}
 
 def rect(ref):
     x, y, rot = P[ref]; w, h = size_of(comps[ref])
