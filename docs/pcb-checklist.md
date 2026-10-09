@@ -77,7 +77,7 @@ Les deux LM2596 dissipent chacun 2 à 3 W dans le même coin : boucles courtes, 
 
 - [ ] Chaque 100 nF à ≤ 2 mm de sa broche d'alimentation, via GND juste à côté du condensateur
 - [ ] Filtre THR (R13/C11 et équivalents) collé à la broche 2 de chaque TLV3501
-- [ ] Boucle C112 → U111 → D112 la plus courte possible ; idem C122/C123 → U121 → D121
+- [ ] Boucle C112 → U111 → D112 la plus courte possible, L111 à moins de 10 mm de la broche SW de U111 ; idem C122/C123/C124 → U121 → D121 et L121
 - [ ] L111 et L121 orientées à 90° l'une de l'autre, à ≥ 10 mm
 - [ ] Plage de cuivre et ≈ 15 vias thermiques sous la languette de U111 et de U121 (deux plans internes à traverser) ; couche 3 reliée au GND sous les régulateurs pour dissiper
 - [ ] Électrolytiques C112, C117, C125, C127 à ≥ 5 mm des languettes des LM2596
