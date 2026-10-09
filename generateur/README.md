@@ -14,6 +14,7 @@ Scripts Python qui produisent des feuilles KiCad propres, avec fils tirés sur l
 | `capteur.py` / `build_capteur.py` | module capteur universel |
 | `mkbuild.py` | construction générique d'une feuille autonome + symboles personnalisés |
 | `servo.py`, `relais.py` / `build_sorties.py` | sortie servo (rail 6 V) et sortie relais |
+| `mcu.py` / `build_mcu.py` | feuille MCU v2 : module ESP32-S3-WROOM-1 (nets lus dans `pcb/netlist_v2_wroom.json`) → `kicad/mcu_v2/`, variante EasyEDA `kicad/easyeda/mcu_wroom.kicad_sch` |
 
 Usage : `python3 build_bloc5.py sortie/` ; variante EasyEDA (sans champs cachés) : `EASYEDA=1 python3 build_bloc5.py sortie/`.
 Dépendances : `pip install sexpdata matplotlib`.
