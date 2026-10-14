@@ -117,6 +117,20 @@ Un condensateur de découplage ou d'entrée/sortie se connecte à la plage Inner
 - **Ne pas relancer Annotate Designator** après avoir validé la numérotation.
 - Exporter la netlist après chaque modification majeure du schéma et comparer à la référence.
 
+## 11. Retrait du cuivre par rapport au bord de la carte
+
+Minimum JLCPCB (cartes détourées par fraisage, d'après leur tableau des capacités, à confirmer sur la page officielle avant commande) :
+
+| Cuivre | Minimum JLC | Valeur à utiliser |
+|---|---|---|
+| Couches externes (Top, Bottom) : pistes, remplissages GND | 0,25 mm | **0,5 mm** |
+| Couches internes (Inner1 GND, Inner2 plages) | 0,40 mm | **0,5 mm** |
+| Séparation en V-cut | 0,45 mm | non utilisé ici |
+
+- La règle par défaut d'EasyEDA (copperThickness1oz) impose 0,3 mm entre le contour et les objets de la couche ; on prend 0,5 mm pour garder de la marge sur toutes les couches.
+- Les plages d'Inner2 de TriggerFlow sont à 0,5 mm du bord (DXF) ; les remplissages GND Top et Bottom doivent respecter la même valeur.
+- Exceptions voulues : pastilles des connecteurs au bord (USB-C, RJ45) et trous de fixation, qui restent à l'intérieur du contour mais peuvent s'en approcher ; le DRC les signale s'ils passent sous 0,3 mm.
+
 ---
 
 *Document créé le 14/10/2026 — projet TriggerFlow v2*
