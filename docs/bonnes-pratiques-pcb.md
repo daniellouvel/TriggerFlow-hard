@@ -131,6 +131,17 @@ Minimum JLCPCB (cartes détourées par fraisage, d'après leur tableau des capac
 - Les plages d'Inner2 de TriggerFlow sont à 0,5 mm du bord (DXF) ; les remplissages GND Top et Bottom doivent respecter la même valeur.
 - Exceptions voulues : pastilles des connecteurs au bord (USB-C, RJ45) et trous de fixation, qui restent à l'intérieur du contour mais peuvent s'en approcher ; le DRC les signale s'ils passent sous 0,3 mm.
 
+## 12. Écart entre plages d'alimentation de tensions différentes (Inner2)
+
+| Entre | Écart minimum | Écart conseillé |
+|---|---|---|
+| +12V et +5V, +5V et +3V3, +3V3 et 3V3_MCU (écart de tension ≤ 12 V) | 0,3 mm | **0,5 mm, 1 mm si la place le permet** |
+| Côté isolé (VISO_3V3) et le reste | 3 mm (isolation galvanique, pas une question de tension) | 3 mm ou plus |
+
+- L'écart de tension (12 V au plus) ne demande électriquement que quelques dixièmes de millimètre ; le minimum de fabrication JLC (environ 0,15 mm en multicouche, à confirmer sur leur page) est déjà largement respecté. Les 0,5 mm servent de marge de fabrication.
+- **Ne jamais faire passer un signal rapide au-dessus d'une coupure entre deux plages** : son retour de courant perd sa référence. Les lignes du couloir (Bottom) sont au-dessus de la plage +3V3 d'Inner2 : garder cette plage continue sous tout le couloir, et faire passer TLV_OUT là où elle ne présente aucune coupure.
+- Mesure sur le Gerber du 14/10 : écart minimum entre les plages +12V et +5V = 1,08 mm.
+
 ---
 
 *Document créé le 14/10/2026 — projet TriggerFlow v2*
