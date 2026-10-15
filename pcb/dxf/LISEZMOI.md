@@ -8,7 +8,7 @@ Y_dxf = 125 − y_placement.
 |---|---|---|
 | TriggerFlow_1_contour.dxf | contour 175 × 125 mm (coins R2), trous H1 et H5 Ø 3,2 non métallisés (v2 : plus de fente, l'antenne du module est au bord gauche) | Contour de carte (Board Outline) |
 | TriggerFlow_2_trous_GND.dxf | repères de H2, H3, H4, H6 (H7 supprimé) : perçage Ø 3,2, pastille Ø 6, dégagement Ø 7 | Document ; puis poser à chaque repère une pastille traversante Ø 3,2 / 6 mm reliée au net GND (ou un trou de fixation M3) |
-| TriggerFlow_3_zones_interdites.dxf | v2 : zone antenne au bord (x 0–7) et barrière d'isolation (y 37,0–40,0 en repère placement, soit Y 85,0–88,0 depuis l'avant) | Document ; puis tracer par-dessus des zones interdites (cuivre, toutes couches) |
+| TriggerFlow_3_zones_interdites.dxf | v2 : zone antenne au bord (x 0–7) et barrière d'isolation réelle (y 38,4–42,1 en repère placement, soit Y 82,9–86,6 depuis l'avant) | Document ; puis tracer par-dessus des zones interdites (cuivre, toutes couches) |
 | TriggerFlow_4_zones_document.dxf | zones du plan, barrière d'isolation, couloir de bus, rangée de vias de couture | Document (repères pour le routage) |
 | TriggerFlow_5_couche3_plages.dxf | contours des plages de la couche 3 : VISO_3V3, +12V, +3V3, +5V et, en v2, 3V3_MCU | Document, ou Interne 2 comme guide ; puis créer les remplissages de cuivre par-dessus en leur donnant le bon net |
 

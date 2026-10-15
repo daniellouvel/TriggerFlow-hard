@@ -79,4 +79,4 @@ Checklist complète à cocher : [docs/pcb-checklist.md](../docs/pcb-checklist.md
 - Application dans EasyEDA Pro : saisie manuelle ou Claude Code + easyeda-copilot lisant le CSV (déplacer une empreinte sur le PCB ne casse pas les liaisons).
 
 > **Gerbers du 15/10/2026** : `gerber/Gerber_TriggerFlow_2026-10-15.zip` (export EasyEDA, à ce stade : plans internes refaits, routage en cours).
-> **Barrière d'isolation (proposition du 15/10)** : coupure des plans Inner1 et Inner2 à **Y = 85,0–88,0** (depuis l'avant), entre les deux rangées de pastilles des HCPL-063L. Les DXF (`dxf/`) sont à jour ; à reporter dans EasyEDA (zone interdite et plans). Les Gerbers du 15/10 ont encore la coupure à Y = 79,9–83,1.
+> **Barrière d'isolation (réelle, Gerber du 15/10 19:08)** : plans côté carte jusqu'à Y = 82,9, plans isolés dès Y = 86,6 (Inner2) / 86,9 (Inner1), écart de 3,7 à 4,0 mm sur Inner1 et Inner2. Les DXF (`dxf/`) sont alignés : barrière Y 82,9–86,6 et contours des plages Inner2 lus dans le Gerber (`dxf/plages_inner2_2026-10-15.json`). Les Gerbers du dépôt (`gerber/`) sont ceux du 15/10 ; l'export final (19:08) est à verser si besoin.
