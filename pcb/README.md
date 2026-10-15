@@ -2,6 +2,9 @@
 
 > Branche **v2-wroom** : placement avec le module WROOM-1 (304 composants). Netlist d'entrée `netlist_v2_wroom.json` = **export EasyEDA du 10/10** (`netlist_v2_easyeda_2026-10-10.tel`), numérotation EasyEDA (U101 = module, U115 = LM2596 5 V, U131 = LM2596 servo… correspondance complète dans `docs/mcu-v2-wroom.md`). `mcu_v2.py` (ancienne netlist construite depuis la v1) n'écrit plus que `netlist_v2_ancienne_numerotation.json`. Zoom de la zone module : `zoom_mcu_v2.png`.
 
+> **Placement réel (15/10/2026)** : `pickandplace_easyeda_2026-10-15.xlsx` (export EasyEDA) et `placement_easyeda_2026-10-15.csv` (même données, avec Y depuis l'avant et Y depuis l'arrière). C'est la carte telle que tu l'as placée. Les fichiers `place.py` / `placement_TriggerFlow.csv` restent la proposition initiale calculée par script.
+> Écarts avec la netlist de référence du 10/10 : les deux condensateurs 330 µF s'appellent maintenant **C138** et **C139** (ils s'appelaient C122 et C134) et utilisent la référence **C335986** (ROQANG RVE1E331M0810) ; la netlist n'a pas encore été ré-exportée.
+
 Placement des **287 composants** en v1, **305** en v2 (export EasyEDA de référence du 05/10, servo et relais compris, sans moteur ni PWM) sur une carte **175 × 125 mm, 4 couches**. Repère : origine au coin arrière gauche, x vers la droite, y vers l'avant. Tailles = encombrements estimés, à recaler sur les vraies empreintes.
 
 ![Placement complet](placement_complet.png)
