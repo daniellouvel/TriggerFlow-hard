@@ -207,7 +207,7 @@ Bloc secteur **12 V, 5 A minimum**.
 | U115 | LM2596S-5.0 (UMW, TO-263-5) | C347421 |
 | D113 | SS54 | C22452 |
 | L112 | 33 µH 4,25 A SMDRI129-330MT | C2924828 |
-| C138 | 330 µF 25 V low-ESR Panasonic EEE-FK1E331P (**pas de polymère** : instabilité du LM2596) | C178543 (alt. C970701) — **schéma du 15/10 : C335986** (ROQANG RVE1E331M0810, 450 mA ; à trancher) |
+| C138 | 330 µF 25 V ROQANG RVE1E331M0810, 8 × 10 mm, 450 mA (décision du 15/10 : remplace le Panasonic EEE-FK1E331P, stock JLC insuffisant ; **pas de polymère** : instabilité du LM2596) | C335986 (alt. C335985 ROQANG RVT1E331M0810, ondulation plus faible) |
 | U116 | AMS1117-3.3 | C6186 |
 
 PCB : boucle C117-U115-D113 courte ; cuivre + vias sous la languette de U115 (~3 W) ; pistes 12 V ≥ 2 mm.
@@ -334,7 +334,7 @@ J131 : bornier 3 points — 1 = GND, 2 = V_SERVO (6 V), 3 = signal (rallonge ser
 | U131 | LM2596S-ADJ (UMW, TO-263-5) | C347423 |
 | L131 | 33 µH 4,25 A SMDRI129-330MT | C2924828 |
 | D131 | SS54 | C22452 |
-| C139 | 330 µF 25 V low-ESR Panasonic EEE-FK1E331P (pas de polymère) | C178543 (alt. C970701) — **schéma du 15/10 : C335986** (ROQANG RVE1E331M0810, 450 mA ; à trancher) |
+| C139 | 330 µF 25 V ROQANG RVE1E331M0810, 8 × 10 mm, 450 mA (décision du 15/10 : remplace le Panasonic EEE-FK1E331P ; pas de polymère) | C335986 (alt. C335985) |
 | C136 | 470 µF 25 V DMBJ RVT1E471M1010 | C970707 |
 | C131, C132 | 10 µF 25 V 0805 | C15850 |
 | C133, C135, C123 | 100 nF 0603 | C14663 |
