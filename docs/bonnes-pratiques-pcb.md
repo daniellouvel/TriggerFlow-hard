@@ -61,6 +61,8 @@ Un condensateur de découplage ou d'entrée/sortie se connecte à la plage Inner
 - Règle Net-Net dans EasyEDA : classe VISO vs reste → espacement 3 mm.
 - Seuls les composants d'isolation (HCPL-063L, B0505S, U117) traversent la barrière.
 - **Aucune piste, aucun plan, aucun via** ne traverse la barrière entre les deux domaines.
+- **Position de la coupure : entre les deux rangées de pastilles des isolateurs**, pas à côté. Pour les HCPL-063L de TriggerFlow, rangée côté carte à Y = 83,79 et rangée côté isolé à Y = 89,19 (Y depuis l'avant) : la coupure des plans (Inner1 et Inner2, les deux au même endroit) est à **Y = 85,0 à 88,0**, centrée sur le centre du composant (Y = 86,49). Ainsi les pastilles côté carte restent sur le GND et le +3V3, et celles du côté isolé sur VISO.
+- **Contrôle sur le Gerber** : lire les coordonnées des pastilles dans le fichier de positions (colonnes Pad X / Pad Y) et vérifier qu'aucune pastille d'un domaine n'est au-dessus d'un plan de l'autre domaine.
 
 ---
 

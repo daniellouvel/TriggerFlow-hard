@@ -43,25 +43,25 @@ d.saveas("TriggerFlow_2_trous_GND.dxf")
 # ---------- 3. zones interdites (antenne, bande sous U117)  -> à convertir en zones interdites ----------
 d = new(); m = d.modelspace(); d.layers.add("INTERDIT", color=1)
 rect(m, 0, 43.5, 7, 68, "INTERDIT")                                 # antenne du module au bord : sans cuivre, toutes couches
-rect(m, 0, 38.5, 99.4, 41.5, "INTERDIT")                            # barrière d'isolation
+rect(m, 0, 37.0, 99.4, 40.0, "INTERDIT")                            # barrière d'isolation : entre les deux rangées de pastilles des optos (Y 85,0–88,0 depuis l'avant)
 d.saveas("TriggerFlow_3_zones_interdites.dxf")
 
 # ---------- 4. plan des zones (repères de routage)  -> couche Document ----------
 d = new(); m = d.modelspace(); d.layers.add("ZONES", color=8); d.layers.add("BARRIERE", color=1)
-Z = [("Sorties isolées VISO", 0, 0, 99, 40), ("Servo, relais, entrée 12V", 104, 0, 175, 43.5),
+Z = [("Sorties isolées VISO", 0, 0, 99, 37), ("Servo, relais, entrée 12V", 104, 0, 175, 43.5),
      ("U101 WROOM-1 (antenne <-)", 0.5, 45, 26, 63), ("USB-C J101", 0.5, 70.3, 8.3, 79.7), ("3V3_MCU, RESET, BOOT", 27, 44.5, 56, 72.5), ("Bus I2C", 88, 46, 124, 72), ("Couloir de bus (L4) + vias", 0, 73.5, 124, 81.5),
      ("Vannes 2x3", 127, 44, 175, 88), ("Entrées capteur x6", 0, 82, 124, 125), ("12V -> 5V, +3V3, LED", 124, 90, 175, 125)]
 for t, x1, y1, x2, y2 in Z:
     rect(m, x1, y1, x2, y2, "ZONES"); txt(m, t, x1 + 1, y1 + 1, 1.8, "ZONES")
-m.add_line(F(0, 40), F(99, 40), dxfattribs={"layer": "BARRIERE"})
-rect(m, 0, 38.5, 99, 41.5, "BARRIERE"); txt(m, "Barrière isolation : 3 mm sans cuivre (sauf U71, U81, U83, U117)", 2, 36.2, 1.4, "BARRIERE")
+m.add_line(F(0, 38.5), F(99, 38.5), dxfattribs={"layer": "BARRIERE"})
+rect(m, 0, 37.0, 99, 40.0, "BARRIERE"); txt(m, "Barrière isolation : 3 mm sans cuivre (sauf U71, U81, U83, U117)", 2, 34.8, 1.4, "BARRIERE")
 for x in [1 + 3.5 * i for i in range(36)]: m.add_circle(F(x, 81.6), 0.3, dxfattribs={"layer": "ZONES"})   # rangée de vias de couture
 d.saveas("TriggerFlow_4_zones_document.dxf")
 
 # ---------- 5. découpage de la couche 3 (plages d'alimentation)  -> Interne 2 ----------
 d = new(); m = d.modelspace()
 for n, c in (("L3_VISO_3V3", 6), ("L3_+12V", 1), ("L3_+3V3", 4), ("L3_+5V", 2), ("L3_3V3_MCU", 5)): d.layers.add(n, color=c)
-rect(m, 0.5, 0.5, 96.3, 38.5, "L3_VISO_3V3")
+rect(m, 0.5, 0.5, 96.3, 37.0, "L3_VISO_3V3")   # bord à la fin de la barrière (Y 88,0)
 poly(m, [(104, 0.5), (174.5, 0.5), (174.5, 114.5), (146.5, 114.5), (146.5, 102), (127.5, 102), (127.5, 41.5), (104, 41.5)], "L3_+12V")   # v2 : jusqu'à l'entrée de U115 (coin avant droit)
 poly(m, [(52, 45.5), (121, 45.5), (121, 117), (4, 117), (4, 74), (52, 74)], "L3_+3V3")
 rect(m, 9, 45.5, 50, 72.5, "L3_3V3_MCU")          # rail du module (U104 -> U101)

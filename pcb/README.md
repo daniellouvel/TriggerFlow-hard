@@ -77,3 +77,6 @@ Checklist complète à cocher : [docs/pcb-checklist.md](../docs/pcb-checklist.md
 - Dégagement autour des connecteurs de vannes de la 1re rangée ≈ 1,5 mm entre C136 et CN93 (5 mm visés) : à reprendre avec les vraies empreintes.
 - Boîtier plastique ou métallique (métallique → module WROOM-1U-N16R8 C3013946 à antenne externe u.FL, à décider avant routage).
 - Application dans EasyEDA Pro : saisie manuelle ou Claude Code + easyeda-copilot lisant le CSV (déplacer une empreinte sur le PCB ne casse pas les liaisons).
+
+> **Gerbers du 15/10/2026** : `gerber/Gerber_TriggerFlow_2026-10-15.zip` (export EasyEDA, à ce stade : plans internes refaits, routage en cours).
+> **Barrière d'isolation (proposition du 15/10)** : coupure des plans Inner1 et Inner2 à **Y = 85,0–88,0** (depuis l'avant), entre les deux rangées de pastilles des HCPL-063L. Les DXF (`dxf/`) sont à jour ; à reporter dans EasyEDA (zone interdite et plans). Les Gerbers du 15/10 ont encore la coupure à Y = 79,9–83,1.
