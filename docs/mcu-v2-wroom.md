@@ -30,7 +30,7 @@ Les références des blocs 1 à 3 (entrées, sorties isolées, vannes) n'ont pas
 | C114 | C119 |
 | C115 | C120 |
 | C116 | C121 |
-| C117 | C122 |
+| C117 | C138 |
 | C118 | C137 |
 | C119 | C124 |
 | C120 | C125 |
@@ -38,7 +38,7 @@ Les références des blocs 1 à 3 (entrées, sorties isolées, vannes) n'ont pas
 | C122 | C131 |
 | C123 | C132 |
 | C124 | C133 |
-| C125 | C134 |
+| C125 | C139 |
 | C126 | C135 |
 | C127 | C136 |
 | C128 | C123 |

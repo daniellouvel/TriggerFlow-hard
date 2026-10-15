@@ -190,7 +190,7 @@ Bloc secteur **12 V, 5 A minimum**.
 | +12V | Q112.1-3 (source), R116, D112 (cathode), C117 (470 µF), 2 × 10 µF, 100 nF, U115.1 (VIN), F91-F96, U131.1 (servo), bobine K131 (relais) |
 | Q112_G | Q112.4, R116 (→ +12V), R117 (→ GND) : VGS ≈ −6 V |
 | BUCK_SW | U115.2, L112.1, D113 (cathode) |
-| +5V | L112.2, U115.4 (FB), C122 (330 µF), 100 nF, U116.3, 10 µF, D101, F11-F61, U117.2 |
+| +5V | L112.2, U115.4 (FB), C138 (330 µF), 100 nF, U116.3, 10 µF, D101, F11-F61, U117.2 |
 | +3V3 | U116.2 + languette (4), C116 (10 µF) |
 | GND | J112.2, R117, D112, D113 (anode), U115.3, U115.5 (ON/OFF), U115.6 (languette), U116.1, condensateurs |
 
@@ -207,7 +207,7 @@ Bloc secteur **12 V, 5 A minimum**.
 | U115 | LM2596S-5.0 (UMW, TO-263-5) | C347421 |
 | D113 | SS54 | C22452 |
 | L112 | 33 µH 4,25 A SMDRI129-330MT | C2924828 |
-| C122 | 330 µF 25 V low-ESR Panasonic EEE-FK1E331P (**pas de polymère** : instabilité du LM2596) | C178543 (alt. C970701) |
+| C138 | 330 µF 25 V low-ESR Panasonic EEE-FK1E331P (**pas de polymère** : instabilité du LM2596) | C178543 (alt. C970701) — **schéma du 15/10 : C335986** (ROQANG RVE1E331M0810, 450 mA ; à trancher) |
 | U116 | AMS1117-3.3 | C6186 |
 
 PCB : boucle C117-U115-D113 courte ; cuivre + vias sous la languette de U115 (~3 W) ; pistes 12 V ≥ 2 mm.
@@ -318,7 +318,7 @@ LM2596S-ADJ alimenté par le +12V : V_SERVO = 1,23 V × (1 + R133 / R132) = 1,23
 |---|---|
 | +12V | U131.1 (VIN), C131, C132 (10 µF), C133 (100 nF) |
 | SERVO_SW | U131.2, L131.1, D131 (cathode, SS54) |
-| V_SERVO | L131.2, R133 (3,9 kΩ), C134+ (330 µF), C135 (100 nF), C136+ (470 µF), J131.2 |
+| V_SERVO | L131.2, R133 (3,9 kΩ), C139+ (330 µF), C135 (100 nF), C136+ (470 µF), J131.2 |
 | SERVO_FB | U131.4, R133, R132 (1 kΩ → GND) |
 | SERVO_OFF | U131.5 (ON/OFF), R131 (10 kΩ → +3V3), U111.4 (GPB3) — haut / haute impédance = coupé |
 | SERVO_PWM | U101.19 (GPIO13, LEDC 50 Hz), R134 (10 kΩ → GND), U132.2 (A) |
@@ -334,7 +334,7 @@ J131 : bornier 3 points — 1 = GND, 2 = V_SERVO (6 V), 3 = signal (rallonge ser
 | U131 | LM2596S-ADJ (UMW, TO-263-5) | C347423 |
 | L131 | 33 µH 4,25 A SMDRI129-330MT | C2924828 |
 | D131 | SS54 | C22452 |
-| C134 | 330 µF 25 V low-ESR Panasonic EEE-FK1E331P (pas de polymère) | C178543 (alt. C970701) |
+| C139 | 330 µF 25 V low-ESR Panasonic EEE-FK1E331P (pas de polymère) | C178543 (alt. C970701) — **schéma du 15/10 : C335986** (ROQANG RVE1E331M0810, 450 mA ; à trancher) |
 | C136 | 470 µF 25 V DMBJ RVT1E471M1010 | C970707 |
 | C131, C132 | 10 µF 25 V 0805 | C15850 |
 | C133, C135, C123 | 100 nF 0603 | C14663 |

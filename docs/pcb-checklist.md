@@ -10,7 +10,7 @@ Carte 175 × 125 mm, 4 couches, vue de dessus. Origine au coin arrière gauche, 
 | --- | --- | --- | --- |
 | Sorties isolées (VISO) | 0–99 | 0–40 | J71, J81-J84 (centres x = 17, 35, 53, 71, 89) ; TVS, 2N7002, 74LVC2G04 ; U118 au centre de l'îlot |
 | Barrière d'isolation | 0–99 | y = 40 | U71, U81, U83 (HCPL-063L) et U117 (B0505S, sous J84, x = 90) à cheval ; ≥ 3 mm sans cuivre, toutes couches |
-| Servo, relais, entrée 12 V | 104–175 | 0–43,5 | bord arrière : J131 (servo) + C136, J132 (relais), J112 (12 V) ; RELAY131, Q131, D132 ; U131 (languette à gauche) + L131, C134, D131 ; F112, Q112, D112 au bord droit |
+| Servo, relais, entrée 12 V | 104–175 | 0–43,5 | bord arrière : J131 (servo) + C136, J132 (relais), J112 (12 V) ; RELAY131, Q131, D132 ; U131 (languette à gauche) + L131, C139, D131 ; F112, Q112, D112 au bord droit |
 | Module ESP32-S3-WROOM-1 (U101, v2) | 0,5–26 | 45–63 | tourné de 90°, antenne au bord gauche, broches 1-14 vers l'avant |
 | USB-C J101, U102 (v2) | 0,5–16 | 70–80 | USB natif protégé, CC1 / CC2 5,1 k |
 | 3V3_MCU, RESET, BOOT (v2) | 27–56 | 44,5–72,5 | U104, D101, D102, SW101, SW102 |
@@ -19,7 +19,7 @@ Carte 175 × 125 mm, 4 couches, vue de dessus. Origine au coin arrière gauche, 
 | Couloir de bus | 0–124 | 73,5–81,5 | THR, CS, ID, TLV_OUT en couche 4 ; rangée de vias de couture côté analogique (y ≈ 81,6) |
 | Vannes 2 × 3 | 127–175 | 44–88 | CN91-CN93 (y ≈ 48) et CN94-CN96 (y ≈ 83) vers l'extérieur, rail +12V au milieu ; D9n entre CN9n et Q9n |
 | Entrées capteur ×6 | 0–124 | 82–125 | J11-J61 (centres x = 17, 35, 53, 79, 97, 115) ; une bande de 18 mm par voie |
-| 12 V → 5 V, +3V3, LED | 124–175 | 90–125 | U115 tourné (broches à gauche, languette au bord droit), C117 au-dessus de l'entrée, C118-C120 et D113 collés aux broches, L112 et C122 à gauche ; U116, C121, C116, CN111 au bord avant |
+| 12 V → 5 V, +3V3, LED | 124–175 | 90–125 | U115 tourné (broches à gauche, languette au bord droit), C117 au-dessus de l'entrée, C118-C120 et D113 collés aux broches, L112 et C138 à gauche ; U116, C121, C116, CN111 au bord avant |
 
 Trous M3 : H1 (4, 4) et H5 (101, 6) côté VISO en NPTH ; H2 (171, 4), H3 (4, 121), H4 (171, 121), H6 (66, 121) entre J31 et J41 ; H7 supprimé (il coupait la bande +5V d'Inner2).
 
@@ -80,7 +80,7 @@ Les deux LM2596 dissipent chacun 2 à 3 W dans le même coin : boucles courtes, 
 - [ ] Boucle C117 → U115 → D113 la plus courte possible, L112 à moins de 10 mm de la broche SW de U115 ; idem C131/C132/C133 → U131 → D131 et L131
 - [ ] L112 et L131 orientées à 90° l'une de l'autre, à ≥ 10 mm
 - [ ] Plage de cuivre et ≈ 15 vias thermiques sous la languette de U115 et de U131 (deux plans internes à traverser) ; couche 3 reliée au GND sous les régulateurs pour dissiper
-- [ ] Électrolytiques C117, C122, C134, C136 à ≥ 5 mm des languettes des LM2596
+- [ ] Électrolytiques C117, C138, C139, C136 à ≥ 5 mm des languettes des LM2596
 - [ ] C136 (470 µF) au plus près de J131
 - [ ] Dans chaque canal vanne, D9n entre CN9n et Q9n : boucle de roue libre ≤ 10 mm
 - [ ] v2 : C101 + C102 collés à la broche 2 (3V3) du module ; C104 / C105 en sortie de U104 ; R107 / C103 près de EN

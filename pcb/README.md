@@ -3,7 +3,7 @@
 > Branche **v2-wroom** : placement avec le module WROOM-1 (304 composants). Netlist d'entrée `netlist_v2_wroom.json` = **export EasyEDA du 10/10** (`netlist_v2_easyeda_2026-10-10.tel`), numérotation EasyEDA (U101 = module, U115 = LM2596 5 V, U131 = LM2596 servo… correspondance complète dans `docs/mcu-v2-wroom.md`). `mcu_v2.py` (ancienne netlist construite depuis la v1) n'écrit plus que `netlist_v2_ancienne_numerotation.json`. Zoom de la zone module : `zoom_mcu_v2.png`.
 
 > **Placement réel (15/10/2026)** : `pickandplace_easyeda_2026-10-15.xlsx` (export EasyEDA) et `placement_easyeda_2026-10-15.csv` (même données, avec Y depuis l'avant et Y depuis l'arrière). C'est la carte telle que tu l'as placée. Les fichiers `place.py` / `placement_TriggerFlow.csv` restent la proposition initiale calculée par script.
-> Écarts avec la netlist de référence du 10/10 : les deux condensateurs 330 µF s'appellent maintenant **C138** et **C139** (ils s'appelaient C122 et C134) et utilisent la référence **C335986** (ROQANG RVE1E331M0810) ; la netlist n'a pas encore été ré-exportée.
+> Netlist de référence : export EasyEDA du **15/10/2026** (`netlist_v2_easyeda_2026-10-15.tel`). Seuls écarts avec l'export du 10/10 : les deux condensateurs 330 µF s'appellent maintenant **C138** (sortie 5 V) et **C139** (sortie 6 V servo), au lieu de C122 et C134 ; les broches 1 et 2 de **RELAY131** sont inversées (bobine non polarisée, diode D132 inchangée, donc équivalent). Placement et pièces : le placement EasyEDA utilise le **C335986** (ROQANG RVE1E331M0810) pour C138 et C139 ; le BOM-netlist indique encore le C178543 (Panasonic) : à trancher.
 
 Placement des **287 composants** en v1, **305** en v2 (export EasyEDA de référence du 05/10, servo et relais compris, sans moteur ni PWM) sur une carte **175 × 125 mm, 4 couches**. Repère : origine au coin arrière gauche, x vers la droite, y vers l'avant. Tailles = encombrements estimés, à recaler sur les vraies empreintes.
 
@@ -37,7 +37,7 @@ Une piste de couche 4 prend son retour dans la couche 3 (noyau épais entre L2 e
 |---|---|---|---|
 | Sorties isolées (VISO) | 0–99 | 0–40 | J71, J81-J84 au bord arrière ; TVS, 2N7002, 74LVC2G04, HCPL-063L |
 | Barrière d'isolation | 0–99 | y = 40 | seuls U71, U81, U83, U117 à cheval ; ≥ 3 mm sans cuivre sur les 4 couches |
-| Servo, relais, entrée 12 V | 104–175 | 0–43,5 | bord arrière : J131 (servo) + C136, J132 (relais), J112 (12 V) ; RELAY131, Q131, D132 ; U131 (languette à gauche) + L131, C134, D131 ; F112, Q112, D112 au bord droit |
+| Servo, relais, entrée 12 V | 104–175 | 0–43,5 | bord arrière : J131 (servo) + C136, J132 (relais), J112 (12 V) ; RELAY131, Q131, D132 ; U131 (languette à gauche) + L131, C139, D131 ; F112, Q112, D112 au bord droit |
 | Module ESP32-S3-WROOM-1 (v2) | 0,5–26 | 45–63 (U101 tourné de 90°) | antenne au bord gauche (x 0,5–6,8) ; broches 1-14 vers l'avant |
 | USB-C J101 + U102 | 0,5–16 | 70–80 | USB natif, protection USBLC6, CC 5,1 k |
 | 3V3_MCU, RESET, BOOT | 27–56 | 44,5–72,5 | U104 AMS1117, D101 / D102, SW101 / SW102 |
@@ -46,7 +46,7 @@ Une piste de couche 4 prend son retour dans la couche 3 (noyau épais entre L2 e
 | Couloir de bus | 0–124 | 73,5–81,5 | THR / CS / ID / TLV_OUT en couche 4 ; rangée de vias de couture côté analogique |
 | Vannes 2 × 3 | 127–175 | 44–88 | CN91-CN93 (y ≈ 48) et CN94-CN96 (y ≈ 83) vers l'extérieur, rail +12V au milieu ; D9n entre CN9n et Q9n |
 | Entrées capteur ×6 | 0–124 | 82–125 | J11-J61 au bord avant (x = 17, 35, 53, 79, 97, 115), bande de 18 mm par voie |
-| 12 V → 5 V, +3V3, LED | 124–175 | 90–125 | U115 tourné (broches à gauche, languette au bord droit), C117 au-dessus de l'entrée, C118-C120 et D113 collés aux broches, L112 et C122 à gauche ; U116, C121, C116, CN111 au bord avant |
+| 12 V → 5 V, +3V3, LED | 124–175 | 90–125 | U115 tourné (broches à gauche, languette au bord droit), C117 au-dessus de l'entrée, C118-C120 et D113 collés aux broches, L112 et C138 à gauche ; U116, C121, C116, CN111 au bord avant |
 
 **Trous M3** : H1 (4, 4) et H5 (101, 6) côté VISO en **NPTH** (jamais reliés à la masse) ; H2 (171, 4), H3 (4, 121), H4 (171, 121), H6 (66, 121) en GND ; H7 supprimé (sa pastille coupait la bande +5V d'Inner2). Exclusion de 7 mm de diamètre autour de chaque trou.
 
